@@ -1,0 +1,23 @@
+.center-strip {
+    position: absolute;
+    top: 45vh;
+    left: 0;
+    background-color: rgb(170, 170, 170);
+    height: 10%;
+}
+
+.home-button {
+    background-color: blue;
+    border-radius: 7%;
+    margin: 0 10%;
+}
+
+.home-buttons {
+    position: absolute;
+    top: 60vh;
+    left: 0;
+    height: 10%;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
