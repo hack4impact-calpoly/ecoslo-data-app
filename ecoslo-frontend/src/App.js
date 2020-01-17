@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
+import Home from "./Pages/Home";
 import './styles/App.css';
 import {
     Redirect,
@@ -13,7 +14,7 @@ function App() {
         <Router>
             <Switch>
                 <Route exact path="/">
-                    
+                    <Home />
                 </Route>
                 <Route path="/login">
                     
@@ -22,7 +23,7 @@ function App() {
 
                 </Route>
                 <Route path="/home">
-
+                    <Home />
                 </Route>
             </Switch>
         </Router>
