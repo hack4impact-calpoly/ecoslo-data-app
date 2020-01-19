@@ -1,0 +1,43 @@
+#home-page {
+    background-image: url("../images/Beach-Keepers-2018.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.center-strip {
+    background-color: rgba(100, 100, 100, 0.6);
+    height: 10%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-buttons {
+    height: 10%;
+    background-color: white;
+    width: 100%;
+    background: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-buttons > button {
+    background-color: rgb(120, 180, 255);
+    border-radius: 8%;
+    font-weight: bold;
+    margin: 0 10%;
+    height: 80%;
+    width: 10%;
+    border: 0;
+    outline: 0;
+    letter-spacing: 3px;
+    font-size: 1.5em;
+}
+
+.center-strip > span {
+    color: white;
+    font-size: 2em;
+    letter-spacing: 5px;
+}
