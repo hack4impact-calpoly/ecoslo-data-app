@@ -4,6 +4,8 @@ import './styles/index.css';
 import App from './App';
 import Home from './Pages/Home';
 import AddEvent from './Pages/AddEvent';
+import Update from './Pages/Update';
+import View from './Pages/View';
 import {
     Redirect,
     Route,
@@ -20,8 +22,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
             <Route path="/AddEvent" component={AddEvent} />
         </div>
     </Router>
-)*/
-
+);*/
 const routing = (
     <Router>
         <Switch>
@@ -36,6 +37,17 @@ const routing = (
             </Route>
             <Route path="/home">
                 <Home />
+            </Route>
+
+            
+            <Route path="/add">
+                <AddEvent />
+            </Route>
+            <Route path="/view">
+                <View />
+            </Route>
+            <Route path="/update">
+                <Update />
             </Route>
         </Switch>
     </Router>  
