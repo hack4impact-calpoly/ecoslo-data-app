@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import '../styles/Home.css';
 import Button from 'react-bootstrap/Button';
+import { Container, Row, Col } from 'reactstrap';
 
 class Home extends Component {
 
@@ -8,10 +9,14 @@ class Home extends Component {
     return (
       <div>
         <h2>Home page!</h2>
-        <div>
-            <Button variant="primary">Primary</Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="success">Success</Button>
+        <div className="text-center">
+        <Container>
+        <Row>
+          <Col><Button variant="secondary" size="lg" xs={100} md={4}>ADD</Button></Col>
+          <Col><Button variant="secondary" size="lg" xs={100} md={4}>UPDATE</Button></Col>
+          <Col><Button variant="secondary" size="lg" xs={100} md={4}>VIEW</Button></Col>
+        </Row>
+      </Container>
         </div>
       </div>
     );
