@@ -6,6 +6,9 @@ import Home from './Pages/Home';
 import AddEvent from './Pages/AddEvent';
 import Update from './Pages/Update';
 import View from './Pages/View';
+import Login from './Pages/Login';
+import { Provider } from "react-redux";
+import store from "./redux/reducers/store";
 import {
     Redirect,
     Route,
@@ -13,6 +16,7 @@ import {
     Switch
 } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'mdbreact/dist/css/mdb.css';
 
 /*const routing = (
     <Router>
@@ -24,33 +28,33 @@ import 'bootstrap/dist/css/bootstrap.min.css';
     </Router>
 );*/
 const routing = (
-    <Router>
-        <Switch>
-            <Route exact path="/">
-                <Home />
-            </Route>
-            <Route path="/login">
-                <App />
-            </Route>
-            <Route path="/register">
-
-            </Route>
-            <Route path="/home">
-                <Home />
-            </Route>
-
-            
-            <Route path="/add">
-                <AddEvent />
-            </Route>
-            <Route path="/view">
-                <View />
-            </Route>
-            <Route path="/update">
-                <Update />
-            </Route>
-        </Switch>
-    </Router>  
+    <Provider store={store}>
+        <Router>
+            <Switch>
+                <Route exact path="/">
+                    <Home />
+                </Route>
+                <Route path="/login">
+                    <Login />
+                </Route>
+                <Route path="/register">
+                    <App />
+                </Route>
+                <Route path="/home">
+                    <Home />
+                </Route>
+                <Route path="/add">
+                    <AddEvent />
+                </Route>
+                <Route path="/view">
+                    <View />
+                </Route>
+                <Route path="/update">
+                    <Update />
+                </Route>
+            </Switch>
+        </Router>  
+    </Provider>
 );
 
 ReactDOM.render(routing, document.getElementById('root'));
