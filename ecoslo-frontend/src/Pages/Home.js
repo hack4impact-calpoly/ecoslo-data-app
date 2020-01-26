@@ -2,10 +2,13 @@
 import React from "react";
 import "../styles/home.css";
 import "../styles/index.css";
+import Header from "../Components/header.js";
 
 class Home extends React.Component {
     render() {
         return (
+            <div>
+            <Header></Header>
             <div id="home-page" className="page">
                 <div style={{height: "20%"}} />
                 <div className="centered">
@@ -20,6 +23,7 @@ class Home extends React.Component {
                     <button className="home-button upper">Update</button>
                     <button className="home-button upper">View</button>
                 </div>
+            </div>
             </div>
         );
     }
