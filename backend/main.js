@@ -1,31 +1,27 @@
 const Express = require('express');
 const AppError = require('./errors');
-const {Pool, Client} = require('pg');
-
-const pool = new Pool({
-	user: 'postgres',
-	host: 'localhost',
-	database
-})
-
-const client = new Client();
+const Database = require('./database');
 
 const app = Express();
 app.use(Express.json());
-client.connect();
+const database = Database.create(null);
 
+function authenticateInput(input) {
+	return true;
+}
 
-app.get('/', (req, res) => {
-	res.send("Hello world");
-})
-
-app.post('/add', (req, res) => {
-	/* TODO: authentication */
+app.post('/add', async (req, res) => {
 	if (!authenticateInput(req.body.item)) {
-		res.status(400).send(AppError.badData);
+		res.status(400).send(AppError.stringError(AppError.badAuth));
 		return;
 	}
-	
+	try {
+		await database.add(req.body.item);
+	} catch (err) {
+		res.status(400).send(AppError.stringError(err.message));
+		return;
+	}
+	res.status(200).send();
 })
 
 app.listen(8000);
