@@ -1,3 +1,7 @@
+:root {
+    --header-size: 10vh;
+}
+
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -14,7 +18,7 @@ code {
 
 .page {
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - var(--header-size));
 }
 
 .upper {

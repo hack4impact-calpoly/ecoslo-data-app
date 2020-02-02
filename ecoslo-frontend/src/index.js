@@ -34,7 +34,7 @@ const routing = (
     
     <Provider store={store}>
         <Router>
-        <Header></Header>
+            <Header />
             <Switch>
                 <Route exact path="/">
                     <Home />
