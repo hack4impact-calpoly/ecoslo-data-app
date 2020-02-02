@@ -9,8 +9,6 @@ const sectionStyle ={
   fontWeight: 'bold',
 };
 class AddEvent extends React.Component {
- 
-
   render() {
     return (
       <div>

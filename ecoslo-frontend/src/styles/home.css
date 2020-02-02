@@ -23,7 +23,7 @@
     align-items: center;
 }
 
-.home-buttons > button {
+.home-buttons > a {
     background-color: rgb(120, 180, 255);
     border-radius: 8%;
     font-weight: bold;
@@ -34,6 +34,14 @@
     outline: 0;
     letter-spacing: 3px;
     font-size: 1.5em;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    color: black;
+}
+
+.home-buttons > a:hover {
+    color: inherit;
 }
 
 .center-strip > span {
