@@ -18,6 +18,8 @@ import {
 } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
+import Header from "./Components/header.js";
+import "./styles/header.css";
 
 /*const routing = (
     <Router>
@@ -29,8 +31,10 @@ import 'mdbreact/dist/css/mdb.css';
     </Router>
 );*/
 const routing = (
+    
     <Provider store={store}>
         <Router>
+        <Header></Header>
             <Switch>
                 <Route exact path="/">
                     <Home />
