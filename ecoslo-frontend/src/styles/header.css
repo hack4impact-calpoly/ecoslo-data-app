@@ -1,0 +1,13 @@
+.header-strip {
+    background-color: #565656;
+    height: 10%;
+    width: 100%;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+}
+
+.header-strip > button {
+    background-color: none;
+
+}
