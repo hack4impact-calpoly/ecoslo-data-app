@@ -13,6 +13,6 @@ module.exports.error = Object.freeze({
 })
 
 module.exports.stringError = (errNum) => {
-    return stringError.get(errNum);3
+    return stringError.get(errNum);
 }
 
