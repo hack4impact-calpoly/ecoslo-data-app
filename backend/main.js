@@ -1,9 +1,12 @@
 const Express = require('express');
 const AppError = require('./errors');
 const Database = require('./database');
+const cors = require('cors');
 
 const app = Express();
 app.use(Express.json());
+app.use(cors());
+app.options('*', cors());
 const database = Database.create(null);
 
 function authenticateInput(input) {
