@@ -13,13 +13,10 @@ const linkToText = {
 };
 
 class Header extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   getAppropriateLinkType = (linkName) => {
     const linkAt = this.props.location.pathname || "/home";
-    if (linkAt == linkName) {
+    if (linkAt === linkName) {
       return (
         <Navbar.Brand 
           href={linkName}
