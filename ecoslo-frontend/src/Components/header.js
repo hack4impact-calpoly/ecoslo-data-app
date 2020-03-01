@@ -1,37 +1,58 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import {Redirect} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import "../styles/header.css";
 import "../styles/index.css";
 
+const linkToText = {
+  "/home" : "Home",
+  "/add" : "Add",
+  "/view" : "View",
+  "/update" : "Update"
+};
 
 class Header extends React.Component {
 
-    render(){
-        return(
-            
-            <Navbar className="header-strip" variant="dark">
-            <img
-              src={require("../images/circle-cropped-ecoslo.png")}
-              width="40"
-              height="40"
-              className="d-inline-block align-top"
-              alt="React Bootstrap logo"
-            />
-            <Nav>
-              <Navbar.Brand href="/home" className = "ml-3">Home</Navbar.Brand>
-              <Nav>
-              <Nav.Link href="/add">Add</Nav.Link>
-              <Nav.Link href="/view">View</Nav.Link>
-              <Nav.Link href="/update">Update</Nav.Link>
-              </Nav>
-            </Nav>
-          </Navbar>
-       
-        )
-
+  getAppropriateLinkType = (linkName) => {
+    const linkAt = this.props.location.pathname || "/home";
+    if (linkAt === linkName) {
+      return (
+        <Navbar.Brand 
+          href={linkName}
+          key={linkName}
+          className="ml-3"
+        >
+          { linkToText[linkName] }
+        </Navbar.Brand>
+      );
     }
+
+    return (
+      <Nav.Link
+        href={linkName}
+        key={linkName}
+      >
+        { linkToText[linkName] }
+      </Nav.Link>
+    );
+  }
+
+  render() {
+    return (
+        <Navbar className="header-strip" variant="dark">
+          <img
+            src={require("../images/circle-cropped-ecoslo.png")}
+            width="40"
+            height="40"
+            className="d-inline-block align-top"
+            alt="React Bootstrap logo"
+          />
+          <Nav>
+            { Object.keys(linkToText).map(this.getAppropriateLinkType) }
+          </Nav>
+      </Navbar>
+    );
+  }
 }
-export default Header;
+export default withRouter(Header);

@@ -10,6 +10,7 @@ import View from './Pages/View';
 import Login from './Pages/Login';
 import { Provider } from "react-redux";
 import store from "./redux/reducers/store";
+import APIWrapper from "./APIs/APIWrapper";
 import {
     Redirect,
     Route,
@@ -21,20 +22,13 @@ import 'mdbreact/dist/css/mdb.css';
 import Header from "./Components/header.js";
 import "./styles/header.css";
 
-/*const routing = (
-    <Router>
-        <div>
-            <Route exact path="/" component={App} />
-            <Route path="/Home" component={Home} />
-            <Route path="/AddEvent" component={AddEvent} />
-        </div>
-    </Router>
-);*/
+const apiWrapper = new APIWrapper(store);
+
 const routing = (
     
     <Provider store={store}>
         <Router>
-        <Header></Header>
+            <Header />
             <Switch>
                 <Route exact path="/">
                     <Home />
@@ -49,13 +43,13 @@ const routing = (
                     <Home />
                 </Route>
                 <Route path="/add">
-                    <AddEvent />
+                    <AddEvent apiWrapper={apiWrapper} />
                 </Route>
                 <Route path="/view">
-                    <View />
+                    <View apiWrapper={apiWrapper} />
                 </Route>
                 <Route path="/update">
-                    <Update />
+                    <Update apiWrapper={apiWrapper} />
                 </Route>
             </Switch>
         </Router>  

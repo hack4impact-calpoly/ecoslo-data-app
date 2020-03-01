@@ -1,11 +1,9 @@
-const baseURL = "http://localhost:8000/";
-
 export default class APIWrapper {
-
     constructor(store) {
+        this.baseURL = "http://localhost:8000/";
         this.store = store;
     }
-
+    
     makeGetRequest(urlExtension, optionalResolve = null) {
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
@@ -55,6 +53,19 @@ export default class APIWrapper {
         });
     }
 
+    getUserInformation() {
+        return this.store.getState().userLoginInfo || { "username" : "TEST" };
+    }
+
+    combineLoginInfoForRequest(json) {
+        let currLoginInfo = this.getUserInformation();
+        if (currLoginInfo === null || currLoginInfo === undefined) {
+            return false;
+        }
+        //return Object.assign(currLoginInfo, json);
+        return Object.assign({}, json);
+    }
+
     login(email, password) {
         if (
             email === null ||
@@ -72,5 +83,13 @@ export default class APIWrapper {
                 password : password
             }
         );
+    }
+
+    addData(dataToBeSubmitted) {
+        const postData = this.combineLoginInfoForRequest(dataToBeSubmitted);
+        if (!postData) {
+            return false;
+        }
+        return this.makePostRequest("add", {'item': postData});
     }
 }
