@@ -11,7 +11,7 @@ class Header extends React.Component {
 
     render(){
         return(
-            <body>
+            
             <Navbar className="header-strip" variant="dark">
             <img
               src={require("../images/circle-cropped-ecoslo.png")}
@@ -29,7 +29,7 @@ class Header extends React.Component {
               </Nav>
             </Nav>
           </Navbar>
-          </body> 
+       
         )
 
     }
