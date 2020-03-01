@@ -18,6 +18,7 @@ app.post('/add', async (req, res) => {
 		res.status(400).send(AppError.stringError(AppError.badAuth));
 		return;
 	}
+	console.log(req.body);
 	try {
 		await database.add(req.body.item);
 	} catch (err) {
@@ -42,18 +43,6 @@ app.get('/locations', async (req, res) => {
 app.get('/columns', async (req, res) => {
 	try{
 		await database.getCols();
-	}
-	catch (err) {
-		res.status(400).send(AppError.stringError(err.message));
-		return;
-	}
-	res.status(200).send();
-})
-
-app.get('/byDate', async (req, res) => {
-	console.log("get request locations")
-	try{
-		await database.getAllByDate();
 	}
 	catch (err) {
 		res.status(400).send(AppError.stringError(err.message));

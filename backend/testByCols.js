@@ -5,10 +5,11 @@ const test = {
     cols: 
         ['date',
         'location',
-        //'Cigarette_Butts',
-        //'Food_Wrappers',
         'Plastic_Take_Out_Containers',
-        'Foam_Take_Out_Containers']
+        'Foam_Take_Out_Containers'],
+    dateStart: '2020-01-01',
+    dateEnd: '2020-02-01',
+    locations: ['Avila', 'Avila2']
 }
 
 let queryString = JSON.stringify(test);

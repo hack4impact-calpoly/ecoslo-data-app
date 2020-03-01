@@ -107,10 +107,18 @@ module.exports = class Database {
         return queryStr;
     }
 
-    _createSelectQuery(colNames) {
+    _validateDateRange(startDate, endDate) {
+        if (startDate!=null && endDate!=null){
+            return true;
+        }
+        else false;
+    }
+
+    _createSelectQuery(colNames, dateStart, dateEnd, locations) {
         console.log("create col names string");
         var queryStr = 'SELECT ';
         var i;
+        var continuing = false;
         for(i=0; i < colNames.length; i++){
             console.log("inside");
             queryStr = queryStr.concat(colNames[i]);
@@ -119,6 +127,30 @@ module.exports = class Database {
             }
         }
         queryStr+= ' FROM cleanupData'
+        if(this._validateDateRange(dateStart, dateEnd)){
+            queryStr += ' WHERE (date BETWEEN \'' + dateStart + '\' AND \'' + dateEnd + '\')';
+            if(locations!=null && locations != []){
+                continuing=true;
+            }
+        }
+        if(locations!=null && locations !=[]){
+            if(continuing) {
+                queryStr += ' AND ('
+            }
+            else {
+                queryStr+= ' WHERE ('
+            }
+
+            for(i=0; i < locations.length; i++){
+                if(i==(locations.length-1)){
+                    queryStr += 'location = \'' + locations[i] + '\''
+                }
+                else{
+                    queryStr += 'location = \'' + locations[i] + '\' OR '
+                }
+            }
+            queryStr+= ')'
+        }
         return queryStr;
     }
 
@@ -142,10 +174,6 @@ module.exports = class Database {
 
     async getLocations() {
         console.log("getting locations");
-        // if (!this._validateData()) {
-        //     console.log("bad data!");
-        //     throw new Error(Errors.badData);
-        // }
         const queryStr = 'SELECT DISTINCT location FROM cleanupData';
         try {
             const result = await this._connection.query(queryStr);
@@ -156,10 +184,6 @@ module.exports = class Database {
     }
 
     async getCols() {
-        // if (!this._validateData()) {
-        //     console.log("bad data!");
-        //     throw new Error(Errors.badData);
-        // }
         const queryStr = 'SELECT * FROM cleanupData';
         try {
             const result = await this._connection.query(queryStr);
@@ -169,15 +193,15 @@ module.exports = class Database {
         }
     }
 
+
+
     async getByCol(req) {
-        console.log('here');
-        console.log(req.body.cols);
-        console.log(req.body.cols.length);
         if (!this._validateColNames(req.body.cols)) {
             console.log("bad data!");
             throw new Error(Errors.badData);
         }
-        const queryStr = this._createSelectQuery(req.body.cols);
+        console.log(req.body.dateStart, req.body.dateEnd);
+        const queryStr = this._createSelectQuery(req.body.cols, req.body.dateStart, req.body.dateEnd, req.body.locations);
         console.log(queryStr);
         try {
             const result = await this._connection.query(queryStr);

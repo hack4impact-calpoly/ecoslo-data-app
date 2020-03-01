@@ -8,7 +8,8 @@ const test = {
         'Cigarette_Butts',
         'Food_Wrappers',
         'Plastic_Take_Out_Containers',
-        'Foam_Take_Out_Containers']
+        'Foam_Take_Out_Containers'],
+
 }
 
 let queryString = JSON.stringify(test);
