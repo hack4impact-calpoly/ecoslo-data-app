@@ -62,7 +62,8 @@ export default class APIWrapper {
         if (currLoginInfo === null || currLoginInfo === undefined) {
             return false;
         }
-        return Object.assign(currLoginInfo, json);
+        //return Object.assign(currLoginInfo, json);
+        return Object.assign({}, json);
     }
 
     login(email, password) {
@@ -89,6 +90,6 @@ export default class APIWrapper {
         if (!postData) {
             return false;
         }
-        return this.makePostRequest("add", postData);
+        return this.makePostRequest("add", {'item': postData});
     }
 }
