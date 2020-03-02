@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/index.css";
-import { Table } from "react-bootstrap";
+import { Table, Container, Row, Col } from "react-bootstrap";
 
 class DataTable extends React.Component {
 
@@ -63,16 +63,24 @@ Result = {
 
     render() {
         return (
-            <Table responsive>
-  <thead>
-    <tr>
-      {this.createTableHeader()}
-    </tr>
-  </thead>
-  <tbody>
-    {this.createTableBody()}
-  </tbody>
-</Table>
+            <Container>
+                <Row>
+                    <Col></Col>
+                    <Col md={{ span: 11}}>
+            <Table striped bordered hover size="sm" responsive>
+                <thead>
+                    <tr>
+                    {this.createTableHeader()}
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.createTableBody()}
+                </tbody>
+            </Table>
+            </Col>
+            <Col></Col>
+            </Row>
+            </Container>
         );
     }
 }
