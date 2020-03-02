@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import { Col, Row } from "react-bootstrap"; 
 import Table from "react-bootstrap/Table";
+import DataTable from '../Components/DataTable.js';
 import "../styles/page.css";
 
 class View extends React.Component {
@@ -300,6 +301,7 @@ class View extends React.Component {
           </div>
         </Form>
         </Container>
+        <DataTable></DataTable>
       </div>
     );
   }
