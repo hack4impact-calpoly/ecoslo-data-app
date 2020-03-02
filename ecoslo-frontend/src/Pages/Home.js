@@ -2,12 +2,14 @@
 import React from "react";
 import "../styles/home.css";
 import "../styles/index.css";
+import { Form } from "react-bootstrap";
 
 class Home extends React.Component {
     render() {
         return (
             <div>
                 <div id="home-page" className="page">
+                
                     <div style={{height: "20%"}} />
                     <div className="centered">
                         <img style={{transform: "scale(1.3)", margin: "2% 0"}} src={require("../images/ECOSLO_logo.png")} alt="Eco SLO" />

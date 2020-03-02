@@ -65,6 +65,19 @@ app.get('/byCols', async (req, res) => {
 })
 
 
+app.put('/update', async (req, res) => {
+	console.log("updating");
+	try{
+		await database.update(req);
+	}
+	catch (err) {
+		res.status(400).send(AppError.stringError(err.message));
+		return;
+	}
+	res.status(200).send();
+})
+
+
 
 
 app.listen(8000);

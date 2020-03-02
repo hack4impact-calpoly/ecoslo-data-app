@@ -2,23 +2,21 @@ const http = require('http');
 
 
 const test = {
-    item: {
-        date: '2020-01-01',
-        location: 'Avila',
-        Cigarette_Butts: 3,
-        Food_Wrappers: 6,
-        Plastic_Take_Out_Containers: 9,
-        Foam_Take_Out_Containers: 7
-    }
-};
+    cols: 
+        ['Plastic_Take_Out_Containers',
+        'Foam_Take_Out_Containers'],
+    vals: [7, 8],
+    date: '2020-01-01',
+    location: 'Avila'
+}
 
 let queryString = JSON.stringify(test);
 
 let options = {
     host: 'localhost',
     port: 8000,
-    path: '/byDate',
-    method: 'GET',
+    path: '/update',
+    method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
         'Content-Length': queryString.length
@@ -39,4 +37,5 @@ req.on('error', (e) => {
     console.log('problem with request: ' + e.message);
 });
 
+console.log("qs: ", queryString);
 req.write(queryString);

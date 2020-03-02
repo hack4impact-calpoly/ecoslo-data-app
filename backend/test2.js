@@ -4,7 +4,7 @@ const http = require('http');
 const test = {
     item: {
         date: '2020-01-01',
-        location: 'Avila2',
+        location: 'Avila3',
         Cigarette_Butts: 4,
         Food_Wrappers: 4,
         Plastic_Take_Out_Containers: 4,

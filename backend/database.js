@@ -114,6 +114,22 @@ module.exports = class Database {
         else false;
     }
 
+    _createUpdateQuery(colNames, vals, date, location) {
+        var queryStr = 'UPDATE cleanupData SET ';
+        if(colNames.length != vals.length){
+            throw new Error(Error.badData);
+        }
+        for(var i =0; i < colNames.length; i++){
+            queryStr+= colNames[i] + ' = ' + vals[i];
+            if(i!=(colNames.length-1)){
+                queryStr+= ', '
+            }
+        }
+        queryStr+= ' WHERE date= \''+date+ '\' AND location= \'' + location + '\''
+
+        return queryStr;
+    }
+
     _createSelectQuery(colNames, dateStart, dateEnd, locations) {
         console.log("create col names string");
         var queryStr = 'SELECT ';
@@ -210,6 +226,44 @@ module.exports = class Database {
             throw new Error(Errors.queryError);
         }
     }
+
+    async update(req) {
+        if (!this._validateColNames(req.body.cols)) {
+            console.log("bad data!");
+            throw new Error(Errors.badData);
+        }
+        if(req.body.date == null || req.body.location == null){
+            throw new Error(Errors.badData);
+        }
+        
+        const queryStr = this._createUpdateQuery(req.body.cols, req.body.vals, req.body.date, req.body.location);
+        console.log(queryStr);
+        try {
+            const result = await this._connection.query(queryStr);
+            console.log(result)
+        } catch (err) {
+            throw new Error(Errors.queryError);
+        }
+    }
+
+
+    async database(req) {
+        if (!this._validateColNames(req.body.cols)) {
+            console.log("bad data!");
+            throw new Error(Errors.badData);
+        }
+        console.log(req.body.dateStart, req.body.dateEnd);
+        const queryStr = this._createSelectQuery(req.body.cols, req.body.dateStart, req.body.dateEnd, req.body.locations);
+        console.log(queryStr);
+        try {
+            const result = await this._connection.query(queryStr);
+            console.log(result)
+        } catch (err) {
+            throw new Error(Errors.queryError);
+        }
+    }
+
+    
 
 
 }
