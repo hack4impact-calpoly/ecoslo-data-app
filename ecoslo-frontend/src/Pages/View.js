@@ -38,9 +38,31 @@ class View extends React.Component {
         diapers: false, syringes: false, tampons: false,foamPieces: false, 
         glassPieces: false, plasticPieces: false},
 
-      displayReady: false
+      displayReady: false,
+      formData : {
+        "location": null, 
+        "date" : null
+      }
     };
 
+  }
+
+
+  handleOnChange = (field, validationFunction = null) => event => {
+    let curFormData = Object.assign({}, this.state.formData);
+    const value = event.target.value;
+    if (this.state.formData && (curFormData[field] !== value)) {
+      if (validationFunction !== null) {
+        if (validationFunction(value)) {
+          alert("Invalid value: " + value);
+          return false;
+        }
+      }
+      curFormData[field] = value;
+      this.setState({
+        formData: curFormData
+      });
+    }
   }
 
   handleInputChange = (event) => {
@@ -52,10 +74,6 @@ class View extends React.Component {
     stateCopy.selected[name] = value; 
 
     this.setState(stateCopy); 
-
-    //this.setState({
-    //  [name] : value
-    //});
   }
 
   handleSubmit = (event) => {
@@ -160,26 +178,57 @@ class View extends React.Component {
   renderColumns = () => {
     let columns = Object.keys(this.state.selected); 
     let selectedUI = columns.map((col) => {
-      // console.log(columns); 
-      // for (let col of columns) {
-      //   console.log(this.state.selected[col]);
         if (this.state.selected[col]) {
           return (
-            <div key={col}>
-              <Form.Label>{col}</Form.Label>
-              <Form.Control></Form.Control>
-            </div>
+            <td>{col}</td>
+            // <div key={col}>
+            //   <Form.Label>{col}</Form.Label>
+            //   <Form.Control></Form.Control>
+            // </div>
           )
         } 
-      //}
     })
     console.log(this.state.selected); 
     return selectedUI;
   }
 
+  renderRows = () => {
+    let result =
+      {
+        location: "Avila",
+        cigaretteButts: 3,
+        foodWrappers: 6
+      }
+    
+    let rowVals = Object.keys(result);
+    let rowData = rowVals.map((val) => {
+      return (
+        <td>{result[val]}</td>
+      )
+    })
+
+    return rowData; 
+  }
+
+  renderTable = () => {
+    return (
+      <table id='cleanups'>
+        <tbody>
+        <tr key={this.state.formData["date"]}>
+          <td>Location</td>
+          {this.renderColumns()}
+        </tr>    
+        <tr key={this.state.formData["location"]}>
+          {this.renderRows()}
+        </tr>
+        </tbody> 
+      </table>    
+    )            
+  }
+
   getDisplay = () => {
     if (this.state.displayReady) {
-      return this.renderColumns(); 
+      return this.renderTable(); 
     }
   } 
 
@@ -189,9 +238,64 @@ class View extends React.Component {
         <Container>
         <Form>
           <div>
+          <Form.Group controlId="formBasicEmail">
+              <Form.Label>Date</Form.Label>
+              <Form.Control placeholder="Enter Date" onChange={this.handleOnChange("date")} />
+              <Form.Label>Location</Form.Label>
+              <Form.Control as="select" onChange={this.handleOnChange("location")} >
+              <option>Select a Location</option>
+              <option>Elephant Seal Viewing Point</option>
+              <option>San Simeon Cove / Hearst State Beach</option>
+              <option>San Simeon, Pico Beach and Creek</option>
+              <option>San Simeon Campground</option>
+              <option>Moonstine Beach / Santa Rosa Creek</option>
+              <option>Fiscalini Ranch Preservce / Santa Rose Creek</option>
+              <option>Paso Robles Wastewater Treatment Plant</option>
+              <option>Paso Robles Centennial Creek Park</option>
+              <option>Paso Robles Larry Moore Park</option>
+              <option>Templeton Community Services District</option>
+              <option>Atascadero Mutual Water Co. Corporation Yard</option>
+              <option>Estero Bluffs State Beach</option>
+              <option>Cayucos Pier</option>
+              <option>Cayucos at 24th St. / Morro Strand State Beach Park</option>
+              <option>Morro Strand Dog Beach / Toro Creek</option>
+              <option>Morro Strand North / State Beach Campground</option>
+              <option>Morro Strand South at Highway 41</option>
+              <option>Morro Creek</option>
+              <option>Morro Rock</option>
+              <option>Morro Bay Landing / Sandspit</option>
+              <option>Morro Bay Embarcadero</option>
+              <option>Los Osos Baywood Pier / Paradise Point</option>
+              <option>Montana de Oro Sandspit</option>
+              <option>Montana de Oro Spooners Cove</option>
+              <option>Santa Margarita West Cuesta Ridge Trailhead</option>
+              <option>Santa Margarita Lake</option>
+              <option>El Chorro Regional Park / SLO Botanical Gardens</option>
+              <option>Cal Poly Campus Market</option>
+              <option>Cuesta Park SLO</option>
+              <option>Mission Plaza SLO</option>
+              <option>Sinsheimer Park SLO</option>
+              <option>Laguna Lake SLO</option>
+              <option>SLO Creek Pepper / Pacific Streets</option>
+              <option>Lower SLO Creek Floodplain Preserve</option>
+              <option>Avila Beach</option>
+              <option>Fisherman's Beach and Olde Port Beach</option>
+              <option>Pirates' Cove and Cave Landing</option>
+              <option>Shell Beach</option>
+              <option>Downtown Pismo Beach</option>
+              <option>Pismo Pier</option>
+              <option>Pismo at Ocean View Ave</option>
+              <option>Grover Beach</option>
+              <option>Lopez Lake</option>
+              <option>Oak Park Shopping Center Arroyo Grande</option>
+              <option>Kiwanis Park Arroyo Grande Creek</option>
+              <option>Arroyo Grande High School</option>
+              <option>Oceano Lagoon</option>
+              <option>Oso Flaco Lake</option>
+              </Form.Control>
+            </Form.Group>
             {this.renderForm()}
             <Button type="submit" onClick={this.handleSubmit}>Submit</Button>
-            {/* {this.renderColumns()}  */}
             {this.getDisplay()}
           </div>
         </Form>
