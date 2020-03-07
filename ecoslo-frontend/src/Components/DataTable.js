@@ -9,7 +9,6 @@ class DataTable extends React.Component {
     }
 
 
-
 Result = {
         command: 'SELECT',
         rowCount: 2,
@@ -36,9 +35,15 @@ Result = {
         ]
       }
 
+    formatColNames(colName) {
+        let split = colName.split("_");
+        let res = split.join(" ");
+        return res
+    }
+
     createTableHeader() {
         let res = Object.entries(this.Result.rows[1]).map(([key, value]) => {
-            return <th>{key}</th>
+            return <th>{this.formatColNames(key)}</th>
         });
         return res;
     }
@@ -65,8 +70,8 @@ Result = {
         return (
             <Container>
                 <Row>
-                    <Col></Col>
-                    <Col md={{ span: 11}}>
+                    <Col xxs></Col>
+                    <Col md={{ span: 12}}>
             <Table striped bordered hover size="sm" responsive>
                 <thead>
                     <tr>
@@ -78,7 +83,7 @@ Result = {
                 </tbody>
             </Table>
             </Col>
-            <Col></Col>
+            <Col xxs></Col>
             </Row>
             </Container>
         );

@@ -6,6 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table'
 window.$field_count = 1;
 
+let counter=1;
 
 class Update extends React.Component {
   constructor(props) {
@@ -20,22 +21,25 @@ class Update extends React.Component {
     
   };
     
-    this.handleChangeTextBox = this.handleChangeTextBox.bind(this);
-    this.handleChangeDropDown = this.handleChangeDropDown.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    //this.handleChangeTextBox = this.handleChangeTextBox.bind(this);
+    //this.handleChangeDropDown = this.handleChangeDropDown.bind(this);
+    //this.handleSubmit = this.handleSubmit.bind(this);
   }
+
   
-  handleChangeTextBox(event, type) {
-    console.log(type - 1)
+  handleChangeTextBox(event, index) {
+    console.log(index);
+    console.log(index);
+    console.log(this.state.input_vals);
     var new_list_input = this.state.input_vals;
-    new_list_input[type-1][1] = event.target.value
-    console.log(type)
+    new_list_input[index][1] = event.target.value
+    console.log(index)
     this.setState({input_vals: new_list_input});
   }
 
-  handleChangeDropDown(event, type) {
+  handleChangeDropDown(event, index) {
     var new_list_input = this.state.input_vals;
-    new_list_input[type-1][0] = event.target.value
+    new_list_input[index][0] = event.target.value
     this.setState({input_vals: new_list_input});
   }
 
@@ -45,12 +49,12 @@ class Update extends React.Component {
   }
 
    handleAddItem(event) {
-       window.$field_count += 1
+       counter += 1
        var curr_inputs = this.state.inputs
        var in_length = curr_inputs.length
        curr_inputs.push((in_length + 1).toString())
        {this.setState({inputs: curr_inputs})}
-       var curr_input_vals = this.state.input_vals
+       let curr_input_vals = this.state.input_vals
        curr_input_vals.push(['', ''])
        {this.setState({input_vals: curr_input_vals})}
       }
@@ -58,7 +62,6 @@ class Update extends React.Component {
   render() {
     return (
       <div>
-        
 
         <Container>
         <Form>
@@ -72,13 +75,14 @@ class Update extends React.Component {
         <option>Choose...</option>
         </Form.Control>
       {
-        this.state.inputs.map((in_name) => {
-          var curr_field_count = window.$field_count
+        this.state.inputs.map((value, index) => {
+          let curr_field_count = index
           console.log('cfc: ', curr_field_count)
           return (
             <div>
         <Form.Label>Item</Form.Label>
-        <Form.Control as="select"  onChange={() => this.handleChangeDropDown(this, curr_field_count)}>
+        <Form.Control name={index.toString()} as="select"  onChange={(e) => this.handleChangeDropDown(e, index)}>
+          <option>Choose...</option>
           <option>Cigarette_Butts</option>
           <option>Food_Wrappers</option>
           <option>Plastic_Take_Out_Containers</option>
@@ -122,14 +126,14 @@ class Update extends React.Component {
         </Form.Control>
 
             <Form.Label>Number</Form.Label>
-            <Form.Control placeholder="Enter number" value={this.state.input_vals[curr_field_count - 1][1]} onChange={() => this.handleChangeTextBox(this, curr_field_count)}/>
+            <Form.Control placeholder="Enter number" name={index.toString()} value={this.state.input_vals[index][1]} onChange={(e) => this.handleChangeTextBox(e, index)}/>
             </div>
           )
         })
       }
 
 
-        <Button onClick={() => {this.handleAddItem()}}>Update Another Item</Button> 
+        <Button onClick={(e) => {this.handleAddItem(e)}}>Update Another Item</Button> 
 
 
         </Form.Group>
