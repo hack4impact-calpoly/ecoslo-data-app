@@ -5,9 +5,6 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import {Row, Col} from 'react-bootstrap';
 import Table from 'react-bootstrap/Table'
-window.$field_count = 1;
-
-let counter=1;
 
 class Update extends React.Component {
   constructor(props) {
@@ -81,7 +78,6 @@ class Update extends React.Component {
   }
 
    handleAddItem(event) {
-       counter += 1
        var curr_inputs = this.state.inputs
        var in_length = curr_inputs.length
        curr_inputs.push((in_length + 1).toString())
@@ -91,11 +87,22 @@ class Update extends React.Component {
        {this.setState({input_vals: curr_input_vals})}
       }
 
-  handleDateChange(event) {
+  async handleDateChange(event) {
     this.setState({date: event.target.value});
   }
-  hnadleLocationChange(event) {
+  async handleLocationChange(event) {
     this.setState({location: event.target.value});
+  }
+
+  async handleUpdateTable(event) {
+    let data = {
+      cols: ['*'],
+      dateStart: this.state.date,
+      dateEnd: this.state.date,
+      locations: [this.state.location]
+    }
+    const res = await this.props.apiWrapper.getByCols(data);
+    console.log(res)
   }
 
   render() {
@@ -110,10 +117,12 @@ class Update extends React.Component {
         <Form.Control placeholder="Enter Date" value={this.state.date} onChange={(e) => this.handleDateChange(e)}/>
 
         <Form.Label>Location</Form.Label>
-        <Form.Control as="select" value={this.state.location} onChange={(e) => this.hnadleLocationChange(e)}>
+        <Form.Control as="select" value={this.state.location} onChange={(e) => this.handleLocationChange(e)}>
         <option>Choose...</option>
         <option>Avila</option>
         </Form.Control>
+        <Button onClick={(e) => {this.handleUpdateTable(e)}}>Refresh Table</Button>
+
       {
         this.state.inputs.map((value, index) => {
           return (

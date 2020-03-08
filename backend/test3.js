@@ -39,4 +39,5 @@ req.on('error', (e) => {
     console.log('problem with request: ' + e.message);
 });
 
-req.write(queryString);
+let res = req.write(queryString);
+console.log(res);
