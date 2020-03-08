@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import {Row, Col} from 'react-bootstrap';
+import withLocations from '../Components/withLocations';
 
 
 const sectionStyle ={
@@ -284,54 +285,7 @@ class AddEvent extends React.Component {
               <Form.Label>Location</Form.Label>
               <Form.Control as="select" onChange={this.handleOnChange("location")} >
               <option>Select a Location</option>
-              <option>Elephant Seal Viewing Point</option>
-              <option>San Simeon Cove / Hearst State Beach</option>
-              <option>San Simeon, Pico Beach and Creek</option>
-              <option>San Simeon Campground</option>
-              <option>Moonstine Beach / Santa Rosa Creek</option>
-              <option>Fiscalini Ranch Preservce / Santa Rose Creek</option>
-              <option>Paso Robles Wastewater Treatment Plant</option>
-              <option>Paso Robles Centennial Creek Park</option>
-              <option>Paso Robles Larry Moore Park</option>
-              <option>Templeton Community Services District</option>
-              <option>Atascadero Mutual Water Co. Corporation Yard</option>
-              <option>Estero Bluffs State Beach</option>
-              <option>Cayucos Pier</option>
-              <option>Cayucos at 24th St. / Morro Strand State Beach Park</option>
-              <option>Morro Strand Dog Beach / Toro Creek</option>
-              <option>Morro Strand North / State Beach Campground</option>
-              <option>Morro Strand South at Highway 41</option>
-              <option>Morro Creek</option>
-              <option>Morro Rock</option>
-              <option>Morro Bay Landing / Sandspit</option>
-              <option>Morro Bay Embarcadero</option>
-              <option>Los Osos Baywood Pier / Paradise Point</option>
-              <option>Montana de Oro Sandspit</option>
-              <option>Montana de Oro Spooners Cove</option>
-              <option>Santa Margarita West Cuesta Ridge Trailhead</option>
-              <option>Santa Margarita Lake</option>
-              <option>El Chorro Regional Park / SLO Botanical Gardens</option>
-              <option>Cal Poly Campus Market</option>
-              <option>Cuesta Park SLO</option>
-              <option>Mission Plaza SLO</option>
-              <option>Sinsheimer Park SLO</option>
-              <option>Laguna Lake SLO</option>
-              <option>SLO Creek Pepper / Pacific Streets</option>
-              <option>Lower SLO Creek Floodplain Preserve</option>
-              <option>Avila Beach</option>
-              <option>Fisherman's Beach and Olde Port Beach</option>
-              <option>Pirates' Cove and Cave Landing</option>
-              <option>Shell Beach</option>
-              <option>Downtown Pismo Beach</option>
-              <option>Pismo Pier</option>
-              <option>Pismo at Ocean View Ave</option>
-              <option>Grover Beach</option>
-              <option>Lopez Lake</option>
-              <option>Oak Park Shopping Center Arroyo Grande</option>
-              <option>Kiwanis Park Arroyo Grande Creek</option>
-              <option>Arroyo Grande High School</option>
-              <option>Oceano Lagoon</option>
-              <option>Oso Flaco Lake</option>
+              { this.props.locations }
               </Form.Control>
             </Form.Group>
             { this.renderFormAfterFirstPart() }
@@ -345,4 +299,4 @@ class AddEvent extends React.Component {
   }
 }
 
-export default AddEvent;
+export default withLocations(AddEvent);
