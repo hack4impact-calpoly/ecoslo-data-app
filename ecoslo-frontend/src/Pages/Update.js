@@ -18,7 +18,9 @@ class Update extends React.Component {
      Paper_Cups_And_Plates: '', Plastic_Cups_And_Plates: '', Foam_Cups_And_Plates: '', Fishing_Buoys_Pots_And_Traps: '', Fishing_Net_And_Pieces: '', Fishing_Line: '', Rope: '', 
      Six_Pack_Holders: '', Other_Plastic_Or_Foam_Packaging: '', Other_Plastic_Bottles: '', Strapping_Bands: '', Tobacco_Packaging_Or_Wrap: '', Appliances: '', Balloons: '', Cigar_Tips: '', 
      Cigarette_Lighters: '', Construction_Materials: '', Fireworks: '', Tires: '', Condoms: '', Diapers: '', Syringes: '', Tampons: '', Foam_Pieces: '', Glass_Pieces: '', Plastic_Pieces: ''},
-     input_vals: [['', '']]
+     input_vals: [['', '']],
+     date: "",
+     location: "",
     
   };
     
@@ -54,9 +56,28 @@ class Update extends React.Component {
     this.setState({input_vals: new_list_input});
   }
 
-  handleSubmit(event) {
-    alert('A name was submitted: ' + this.state.value);
+  async handleSubmit(event) {
+    let cols=[]
+    let vals=[]
+    for (let i = 0; i < this.state.input_vals.length; i++){
+      cols.push(this.state.input_vals[i][0]);
+      vals.push(this.state.input_vals[i][1])
+    }
+
+    let data = {
+      cols: cols,
+      vals: vals,
+      date: this.state.date,
+      location: this.state.location
+    }
+
+
+
+    alert('A name was submitted: ' + data);
     event.preventDefault();
+
+    const res = await this.props.apiWrapper.updateData(data);
+    console.log(res);
   }
 
    handleAddItem(event) {
@@ -70,6 +91,13 @@ class Update extends React.Component {
        {this.setState({input_vals: curr_input_vals})}
       }
 
+  handleDateChange(event) {
+    this.setState({date: event.target.value});
+  }
+  hnadleLocationChange(event) {
+    this.setState({location: event.target.value});
+  }
+
   render() {
     return (
       <div>
@@ -79,11 +107,12 @@ class Update extends React.Component {
         <Form.Group controlId="formBasicEmail">
 
         <Form.Label>Date</Form.Label>
-        <Form.Control placeholder="Enter Date" />
+        <Form.Control placeholder="Enter Date" value={this.state.date} onChange={(e) => this.handleDateChange(e)}/>
 
         <Form.Label>Location</Form.Label>
-        <Form.Control as="select">
+        <Form.Control as="select" value={this.state.location} onChange={(e) => this.hnadleLocationChange(e)}>
         <option>Choose...</option>
+        <option>Avila</option>
         </Form.Control>
       {
         this.state.inputs.map((value, index) => {
@@ -157,8 +186,8 @@ class Update extends React.Component {
       <Button onClick={(e) => {this.handleAddItem(e)}}>Update Another Item</Button> 
 
 
-        
 
+        <Button onClick={(e) => {this.handleSubmit(e)}}>Submit</Button>
 
         </Form.Group>
         </Form>
