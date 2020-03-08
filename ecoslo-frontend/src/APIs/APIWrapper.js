@@ -119,6 +119,7 @@ export default class APIWrapper {
         if (!postData) {
             return false;
         }
-        return this.makeNonGetRequest("PUT", "add", postData);
+        console.log(postData);
+        return this.makeNonGetRequest("PUT", "update", postData);
     }
 }

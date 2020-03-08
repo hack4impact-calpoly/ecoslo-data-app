@@ -240,7 +240,7 @@ module.exports = class Database {
         console.log(queryStr);
         try {
             const result = await this._connection.query(queryStr);
-            console.log(result)
+            return result;
         } catch (err) {
             throw new Error(Errors.queryError);
         }
