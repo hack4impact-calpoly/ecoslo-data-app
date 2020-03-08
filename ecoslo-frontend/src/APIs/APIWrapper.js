@@ -5,9 +5,18 @@ export default class APIWrapper {
     }
     
     makeGetRequest(urlExtension, data = null, optionalResolve = null) {
+        let queryString = "";
+        if (data !== null) {
+            queryString = "?" + Object.keys(data).map((key) => {
+                return encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
+            }).join('&');
+        }
+
+        console.log(this.baseURL + urlExtension + queryString)
+
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", this.baseURL + urlExtension, true);
+            xhr.open("GET", this.baseURL + urlExtension + queryString, true);
             xhr.setRequestHeader("Content-Type", "application/json");
 
             xhr.onreadystatechange = function() {
@@ -26,12 +35,7 @@ export default class APIWrapper {
                 }
             };
 
-            if (data !== null) {
-                console.log(data)
-                xhr.send(JSON.stringify(data));
-            } else {
-                xhr.send();
-            }
+            xhr.send();
         });
     }
 
