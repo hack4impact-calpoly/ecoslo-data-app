@@ -275,6 +275,7 @@ class AddEvent extends React.Component {
   }
 
   render() {
+    console.log(this.props)
     return (
       <div>
         <Container>
@@ -285,7 +286,9 @@ class AddEvent extends React.Component {
               <Form.Label>Location</Form.Label>
               <Form.Control as="select" onChange={this.handleOnChange("location")} >
               <option>Select a Location</option>
-              { this.props.locations }
+              { this.props.locations.map((value) => {
+                return <option>{value}</option>
+              }) }
               </Form.Control>
             </Form.Group>
             { this.renderFormAfterFirstPart() }

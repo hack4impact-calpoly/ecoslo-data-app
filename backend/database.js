@@ -56,10 +56,11 @@ module.exports = class Database {
     _validateColNames (data) {
         console.log("here!");
         console.log(data);
-        console.log(data.length);
+        console.log("after")
         var index;
         for(index=0; index < data.length; index++) {
             if (!this._possibleKeys.has(data[index])) {
+                console.log("in error loop");
                 return false;
             }
         }
@@ -213,13 +214,13 @@ module.exports = class Database {
         }
     }
 
-
-
     async getByCol(req) {
+        console.log(req.params);
         if (!this._validateColNames(req.body.cols)) {
             console.log("bad data!");
             throw new Error(Errors.badData);
         }
+        console.log("hi")
         console.log(req.body.dateStart, req.body.dateEnd);
         const queryStr = this._createSelectQuery(req.body.cols, req.body.dateStart, req.body.dateEnd, req.body.locations);
         console.log(queryStr);

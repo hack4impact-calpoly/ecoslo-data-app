@@ -27,6 +27,7 @@ export default class APIWrapper {
             };
 
             if (data !== null) {
+                console.log(data)
                 xhr.send(JSON.stringify(data));
             } else {
                 xhr.send();

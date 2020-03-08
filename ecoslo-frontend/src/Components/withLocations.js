@@ -5,15 +5,15 @@ export default function withLocations(LocationWrappedComponent) {
         constructor(props) {
             super(props);
             this.state = {
-                locations : null,
+                locations : [],
             };
             this.updateLocations();
         }
 
         updateLocations = async () => {
             console.log(this.props);
-            console.log(LocationWrappedComponent.props);
-            const { locations } = await this.props.apiWrapper.getLocations();
+            const {locations}  = await this.props.apiWrapper.getLocations();
+            console.log(locations)
             this.setState({
                 locations : locations
             });
