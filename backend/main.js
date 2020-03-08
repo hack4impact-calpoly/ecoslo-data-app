@@ -68,13 +68,21 @@ app.get('/byCols', async (req, res) => {
 app.put('/update', async (req, res) => {
 	console.log("updating");
 	try{
-		await database.update(req);
+		const result = await database.update(req);
+		if (result.rowCount > 0) {
+			res.status(200).json({
+				message : "Worked"
+			});
+		} else {
+			res.status(500).json({
+				error : "Failed on the backend"
+			});
+		}
 	}
 	catch (err) {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	res.status(200).send();
 })
 
 
