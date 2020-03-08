@@ -31,13 +31,17 @@ app.post('/add', async (req, res) => {
 app.get('/locations', async (req, res) => {
 	console.log("get request locations")
 	try{
-		await database.getLocations();
+		let result = await database.getLocations();
+		res.status(200).json({
+			locations : result
+		});
+		
 	}
 	catch (err) {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	res.status(200).send();
+	//res.status(200).send();
 })
 
 app.get('/columns', async (req, res) => {

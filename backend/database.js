@@ -193,7 +193,11 @@ module.exports = class Database {
         const queryStr = 'SELECT DISTINCT location FROM cleanupData';
         try {
             const result = await this._connection.query(queryStr);
-            console.log("result:", result.rows);
+            let locations = [];
+            for (const obj of result.rows) {
+                locations.push(obj['location']);
+            }
+            return locations;
         } catch (err) {
             throw new Error(Errors.queryError);
         }
