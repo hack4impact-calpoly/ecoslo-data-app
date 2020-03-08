@@ -39,6 +39,8 @@ class View extends React.Component {
         diapers: false, syringes: false, tampons: false,foamPieces: false, 
         glassPieces: false, plasticPieces: false},
 
+        colChecks :[["cigarette_butts", false], ["food_wrappers", true]],
+
       displayReady: false,
       formData : {
         "location": null, 
@@ -86,7 +88,17 @@ class View extends React.Component {
   renderForm = ()  => {
     let data = this.state.columns; 
 
-    let formUI = data.map((col) => {
+    let formUI = data.map((col, index) => {
+      // return (
+      //       <div key={col}><label>
+      //         <input type="checkbox" 
+      //         name={col}
+      //         checked={this.state.colChecks[index][1]}
+      //         onChange={this.handleInputChange}/> {col}
+      //         </label>    
+      //       </div>
+      // )
+
       if (col == 'cigarette_butts') {
         return (
           <div key={col}><label>
