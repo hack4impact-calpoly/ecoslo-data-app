@@ -4,7 +4,7 @@ export default class APIWrapper {
         this.store = store;
     }
     
-    makeGetRequest(urlExtension, optionalResolve = null) {
+    makeGetRequest(urlExtension, data = null, optionalResolve = null) {
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
             xhr.open("GET", this.baseURL + urlExtension, true);
@@ -25,14 +25,19 @@ export default class APIWrapper {
                     }
                 }
             };
-            xhr.send();
+
+            if (data !== null) {
+                xhr.send(JSON.stringify(data));
+            } else {
+                xhr.send();
+            }
         });
     }
 
-    makePostRequest(urlExtension, postInfo, optionalResolve = null) {
+    makeNonGetRequest(requestType, urlExtension, data = null, optionalResolve = null) {
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", this.baseURL + urlExtension, true);
+            xhr.open(requestType.toUpperCase(), this.baseURL + urlExtension, true);
             xhr.setRequestHeader("Content-Type", "application/json");
 
             xhr.onreadystatechange = function() {
@@ -49,7 +54,11 @@ export default class APIWrapper {
                     }
                 }
             };
-            xhr.send(JSON.stringify(postInfo));
+            if (data !== null) {
+                xhr.send(JSON.stringify(data));
+            } else {
+                xhr.send();
+            }
         });
     }
 
@@ -90,6 +99,26 @@ export default class APIWrapper {
         if (!postData) {
             return false;
         }
-        return this.makePostRequest("add", {'item': postData});
+        return this.makeNonGetRequest("POST", "add", data = {'item': postData});
+    }
+
+    getLocations() {
+        return this.makeGetRequest("locations");
+    }
+
+    getColumns() {
+        return this.makeGetRequest("columns");
+    }
+
+    getByCols(dataToBeSubmitted) {
+        return this.makeGetRequest("byCols", data = dataToBeSubmitted);
+    }
+
+    updateData(dataToBeSubmitted) {
+        const postData = this.combineLoginInfoForRequest(dataToBeSubmitted);
+        if (!postData) {
+            return false;
+        }
+        return this.makeNonGetRequest("PUT", "add", data = postData);
     }
 }
