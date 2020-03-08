@@ -99,7 +99,7 @@ export default class APIWrapper {
         if (!postData) {
             return false;
         }
-        return this.makeNonGetRequest("POST", "add", data = {'item': postData});
+        return this.makeNonGetRequest("POST", "add", {'item': postData});
     }
 
     getLocations() {
@@ -111,7 +111,7 @@ export default class APIWrapper {
     }
 
     getByCols(dataToBeSubmitted) {
-        return this.makeGetRequest("byCols", data = dataToBeSubmitted);
+        return this.makeGetRequest("byCols", dataToBeSubmitted);
     }
 
     updateData(dataToBeSubmitted) {
@@ -119,6 +119,6 @@ export default class APIWrapper {
         if (!postData) {
             return false;
         }
-        return this.makeNonGetRequest("PUT", "add", data = postData);
+        return this.makeNonGetRequest("PUT", "add", postData);
     }
 }
