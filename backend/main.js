@@ -59,7 +59,14 @@ app.get('/columns', async (req, res) => {
 app.get('/byCols', async (req, res) => {
 	console.log("getting by cols");
 	try{
-		let result = await database.getByCol(req);
+		let queryParams = req.query;
+		if ("cols" in queryParams) {
+			queryParams["cols"] = queryParams["cols"].split(",");
+		}
+		if ("locations" in queryParams) {
+			queryParams["locations"] = queryParams["locations"].split(",");
+		}
+		let result = await database.getByCol(queryParams);
 		res.status(200).json({
 			locations : result
 		});

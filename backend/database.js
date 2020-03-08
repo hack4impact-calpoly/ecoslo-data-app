@@ -59,7 +59,7 @@ module.exports = class Database {
         console.log("after")
         var index;
         for(index=0; index < data.length; index++) {
-            if (!this._possibleKeys.has(data[index])) {
+            if (!this._possibleKeys.has(data[index]) && data[index] !== "*") {
                 console.log("in error loop");
                 return false;
             }
@@ -215,14 +215,13 @@ module.exports = class Database {
     }
 
     async getByCol(req) {
-        console.log(req.params);
-        if (!this._validateColNames(req.body.cols)) {
+        if (!this._validateColNames(req.cols)) {
             console.log("bad data!");
             throw new Error(Errors.badData);
         }
         console.log("hi")
-        console.log(req.body.dateStart, req.body.dateEnd);
-        const queryStr = this._createSelectQuery(req.body.cols, req.body.dateStart, req.body.dateEnd, req.body.locations);
+        console.log(req.dateStart, req.dateEnd);
+        const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations);
         console.log(queryStr);
         try {
             const result = await this._connection.query(queryStr);
