@@ -24,6 +24,7 @@ export default class APIWrapper {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
                         if (optionalResolve) {
+                            console.log(this.response)
                             optionalResolve(JSON.parse(this.response));
                         } else {
                             resolve(JSON.parse(this.response));
@@ -34,7 +35,6 @@ export default class APIWrapper {
                     }
                 }
             };
-
             xhr.send();
         });
     }

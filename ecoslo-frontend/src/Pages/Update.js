@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import {Row, Col} from 'react-bootstrap';
 import Table from 'react-bootstrap/Table'
+import DataTable from '../Components/DataTable.js'
 
 class Update extends React.Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class Update extends React.Component {
      input_vals: [['', '']],
      date: "",
      location: "",
+     tableResult: []
     
   };
     
@@ -101,7 +103,8 @@ class Update extends React.Component {
       dateEnd: this.state.date,
       locations: [this.state.location]
     }
-    const res = await this.props.apiWrapper.getByCols(data);
+    let res = await this.props.apiWrapper.getByCols(data);
+    this.setState({tableResult: res})
     console.log(res)
   }
 
@@ -122,6 +125,7 @@ class Update extends React.Component {
         <option>Avila</option>
         </Form.Control>
         <Button onClick={(e) => {this.handleUpdateTable(e)}}>Refresh Table</Button>
+        <DataTable data={this.state.tableResult}></DataTable>
 
       {
         this.state.inputs.map((value, index) => {

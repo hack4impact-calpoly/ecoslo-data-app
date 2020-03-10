@@ -6,8 +6,10 @@ class DataTable extends React.Component {
 
     constructor(props) {
         super(props);
+
     }
 
+   
 
 Result = {
         command: 'SELECT',
@@ -42,10 +44,15 @@ Result = {
     }
 
     createTableHeader() {
-        let res = Object.entries(this.Result.rows[1]).map(([key, value]) => {
-            return <th>{this.formatColNames(key)}</th>
-        });
-        return res;
+        if(this.props.data != undefined && this.props.data.rows != undefined) {
+            let res = Object.entries(this.props.data.rows[0]).map(([key, value]) => {
+                return <th>{this.formatColNames(key)}</th>
+            });
+            return <tr>{res}</tr>;
+        }
+        else{
+            return <div></div>
+        }
     }
 
     createRow (index) {
@@ -56,7 +63,7 @@ Result = {
     }
 
     createTableBody() {
-        let res = this.Result.rows.map((index)=>{
+        let res = this.props.data.rows.map((index)=>{
             return (<tr>
                 {this.createRow(index)}
             </tr>)
@@ -67,6 +74,8 @@ Result = {
 
 
     render() {
+        if (this.props.data != undefined && this.props.data.rows != undefined){
+
         return (
             <Container>
                 <Row>
@@ -74,9 +83,7 @@ Result = {
                     <Col md={{ span: 12}}>
             <Table striped bordered hover size="sm" responsive>
                 <thead>
-                    <tr>
                     {this.createTableHeader()}
-                    </tr>
                 </thead>
                 <tbody>
                     {this.createTableBody()}
@@ -88,6 +95,10 @@ Result = {
             </Container>
         );
     }
+    else {
+        return <div></div>
+    }
+}
 }
 
 export default DataTable;

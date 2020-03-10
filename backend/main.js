@@ -68,7 +68,7 @@ app.get('/byCols', async (req, res) => {
 		}
 		let result = await database.getByCol(queryParams);
 		res.status(200).json({
-			locations : result
+			rows : result.rows
 		});
 	}
 	catch (err) {
