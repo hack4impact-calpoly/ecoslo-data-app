@@ -44,7 +44,7 @@ Result = {
     }
 
     createTableHeader() {
-        if(this.props.data != undefined && this.props.data.rows != undefined) {
+        if(this.props.data !== undefined && this.props.data.rows !== undefined) {
             let res = Object.entries(this.props.data.rows[0]).map(([key, value]) => {
                 return <th>{this.formatColNames(key)}</th>
             });
@@ -74,12 +74,13 @@ Result = {
 
 
     render() {
-        if (this.props.data != undefined && this.props.data.rows != undefined){
+        console.log(this.props.data);
+        if (this.props.data !== undefined && this.props.data.rows !== undefined){
 
         return (
             <Container>
                 <Row>
-                    <Col xxs></Col>
+                    <Col xxs={2}></Col>
                     <Col md={{ span: 12}}>
             <Table striped bordered hover size="sm" responsive>
                 <thead>
@@ -90,12 +91,13 @@ Result = {
                 </tbody>
             </Table>
             </Col>
-            <Col xxs></Col>
+            <Col xxs={2}></Col>
             </Row>
             </Container>
         );
     }
     else {
+        console.log("HERE3")
         return <div></div>
     }
 }

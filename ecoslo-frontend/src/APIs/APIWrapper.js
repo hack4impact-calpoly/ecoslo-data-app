@@ -27,6 +27,7 @@ export default class APIWrapper {
                             console.log(this.response)
                             optionalResolve(JSON.parse(this.response));
                         } else {
+                            console.log(JSON.parse(this.response))
                             resolve(JSON.parse(this.response));
                         }
                     } else {

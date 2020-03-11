@@ -209,6 +209,7 @@ module.exports = class Database {
         try {
             const result = await this._connection.query(queryStr);
             console.log("result:", result.rows);
+            return result;
         } catch (err) {
             throw new Error(Errors.queryError);
         }
@@ -219,13 +220,11 @@ module.exports = class Database {
         //     console.log("bad data!");
         //     throw new Error(Errors.badData);
         // }
-        console.log("hi")
         console.log(req.dateStart, req.dateEnd);
         const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations);
         console.log(queryStr);
         try {
             let result = await this._connection.query(queryStr);
-            console.log("am i here...?")
             console.log(result)
             return result;
         } catch (err) {
