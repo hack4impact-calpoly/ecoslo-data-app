@@ -6,8 +6,10 @@ class DataTable extends React.Component {
 
     constructor(props) {
         super(props);
+
     }
 
+   
 
 Result = {
         command: 'SELECT',
@@ -42,10 +44,15 @@ Result = {
     }
 
     createTableHeader() {
-        let res = Object.entries(this.Result.rows[1]).map(([key, value]) => {
-            return <th>{this.formatColNames(key)}</th>
-        });
-        return res;
+        if(this.props.data !== undefined && this.props.data.rows !== undefined) {
+            let res = Object.entries(this.props.data.rows[0]).map(([key, value]) => {
+                return <th>{this.formatColNames(key)}</th>
+            });
+            return <tr>{res}</tr>;
+        }
+        else{
+            return <div></div>
+        }
     }
 
     createRow (index) {
@@ -56,7 +63,7 @@ Result = {
     }
 
     createTableBody() {
-        let res = this.Result.rows.map((index)=>{
+        let res = this.props.data.rows.map((index)=>{
             return (<tr>
                 {this.createRow(index)}
             </tr>)
@@ -67,27 +74,33 @@ Result = {
 
 
     render() {
+        console.log(this.props.data);
+        if (this.props.data !== undefined && this.props.data.rows !== undefined){
+
         return (
             <Container>
                 <Row>
-                    <Col xxs></Col>
+                    <Col xxs={2}></Col>
                     <Col md={{ span: 12}}>
             <Table striped bordered hover size="sm" responsive>
                 <thead>
-                    <tr>
                     {this.createTableHeader()}
-                    </tr>
                 </thead>
                 <tbody>
                     {this.createTableBody()}
                 </tbody>
             </Table>
             </Col>
-            <Col xxs></Col>
+            <Col xxs={2}></Col>
             </Row>
             </Container>
         );
     }
+    else {
+        console.log("HERE3")
+        return <div></div>
+    }
+}
 }
 
 export default DataTable;

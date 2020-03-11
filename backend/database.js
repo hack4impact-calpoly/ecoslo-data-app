@@ -209,23 +209,24 @@ module.exports = class Database {
         try {
             const result = await this._connection.query(queryStr);
             console.log("result:", result.rows);
+            return result;
         } catch (err) {
             throw new Error(Errors.queryError);
         }
     }
 
     async getByCol(req) {
-        if (!this._validateColNames(req.cols)) {
-            console.log("bad data!");
-            throw new Error(Errors.badData);
-        }
-        console.log("hi")
+        // if (!this._validateColNames(req.cols)) {
+        //     console.log("bad data!");
+        //     throw new Error(Errors.badData);
+        // }
         console.log(req.dateStart, req.dateEnd);
         const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations);
         console.log(queryStr);
         try {
-            const result = await this._connection.query(queryStr);
+            let result = await this._connection.query(queryStr);
             console.log(result)
+            return result;
         } catch (err) {
             throw new Error(Errors.queryError);
         }
