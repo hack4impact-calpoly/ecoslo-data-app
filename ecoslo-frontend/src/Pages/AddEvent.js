@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import {Row, Col} from 'react-bootstrap';
 import withLocations from '../Components/withLocations';
+import Select from 'react-dropdown-select';
 
 
 const sectionStyle ={
@@ -138,6 +139,15 @@ class AddEvent extends React.Component {
     formData["date"] = null;
 
     return formData;
+  }
+
+  handleLocationChange (item) {
+    console.log(item)
+    console.log(item[0].text)
+    let old = this.state.formData;
+    old['location'] = item[0].text
+    this.setState({formData: old})
+    console.log(this.state.formData)
   }
 
   handleOnChange = (field, validationFunction = null) => event => {
@@ -278,9 +288,13 @@ class AddEvent extends React.Component {
       );
     });
   }
+  
 
   render() {
-    console.log(this.props)
+     let locOptions = []
+     for (var i = 0; i < this.props.locations.length; i++){
+      locOptions.push({text: this.props.locations[i]})
+    }
     return (
       <div style={this.marginstyle}>
         <Container>
@@ -289,13 +303,18 @@ class AddEvent extends React.Component {
               <Form.Label>Date</Form.Label>
               <Form.Control placeholder="Enter Date" onChange={this.handleOnChange("date")} />
               <Form.Label>Location</Form.Label>
-              <Form.Control as="select" onChange={this.handleOnChange("location")} >
+              <Select multiple={false} create={true} searchable={true} labelField="text" valueField="text" options={locOptions} values={[]}
+              //onCreateNew={(item) => locOptions.push(item)}
+              onChange={(value) => this.handleLocationChange(value)}
+              >
+              </Select>
+              {/* <Form.Control as="select" onChange={this.handleOnChange("location")} >
               <option>Select a Location</option>
               {/* { this.renderLocations() } */}
-              { this.props.locations.map((value) => {
+              {/* { this.props.locations.map((value) => {
                 return <option>{value}</option>
-              }) }
-              </Form.Control>
+              }) } */}
+              {/* </Form.Control>  */}
             </Form.Group>
             { this.renderFormAfterFirstPart() }
             <Button onClick={this.handleSubmit}>
