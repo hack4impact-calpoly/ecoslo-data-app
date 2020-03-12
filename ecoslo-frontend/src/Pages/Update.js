@@ -1,4 +1,5 @@
   
+import "../styles/update.css";
 import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -113,21 +114,21 @@ class Update extends React.Component {
         <Form>
         <Form.Group controlId="formBasicEmail">
 
-        <Form.Label>Date</Form.Label>
+        <Form.Label><div className="date_spacing">Date</div></Form.Label>
         <Form.Control placeholder="Enter Date" value={this.state.date} onChange={(e) => this.handleDateChange(e)}/>
 
-        <Form.Label>Location</Form.Label>
+        <Form.Label><div className="loc_spacing">Location</div></Form.Label>
         <Form.Control as="select" value={this.state.location} onChange={(e) => this.handleLocationChange(e)}>
         <option>Choose...</option>
         <option>Avila</option>
         </Form.Control>
-        <Button onClick={(e) => {this.handleUpdateTable(e)}}>Refresh Table</Button>
+        <Button onClick={(e) => {this.handleUpdateTable(e)}}><div><a>Refresh Table</a></div></Button>
 
       {
         this.state.inputs.map((value, index) => {
           return (
             <div>
-        <Form.Label>Item</Form.Label>
+        <Form.Label><div className="date_spacing">Item</div></Form.Label>
         <Form.Row>
           <Col xs={11}>
         <Form.Control name={index.toString()} as="select" onChange={(e) => this.handleChangeDropDown(e, index)}>
@@ -184,7 +185,7 @@ class Update extends React.Component {
 
         <Form.Row>
           <Col xs={11}>
-            <Form.Label>Number</Form.Label>
+            <Form.Label><div className="loc_spacing">Number</div></Form.Label>
             <Form.Control placeholder="Enter number" name={index.toString()} value={this.state.input_vals[index][1]} onChange={(e) => this.handleChangeTextBox(e, index)}/>
           </Col>
         </Form.Row>
