@@ -6,6 +6,7 @@ import Container from 'react-bootstrap/Container';
 import {Row, Col} from 'react-bootstrap';
 import Table from 'react-bootstrap/Table'
 import DataTable from '../Components/DataTable.js'
+import withLocations from '../Components/withLocations';
 
 class Update extends React.Component {
   constructor(props) {
@@ -23,11 +24,21 @@ class Update extends React.Component {
     
   };
     
-    //this.handleChangeTextBox = this.handleChangeTextBox.bind(this);
-    //this.handleChangeDropDown = this.handleChangeDropDown.bind(this);
-    //this.handleSubmit = this.handleSubmit.bind(this);
+
   }
 
+  marginstyle={
+    marginTop: '1.2em',
+    marginBottom: '2em'
+  }
+
+  async componentDidMount(){
+    let res = await this.props.apiWrapper.getColumns();
+    let options = res.r.fields.map((content, index) =>{
+      return <option>{content.name}</option>
+    })
+    this.setState({colNames: options})
+  }
 
   handleRemove(event, index) {
     var list_remove = this.state.inputs;
@@ -70,8 +81,6 @@ class Update extends React.Component {
       location: this.state.location
     }
 
-
-
     alert('A name was submitted: ' + data);
     event.preventDefault();
 
@@ -109,8 +118,9 @@ class Update extends React.Component {
   }
 
   render() {
+    if(this.state.colNames !== undefined) {
     return (
-      <div>
+      <div style={this.marginstyle}>
 
         <Container>
         <Form>
@@ -122,7 +132,9 @@ class Update extends React.Component {
         <Form.Label>Location</Form.Label>
         <Form.Control as="select" value={this.state.location} onChange={(e) => this.handleLocationChange(e)}>
         <option>Choose...</option>
-        <option>Avila</option>
+        { this.props.locations.map((value) => {
+                return <option>{value}</option>
+              }) }
         </Form.Control>
         <Button onClick={(e) => {this.handleUpdateTable(e)}}>Refresh Table</Button>
         <DataTable data={this.state.tableResult}></DataTable>
@@ -130,52 +142,13 @@ class Update extends React.Component {
       {
         this.state.inputs.map((value, index) => {
           return (
-            <div>
+            <div >
         <Form.Label>Item</Form.Label>
         <Form.Row>
           <Col xs={11}>
         <Form.Control name={index.toString()} as="select" onChange={(e) => this.handleChangeDropDown(e, index)}>
             <option>Choose...</option>
-            <option>Cigarette_Butts</option>
-            <option>Food_Wrappers</option>
-            <option>Plastic_Take_Out_Containers</option>
-            <option>Plastic_Bottle_Caps</option>
-            <option>Metal_Bottle_Caps</option>
-            <option>Plastic_Lids</option>
-            <option>Straws_And_Stirrers</option>
-            <option>Forks_Knives_And_Spoons</option>
-            <option>Plastic_Beverage_Bottles</option>
-            <option>Glass_Beverage_Bottles</option>
-            <option>Beverage_Cans</option>
-            <option>Plastic_Grocery_Bags</option>
-            <option>Other_Plastic_Bags</option>
-            <option>Paper_Bags</option>
-            <option>Paper_Cups_And_Plates</option>
-            <option>Plastic_Cups_And_Plates</option>
-            <option>Foam_Cups_And_Plates</option>
-            <option>Fishing_Buoys_Pots_And_Traps</option>
-            <option>Fishing_Net_And_Pieces</option>
-            <option>Fishing_Line</option>
-            <option>Rope</option>
-            <option>Six_Pack_Holders</option>
-            <option>Other_Plastic_Or_Foam_Packaging</option>
-            <option>Other_Plastic_Bottles</option>
-            <option>Strapping_Bands</option>
-            <option>Tobacco_Packaging_Or_Wrap</option>
-            <option>Appliances</option>
-            <option>Balloons</option>
-            <option>Cigar_Tips</option>
-            <option>Cigarette_Lighters</option>
-            <option>Construction_Materials</option>
-            <option>Fireworks</option>
-            <option>Tires</option>
-            <option>Condoms</option>
-            <option>Diapers</option>
-            <option>Syringes</option>
-            <option>Tampons</option>
-            <option>Foam_Pieces</option>
-            <option>Glass_Pieces</option>
-            <option>Plastic_Pieces</option>
+            {this.state.colNames}
         </Form.Control>
           </Col>
           <Col>
@@ -207,7 +180,11 @@ class Update extends React.Component {
         </Container>
       </div>
     );
+    }
+    else{
+      return null
+    }
   }
 }
 
-export default Update;
+export default withLocations(Update);
