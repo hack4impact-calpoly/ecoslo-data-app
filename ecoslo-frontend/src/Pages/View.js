@@ -2,11 +2,13 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { Col, Row } from "react-bootstrap"; 
+import { Col, Row, Alert } from "react-bootstrap"; 
 import Table from "react-bootstrap/Table";
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
 import "../styles/page.css";
+
+
 
 class View extends React.Component {
   constructor(props) {
@@ -19,18 +21,18 @@ class View extends React.Component {
         "dateStart" : null,
         "dateEnd": null
       },
-      // colNames: [],
-      // selectedValues: []
+      locations: [],
+      showAlert: false
+
 
     };
 
   }
 
-  // shouldComponentUpdate(nextProps, nextState){
-  //   if(this.state.colNames.length > this.nextState.colNames.length){
-  //     false
-  //   }
-  // }
+  marginstyle={
+    marginTop: '1.2em',
+    marginBottom: '2em'
+  }
 
 
   async componentDidMount(){
@@ -54,6 +56,22 @@ class View extends React.Component {
 
     }
     
+  }
+
+  handleLocationChange (event) {
+    let selected = []
+    for(var i = 0; i < event.target.options.length; i++){
+      console.log(event.target.options[i].value)
+      console.log(event.target.options[i].selected)
+      if(event.target.options[i].value === 'Select All' && event.target.options[i].selected){
+        selected=[]
+        break;
+      }
+      else if (event.target.options[i].selected){
+        selected.push(event.target.options[i].value)
+      }
+    }
+    this.setState({locations: selected})
   }
 
   handleOnChange = (field, validationFunction = null) => event => {
@@ -83,54 +101,94 @@ class View extends React.Component {
     console.log(this.state.selectedValues);
   }
 
+  setShow(b) {
+    this.setState({showAlert: b})
+  }
+
   async handleSubmit(event) {
     event.preventDefault();
     if(this.state.colNames !== undefined) {
       var selected = []
-      //let cols = this.state.colNames
-      //let v = this.state.selectedValues
       for(var i = 0; i < this.state.selectedValues.length; i++){
         if (this.state.selectedValues[i] === true){
           selected.push(this.state.colNames[i])
         }
       }
-    
 
+      console.log('LOCATIONS SATE')
+      console.log(this.state.locations)
     var d = {
       dateStart: this.state.formData['dateStart'],
       dateEnd: this.state.formData['dateEnd'],
       cols: selected,
-      locations: [this.state.formData['location']]
+      locations: this.state.locations
     }
 
     let td = await this.props.apiWrapper.getByCols(d);
-    console.log("HERE!!!!!!")
-    // let r = {
-    //   td
-    // }
+    if(td.rows !== undefined && td.rows.length !== 0){
+      this.setState({tableData: td})
+    }
+    else{
+      this.setState({showAlert: true})
+    }
 
-    this.setState({tableData: td
-    })
+    
   }
   }
+
+   noDataAlert() {
+    if(this.state.showAlert){
+      return(
+      <Alert variant="danger" onClose={() => this.setShow(false)} dismissible>
+          <p>
+            No data exists for these values. Try a different set of dates and locations.
+          </p>
+        </Alert>
+      )
+    }
+    else {
+      return null
+    }
+  }
+
+  
 
   renderForm = ()  => {
     if(this.state.colNames !== undefined && this.state.selectedValues !== undefined){
       let data = this.state.colNames; 
-
+      
       let formUI = data.map((col, index) => {
         return (
-            <div>
+            <td>
               <label>
               <input type="checkbox" 
               name={col}
               checked={this.state.selectedValues[index]}
               onChange={(e) => this.handleInputChange(e, index)}/> {col}
-              </label>    
-            </div>
+              </label>   
+            </td>
         )})
 
-      return formUI;
+       let tableboxes = []
+      for(var i = 0; i < formUI.length; i=(i+5)){
+        tableboxes.push(
+          <tr>
+            {formUI[i]}
+            {formUI[i+1]}
+            {formUI[i+2]}
+            {formUI[i+3]}
+            {formUI[i+4]}
+          </tr>
+        )
+      }
+
+      let finalFormat = tableboxes.map((content, index)=>{
+        return(
+          content
+        )
+      })
+
+        return <Table size='sm' borderless>{finalFormat}</Table>;
       }
       else {
         return null
@@ -141,8 +199,9 @@ class View extends React.Component {
   render() {
     if(this.state.colNames !== undefined){
     return (
-      <div>
+      <div style={this.marginstyle}>
         <Container>
+          {this.noDataAlert()}
         <Form>
           <div>
           <Form.Group controlId="formBasicEmail">
@@ -161,12 +220,11 @@ class View extends React.Component {
               </Form.Group>
               
               <Form.Label>Location</Form.Label>
-              <Form.Control as="select" onChange={this.handleOnChange("location")} >
-              <option>Select a Location...</option>
-              {/* <option>Avila</option> */}
-              { this.props.locations.map((value) => {
-                return <option>{value}</option>
-              }) }
+              <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
+                  <option>Select All</option>
+                  { this.props.locations.map((value) => {
+                    return <option>{value}</option>
+                  }) }
               </Form.Control>
             </Form.Group>
             {this.renderForm()}

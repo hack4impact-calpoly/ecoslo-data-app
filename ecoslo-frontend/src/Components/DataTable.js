@@ -9,33 +9,11 @@ class DataTable extends React.Component {
 
     }
 
+    marginstyle={
+        marginTop: '1.5em',
+        marginBottom: '1.2em'
+    }
    
-
-Result = {
-        command: 'SELECT',
-        rowCount: 2,
-        oid: null,
-        rows: [
-          {
-            date: '2020-01-01T08:00:00.000Z',
-            location: 'Avila',
-            plastic_take_out_containers: 7,
-            foam_take_out_containers: 8
-          },
-          {
-            date: '2020-01-01T08:00:00.000Z',
-            location: 'Avila2',
-            plastic_take_out_containers: 4,
-            foam_take_out_containers: 4
-          },
-          {
-            date: '2020-01-01T08:00:00.000Z',
-            location: 'Avila2',
-            plastic_take_out_containers: 4,
-            foam_take_out_containers: 4
-          }
-        ]
-      }
 
     formatColNames(colName) {
         let split = colName.split("_");
@@ -75,10 +53,10 @@ Result = {
 
     render() {
         console.log(this.props.data);
-        if (this.props.data !== undefined && this.props.data.rows !== undefined){
+        if (this.props.data !== undefined && (this.props.data.rows !== undefined && this.props.data.rows !== [])){
 
         return (
-            <Container>
+            <Container style={this.marginstyle}>
                 <Row>
                     <Col xxs={2}></Col>
                     <Col md={{ span: 12}}>

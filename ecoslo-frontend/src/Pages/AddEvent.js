@@ -119,6 +119,11 @@ class AddEvent extends React.Component {
     }
   }
 
+  marginstyle={
+    marginTop: '1.2em',
+    marginBottom: '2em'
+  }
+
   getDefaultFormData() {
     let formData = {};
     for (const key in columnNames) {
@@ -277,7 +282,7 @@ class AddEvent extends React.Component {
   render() {
     console.log(this.props)
     return (
-      <div>
+      <div style={this.marginstyle}>
         <Container>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="formBasicEmail">
