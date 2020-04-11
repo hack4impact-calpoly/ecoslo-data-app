@@ -217,10 +217,6 @@ module.exports = class Database {
     }
 
     async getByCol(req) {
-        // if (!this._validateColNames(req.cols)) {
-        //     console.log("bad data!");
-        //     throw new Error(Errors.badData);
-        // }
         console.log(req.dateStart, req.dateEnd);
         const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations);
         console.log(queryStr);
@@ -234,10 +230,6 @@ module.exports = class Database {
     }
 
     async update(req) {
-        // if (!this._validateColNames(req.body.cols)) {
-        //     console.log("bad data!");
-        //     throw new Error(Errors.badData);
-        // }
         if(req.body.date == null || req.body.location == null){
             throw new Error(Errors.badData);
         }
@@ -250,6 +242,44 @@ module.exports = class Database {
         } catch (err) {
             throw new Error(Errors.queryError);
         }
+    }
+
+    async alterTable(req) {
+        if (req.body.action === null) {
+            throw new Error(Errors.badData);
+        }
+        else{
+
+            if(req.body.action === "add"){
+                if(req.body.name === null || req.body.dataType === null){
+                    throw new Error(Errors.badData);
+                }
+                var queryStr = "ALTER TABLE cleanupdata ADD COLUMN " + req.body.name + " " + req.body.dataType + " DEFAULT -1;"
+                console.log(queryStr);
+                try {
+                    const result = await this._connection.query(queryStr);
+                    return result;
+                } catch (err) {
+                    throw new Error(Errors.queryError);
+                }
+            }
+
+            else if(req.body.action === "delete"){
+                if(req.body.name === null){
+                    throw new Error(Errors.badData);
+                }
+                var queryStr = "ALTER TABLE cleanupdata DROP COLUMN " + req.body.name + ";"
+                console.log(queryStr);
+                try {
+                    const result = await this._connection.query(queryStr);
+                    return result;
+                } catch (err) {
+                    throw new Error(Errors.queryError);
+                }
+            }
+
+        }
+        
     }
 
 
