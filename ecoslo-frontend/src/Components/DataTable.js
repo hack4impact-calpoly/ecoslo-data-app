@@ -1,39 +1,20 @@
 import React from "react";
 import "../styles/index.css";
+import { ExportCSV } from '../Components/exportExcel.js'
 import { Table, Container, Row, Col } from "react-bootstrap";
 
 class DataTable extends React.Component {
 
     constructor(props) {
         super(props);
+
     }
 
-
-Result = {
-        command: 'SELECT',
-        rowCount: 2,
-        oid: null,
-        rows: [
-          {
-            date: '2020-01-01T08:00:00.000Z',
-            location: 'Avila',
-            plastic_take_out_containers: 7,
-            foam_take_out_containers: 8
-          },
-          {
-            date: '2020-01-01T08:00:00.000Z',
-            location: 'Avila2',
-            plastic_take_out_containers: 4,
-            foam_take_out_containers: 4
-          },
-          {
-            date: '2020-01-01T08:00:00.000Z',
-            location: 'Avila2',
-            plastic_take_out_containers: 4,
-            foam_take_out_containers: 4
-          }
-        ]
-      }
+    marginstyle={
+        marginTop: '1.5em',
+        marginBottom: '1.2em'
+    }
+   
 
     formatColNames(colName) {
         let split = colName.split("_");
@@ -42,10 +23,15 @@ Result = {
     }
 
     createTableHeader() {
-        let res = Object.entries(this.Result.rows[1]).map(([key, value]) => {
-            return <th>{this.formatColNames(key)}</th>
-        });
-        return res;
+        if(this.props.data !== undefined && this.props.data.rows !== undefined) {
+            let res = Object.entries(this.props.data.rows[0]).map(([key, value]) => {
+                return <th>{this.formatColNames(key)}</th>
+            });
+            return <tr>{res}</tr>;
+        }
+        else{
+            return <div></div>
+        }
     }
 
     createRow (index) {
@@ -56,7 +42,7 @@ Result = {
     }
 
     createTableBody() {
-        let res = this.Result.rows.map((index)=>{
+        let res = this.props.data.rows.map((index)=>{
             return (<tr>
                 {this.createRow(index)}
             </tr>)
@@ -67,27 +53,38 @@ Result = {
 
 
     render() {
+        console.log(this.props.data);
+        if (this.props.data !== undefined && (this.props.data.rows !== undefined && this.props.data.rows !== [])){
+
         return (
-            <Container>
+            <div>
+            <Container style={this.marginstyle}>
                 <Row>
-                    <Col xxs></Col>
+                    <Col xxs={2}></Col>
                     <Col md={{ span: 12}}>
             <Table striped bordered hover size="sm" responsive>
                 <thead>
-                    <tr>
                     {this.createTableHeader()}
-                    </tr>
                 </thead>
                 <tbody>
                     {this.createTableBody()}
                 </tbody>
             </Table>
             </Col>
-            <Col xxs></Col>
+            <Col xxs={2}></Col>
             </Row>
             </Container>
+            
+                <ExportCSV csvData={this.props.data} fileName={"Cleanup Data"}></ExportCSV>
+            </div>
+            
         );
     }
+    else {
+        console.log("HERE3")
+        return <div></div>
+    }
+}
 }
 
 export default DataTable;

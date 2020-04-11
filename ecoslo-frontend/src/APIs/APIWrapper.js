@@ -24,8 +24,10 @@ export default class APIWrapper {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
                         if (optionalResolve) {
+                            console.log(this.response)
                             optionalResolve(JSON.parse(this.response));
                         } else {
+                            console.log(JSON.parse(this.response))
                             resolve(JSON.parse(this.response));
                         }
                     } else {
@@ -34,7 +36,6 @@ export default class APIWrapper {
                     }
                 }
             };
-
             xhr.send();
         });
     }
