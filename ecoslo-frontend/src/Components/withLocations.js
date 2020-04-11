@@ -19,6 +19,12 @@ export default function withLocations(LocationWrappedComponent) {
             });
         }
 
+        // renderLocations = () => {
+        //     return this.state.locations.map((value) => {
+        //         //return <option>{value}</option>
+        //     });
+        // }
+
         render() {
             return <LocationWrappedComponent locations={this.state.locations} {...this.props} />;
         }

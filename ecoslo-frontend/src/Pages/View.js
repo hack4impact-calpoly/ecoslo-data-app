@@ -2,54 +2,77 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { Col, Row } from "react-bootstrap"; 
+import { Col, Row, Alert } from "react-bootstrap"; 
 import Table from "react-bootstrap/Table";
 import DataTable from '../Components/DataTable.js';
+import withLocations from '../Components/withLocations';
 import "../styles/page.css";
+
+
 
 class View extends React.Component {
   constructor(props) {
     super(props);
+    
     this.state = {
-      columns: ['cigarette_butts', 'food_wrappers', 'plastic_take_out_containers',
-        'foam_take_out_containers','plastic_bottle_caps','metal_bottle_caps',
-        'plastic_lids','straws_and_stirrers','forks_knives_and_spoons',
-        'plastic_beverage_bottles','glass_beverage_bottles','beverage_cans',
-        'plastic_grocery_bags','other_plastic_bags','paper_bags',
-        'paper_cups_and_plates','plastic_cups_and_plates','foam_cups_and_plates',
-        'fishing_buoys_pots_and_traps','fishing_net_and_pieces','fishing_line',
-        'rope','six_pack_holders','other_plastic_or_foam_packaging',
-        'other_plastic_bottles','strapping_bands','tobacco_packaging_or_wrap',
-        'appliances','balloons','cigar_tips','cigarette_lighters','construction_materials',
-        'fireworks','tires','condoms','diapers','syringes','tampons',
-        'foam_pieces','glass_pieces','plastic_pieces'],
-      
-      selected: {
-        cigaretteButts: false, foodWrappers: false, plasticTakeOutContainers: false,
-        foamTakeOutContainers: false, plasticBottleCaps: false, metalBottleCaps: false,
-        plasticLids: false, strawsAndStirrers: false, forksKnivesAndSpoons: false,
-        plasticBeverageBottles: false, glassBeverageBottles: false, beverageCans: false,
-        plasticGroceryBags: false, otherPlasticBags: false, paperBags: false,
-        paperCupsAndPlates: false, plasticCupsAndPlates: false, foamCupsAndPlates: false,
-        fishingBuoysPotsAndTraps: false, fishingNetAndPieces: false, fishingLine: false,
-        rope: false, sixPackHolders: false, otherPlasticOrFoamPackaging: false,
-        otherPlasticBottles: false, strappingBands: false, tobaccoPackagingOrWrap: false,
-        appliances: false, balloons: false, cigarTips: false, cigaretteLighters: false, 
-        constructionMaterials: false,fireworks: false, tires: false, condoms: false,
-        diapers: false, syringes: false, tampons: false,foamPieces: false, 
-        glassPieces: false, plasticPieces: false},
-
-        colChecks :[["cigarette_butts", false], ["food_wrappers", true]],
-
       displayReady: false,
       formData : {
         "location": null, 
-        "date" : null
-      }
+        "dateStart" : null,
+        "dateEnd": null
+      },
+      locations: [],
+      showAlert: false
+
+
     };
 
   }
 
+  marginstyle={
+    marginTop: '1.2em',
+    marginBottom: '2em'
+  }
+
+
+  async componentDidMount(){
+    console.log(this.state.colNames);
+    try {
+      if(this.state.colNames === undefined || this.state.selectedValues === undefined) {
+        let res = await this.props.apiWrapper.getColumns();
+        var names = []
+        var vals = []
+        console.log(res.r.fields)
+        for (var i = 0; i < res.r.fields.length; i++){
+          names.push(res.r.fields[i].name)
+          vals.push(false)
+        }
+        this.setState({colNames: names})
+        this.setState({selectedValues: vals})
+      }
+      
+    }
+    catch(err){
+
+    }
+    
+  }
+
+  handleLocationChange (event) {
+    let selected = []
+    for(var i = 0; i < event.target.options.length; i++){
+      console.log(event.target.options[i].value)
+      console.log(event.target.options[i].selected)
+      if(event.target.options[i].value === 'Select All' && event.target.options[i].selected){
+        selected=[]
+        break;
+      }
+      else if (event.target.options[i].selected){
+        selected.push(event.target.options[i].value)
+      }
+    }
+    this.setState({locations: selected})
+  }
 
   handleOnChange = (field, validationFunction = null) => event => {
     let curFormData = Object.assign({}, this.state.formData);
@@ -68,255 +91,155 @@ class View extends React.Component {
     }
   }
 
-  handleInputChange = (event) => {
+  handleInputChange = (event, index) => {
     const target = event.target;
     const value = target.checked;
-    const name = target.name;
 
-    let stateCopy = Object.assign({}, this.state); 
-    stateCopy.selected[name] = value; 
-
-    this.setState(stateCopy); 
+    let sv = this.state.selectedValues
+    sv[index] = value
+    this.setState({selectedValues: sv})
+    console.log(this.state.selectedValues);
   }
 
-  handleSubmit = (event) => {
-    alert('Columns submitted');
-    event.preventDefault(); 
-    this.setState({displayReady : true}); 
+  setShow(b) {
+    this.setState({showAlert: b})
   }
+
+  async handleSubmit(event) {
+    event.preventDefault();
+    if(this.state.colNames !== undefined) {
+      var selected = []
+      for(var i = 0; i < this.state.selectedValues.length; i++){
+        if (this.state.selectedValues[i] === true){
+          selected.push(this.state.colNames[i])
+        }
+      }
+
+      console.log('LOCATIONS SATE')
+      console.log(this.state.locations)
+    var d = {
+      dateStart: this.state.formData['dateStart'],
+      dateEnd: this.state.formData['dateEnd'],
+      cols: selected,
+      locations: this.state.locations
+    }
+
+    let td = await this.props.apiWrapper.getByCols(d);
+    if(td.rows !== undefined && td.rows.length !== 0){
+      this.setState({tableData: td})
+    }
+    else{
+      this.setState({showAlert: true})
+    }
+
+    
+  }
+  }
+
+   noDataAlert() {
+    if(this.state.showAlert){
+      return(
+      <Alert variant="danger" onClose={() => this.setShow(false)} dismissible>
+          <p>
+            No data exists for these values. Try a different set of dates and locations.
+          </p>
+        </Alert>
+      )
+    }
+    else {
+      return null
+    }
+  }
+
+  
 
   renderForm = ()  => {
-    let data = this.state.columns; 
-
-    let formUI = data.map((col, index) => {
-      // return (
-      //       <div key={col}><label>
-      //         <input type="checkbox" 
-      //         name={col}
-      //         checked={this.state.colChecks[index][1]}
-      //         onChange={this.handleInputChange}/> {col}
-      //         </label>    
-      //       </div>
-      // )
-
-      if (col == 'cigarette_butts') {
-        return (
-          <div key={col}><label>
-            <input type="checkbox" 
-            name="cigaretteButts"
-            checked={this.state.cigaretteButts}
-            onChange={this.handleInputChange}/> Cigarette Butts
-            </label>    
-          </div>
-        )
-      }
-
-      if (col == 'food_wrappers') {
-        return (
-          <div key={col}><label>
-            <input type="checkbox" 
-            name="foodWrappers"
-            checked={this.state.foodWrappers}
-            onChange={this.handleInputChange}/> Food Wrappers
-            </label>    
-          </div>
-        )
-      }
+    if(this.state.colNames !== undefined && this.state.selectedValues !== undefined){
+      let data = this.state.colNames; 
       
-      if (col == 'plastic_take_out_containers') {
+      let formUI = data.map((col, index) => {
         return (
-          <div key={col}><label>
-            <input type="checkbox" 
-            name="plasticTakeOutContainers"
-            checked={this.state.plasticTakeOutContainers}
-            onChange={this.handleInputChange}/> Plastic Take Out Containers
-            </label>    
-          </div>
+            <td>
+              <label>
+              <input type="checkbox" 
+              name={col}
+              checked={this.state.selectedValues[index]}
+              onChange={(e) => this.handleInputChange(e, index)}/> {col}
+              </label>   
+            </td>
+        )})
+
+       let tableboxes = []
+      for(var i = 0; i < formUI.length; i=(i+5)){
+        tableboxes.push(
+          <tr>
+            {formUI[i]}
+            {formUI[i+1]}
+            {formUI[i+2]}
+            {formUI[i+3]}
+            {formUI[i+4]}
+          </tr>
         )
       }
 
-      if (col == 'foam_take_out_containers') {
-        return (
-          <div key={col}><label>
-            <input type="checkbox" 
-            name="distanceCovered"
-            checked={this.state.distanceCovered}
-            onChange={this.handleInputChange}/> Distance Covered
-            </label>    
-          </div>
+      let finalFormat = tableboxes.map((content, index)=>{
+        return(
+          content
         )
+      })
+
+        return <Table size='sm' borderless>{finalFormat}</Table>;
       }
-
-      if (col == '# of Volunteers - Adult') {
-        return (
-          <div key={col}><label>
-            <input type="checkbox" 
-            name="volunteersAdult"
-            checked={this.state.volunteersAdult}
-            onChange={this.handleInputChange}/> # of Volunteers - Adult
-            </label>    
-          </div>
-        )
+      else {
+        return null
       }
-
-      if (col == '# of Volunteers - Child') {
-        return (
-          <div key={col}><label>
-            <input type="checkbox" 
-            name="volunteersChild"
-            checked={this.state.volunteersChild}
-            onChange={this.handleInputChange}/> # of Volunteers - Child
-            </label>    
-          </div>
-        )
-      }
-
-      if (col == 'Unusual Items') {
-        return (
-          <div key={col}><label>
-            <input type="checkbox" 
-            name="unusualItems"
-            checked={this.state.unusualItems}
-            onChange={this.handleInputChange}/> Unusual Items
-            </label>    
-          </div>
-        )
-      }
-
-    })
-
-    return formUI;
   }
 
-  renderColumns = () => {
-    let columns = Object.keys(this.state.selected); 
-    let selectedUI = columns.map((col) => {
-        if (this.state.selected[col]) {
-          return (
-            <td>{col}</td>
-            // <div key={col}>
-            //   <Form.Label>{col}</Form.Label>
-            //   <Form.Control></Form.Control>
-            // </div>
-          )
-        } 
-    })
-    console.log(this.state.selected); 
-    return selectedUI;
-  }
-
-  renderRows = () => {
-    let result =
-      {
-        location: "Avila",
-        cigaretteButts: 3,
-        foodWrappers: 6
-      }
-    
-    let rowVals = Object.keys(result);
-    let rowData = rowVals.map((val) => {
-      return (
-        <td>{result[val]}</td>
-      )
-    })
-
-    return rowData; 
-  }
-
-  renderTable = () => {
-    return (
-      <table id='cleanups'>
-        <tbody>
-        <tr key={this.state.formData["date"]}>
-          <td>Location</td>
-          {this.renderColumns()}
-        </tr>    
-        <tr key={this.state.formData["location"]}>
-          {this.renderRows()}
-        </tr>
-        </tbody> 
-      </table>    
-    )            
-  }
-
-  getDisplay = () => {
-    if (this.state.displayReady) {
-      return this.renderTable(); 
-    }
-  } 
 
   render() {
+    if(this.state.colNames !== undefined){
     return (
-      <div>
+      <div style={this.marginstyle}>
         <Container>
+          {this.noDataAlert()}
         <Form>
           <div>
           <Form.Group controlId="formBasicEmail">
-              <Form.Label>Date</Form.Label>
-              <Form.Control placeholder="Enter Date" onChange={this.handleOnChange("date")} />
+            <Form.Group>
+            <Row>
+              <Col>
+              <Form.Label>Start Date</Form.Label>
+              <Form.Control placeholder="Enter Date" onChange={this.handleOnChange("dateStart")} />
+              </Col>
+              <Col>
+              <Form.Label>End Date</Form.Label>
+              <Form.Control placeholder="Enter Date" onChange={this.handleOnChange("dateEnd")} />
+              </Col>
+              
+              </Row>
+              </Form.Group>
+              
               <Form.Label>Location</Form.Label>
-              <Form.Control as="select" onChange={this.handleOnChange("location")} >
-              <option>Select a Location</option>
-              <option>Elephant Seal Viewing Point</option>
-              <option>San Simeon Cove / Hearst State Beach</option>
-              <option>San Simeon, Pico Beach and Creek</option>
-              <option>San Simeon Campground</option>
-              <option>Moonstine Beach / Santa Rosa Creek</option>
-              <option>Fiscalini Ranch Preservce / Santa Rose Creek</option>
-              <option>Paso Robles Wastewater Treatment Plant</option>
-              <option>Paso Robles Centennial Creek Park</option>
-              <option>Paso Robles Larry Moore Park</option>
-              <option>Templeton Community Services District</option>
-              <option>Atascadero Mutual Water Co. Corporation Yard</option>
-              <option>Estero Bluffs State Beach</option>
-              <option>Cayucos Pier</option>
-              <option>Cayucos at 24th St. / Morro Strand State Beach Park</option>
-              <option>Morro Strand Dog Beach / Toro Creek</option>
-              <option>Morro Strand North / State Beach Campground</option>
-              <option>Morro Strand South at Highway 41</option>
-              <option>Morro Creek</option>
-              <option>Morro Rock</option>
-              <option>Morro Bay Landing / Sandspit</option>
-              <option>Morro Bay Embarcadero</option>
-              <option>Los Osos Baywood Pier / Paradise Point</option>
-              <option>Montana de Oro Sandspit</option>
-              <option>Montana de Oro Spooners Cove</option>
-              <option>Santa Margarita West Cuesta Ridge Trailhead</option>
-              <option>Santa Margarita Lake</option>
-              <option>El Chorro Regional Park / SLO Botanical Gardens</option>
-              <option>Cal Poly Campus Market</option>
-              <option>Cuesta Park SLO</option>
-              <option>Mission Plaza SLO</option>
-              <option>Sinsheimer Park SLO</option>
-              <option>Laguna Lake SLO</option>
-              <option>SLO Creek Pepper / Pacific Streets</option>
-              <option>Lower SLO Creek Floodplain Preserve</option>
-              <option>Avila Beach</option>
-              <option>Fisherman's Beach and Olde Port Beach</option>
-              <option>Pirates' Cove and Cave Landing</option>
-              <option>Shell Beach</option>
-              <option>Downtown Pismo Beach</option>
-              <option>Pismo Pier</option>
-              <option>Pismo at Ocean View Ave</option>
-              <option>Grover Beach</option>
-              <option>Lopez Lake</option>
-              <option>Oak Park Shopping Center Arroyo Grande</option>
-              <option>Kiwanis Park Arroyo Grande Creek</option>
-              <option>Arroyo Grande High School</option>
-              <option>Oceano Lagoon</option>
-              <option>Oso Flaco Lake</option>
+              <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
+                  <option>Select All</option>
+                  { this.props.locations.map((value) => {
+                    return <option>{value}</option>
+                  }) }
               </Form.Control>
             </Form.Group>
             {this.renderForm()}
-            <Button type="submit" onClick={this.handleSubmit}>Submit</Button>
-            {this.getDisplay()}
+            <Button type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>
         </Form>
         </Container>
-        <DataTable></DataTable>
+        <DataTable data={this.state.tableData}></DataTable>
       </div>
     );
+            }
+            else{
+              return null
+            }
   }
 }
 
-export default View;
+export default withLocations(View);

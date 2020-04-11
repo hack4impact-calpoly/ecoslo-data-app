@@ -46,13 +46,16 @@ app.get('/locations', async (req, res) => {
 
 app.get('/columns', async (req, res) => {
 	try{
-		await database.getCols();
+		let r = await database.getCols();
+		res.status(200).json({
+			r
+		});
 	}
 	catch (err) {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	res.status(200).send();
+	//res.status(200).send();
 })
 
 
@@ -68,7 +71,7 @@ app.get('/byCols', async (req, res) => {
 		}
 		let result = await database.getByCol(queryParams);
 		res.status(200).json({
-			locations : result
+			rows : result.rows
 		});
 	}
 	catch (err) {

@@ -40,6 +40,7 @@ class Header extends React.Component {
 
   render() {
     return (
+      <div >
         <Navbar className="header-strip" variant="dark">
           <img
             src={require("../images/circle-cropped-ecoslo.png")}
@@ -52,6 +53,8 @@ class Header extends React.Component {
             { Object.keys(linkToText).map(this.getAppropriateLinkType) }
           </Nav>
       </Navbar>
+      <div></div>
+      </div>
     );
   }
 }

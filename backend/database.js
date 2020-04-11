@@ -146,11 +146,12 @@ module.exports = class Database {
         queryStr+= ' FROM cleanupData'
         if(this._validateDateRange(dateStart, dateEnd)){
             queryStr += ' WHERE (date BETWEEN \'' + dateStart + '\' AND \'' + dateEnd + '\')';
-            if(locations!=null && locations != []){
+            if(locations!== null && locations.length !== 0){
                 continuing=true;
             }
         }
-        if(locations!=null && locations !=[]){
+
+        if(locations !== null && locations.length > 0 && locations[0] !== ''){
             if(continuing) {
                 queryStr += ' AND ('
             }
@@ -159,7 +160,7 @@ module.exports = class Database {
             }
 
             for(i=0; i < locations.length; i++){
-                if(i==(locations.length-1)){
+                if(i===(locations.length-1)){
                     queryStr += 'location = \'' + locations[i] + '\''
                 }
                 else{
@@ -209,33 +210,34 @@ module.exports = class Database {
         try {
             const result = await this._connection.query(queryStr);
             console.log("result:", result.rows);
+            return result;
         } catch (err) {
             throw new Error(Errors.queryError);
         }
     }
 
     async getByCol(req) {
-        if (!this._validateColNames(req.cols)) {
-            console.log("bad data!");
-            throw new Error(Errors.badData);
-        }
-        console.log("hi")
+        // if (!this._validateColNames(req.cols)) {
+        //     console.log("bad data!");
+        //     throw new Error(Errors.badData);
+        // }
         console.log(req.dateStart, req.dateEnd);
         const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations);
         console.log(queryStr);
         try {
-            const result = await this._connection.query(queryStr);
+            let result = await this._connection.query(queryStr);
             console.log(result)
+            return result;
         } catch (err) {
             throw new Error(Errors.queryError);
         }
     }
 
     async update(req) {
-        if (!this._validateColNames(req.body.cols)) {
-            console.log("bad data!");
-            throw new Error(Errors.badData);
-        }
+        // if (!this._validateColNames(req.body.cols)) {
+        //     console.log("bad data!");
+        //     throw new Error(Errors.badData);
+        // }
         if(req.body.date == null || req.body.location == null){
             throw new Error(Errors.badData);
         }
