@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/index.css";
+import { ExportCSV } from '../Components/exportExcel.js'
 import { Table, Container, Row, Col } from "react-bootstrap";
 
 class DataTable extends React.Component {
@@ -56,6 +57,7 @@ class DataTable extends React.Component {
         if (this.props.data !== undefined && (this.props.data.rows !== undefined && this.props.data.rows !== [])){
 
         return (
+            <div>
             <Container style={this.marginstyle}>
                 <Row>
                     <Col xxs={2}></Col>
@@ -72,6 +74,10 @@ class DataTable extends React.Component {
             <Col xxs={2}></Col>
             </Row>
             </Container>
+            
+                <ExportCSV csvData={this.props.data} fileName={"Cleanup Data"}></ExportCSV>
+            </div>
+            
         );
     }
     else {

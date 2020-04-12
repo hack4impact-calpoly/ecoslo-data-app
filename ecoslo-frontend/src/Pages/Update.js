@@ -5,8 +5,8 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import {Row, Col} from 'react-bootstrap';
-import Table from 'react-bootstrap/Table'
-import DataTable from '../Components/DataTable.js'
+import Table from 'react-bootstrap/Table';
+import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
 
 class Update extends React.Component {

@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Alert } from "react-bootstrap"; 
 import Table from "react-bootstrap/Table";
+import { ExportCSV } from '../Components/exportExcel.js'
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
 import "../styles/page.css";
@@ -131,7 +132,7 @@ class View extends React.Component {
     else{
       this.setState({showAlert: true})
     }
-
+    
     
   }
   }
@@ -151,34 +152,37 @@ class View extends React.Component {
     }
   }
 
+
   
 
   renderForm = ()  => {
     if(this.state.colNames !== undefined && this.state.selectedValues !== undefined){
-      let data = this.state.colNames; 
-      
+      let data = this.state.colNames;
       let formUI = data.map((col, index) => {
         return (
-            <td>
+            <td id="table">
               <label>
-              <input type="checkbox" 
+              <input type="checkbox"
               name={col}
               checked={this.state.selectedValues[index]}
-              onChange={(e) => this.handleInputChange(e, index)}/> {col}
-              </label>   
+              onChange={(e) => this.handleInputChange(e, index)}/> {col.split("_").join(" ")}
+              
+              </label> 
             </td>
+            
         )})
 
        let tableboxes = []
       for(var i = 0; i < formUI.length; i=(i+5)){
+
         tableboxes.push(
           <tr>
             {formUI[i]}
             {formUI[i+1]}
             {formUI[i+2]}
             {formUI[i+3]}
-            {formUI[i+4]}
           </tr>
+          
         )
       }
 
@@ -188,7 +192,7 @@ class View extends React.Component {
         )
       })
 
-        return <Table size='sm' borderless>{finalFormat}</Table>;
+        return <Table id = "checktable" size='med' bordered>{finalFormat}</Table>;
       }
       else {
         return null
@@ -227,14 +231,19 @@ class View extends React.Component {
                   }) }
               </Form.Control>
             </Form.Group>
+            <Form.Label>Select Which Items to View</Form.Label>
             {this.renderForm()}
             <Button type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>
         </Form>
         </Container>
         <DataTable data={this.state.tableData}></DataTable>
+        
       </div>
+
+      
     );
+
             }
             else{
               return null
