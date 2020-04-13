@@ -108,6 +108,14 @@ export default class APIWrapper {
         return this.makeNonGetRequest("POST", "add", {'item': postData});
     }
 
+    alterTable(dataToBeSubmitted) {
+        const postData = this.combineLoginInfoForRequest(dataToBeSubmitted);
+        if (!postData) {
+            return false;
+        }
+        return this.makeNonGetRequest("POST", "altTable", postData);
+    }
+
     getLocations() {
         return this.makeGetRequest("locations");
     }

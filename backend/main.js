@@ -28,6 +28,16 @@ app.post('/add', async (req, res) => {
 	res.status(200).send();
 })
 
+app.post('/altTable', async (req, res) =>{
+	try {
+		await database.alterTable(req);
+	} catch (err) {
+		res.status(400).send(AppError.stringError(err.message));
+		return;
+	}
+	res.status(200).send();
+})
+
 app.get('/locations', async (req, res) => {
 	console.log("get request locations")
 	try{
@@ -41,7 +51,6 @@ app.get('/locations', async (req, res) => {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	//res.status(200).send();
 })
 
 app.get('/columns', async (req, res) => {
@@ -55,7 +64,6 @@ app.get('/columns', async (req, res) => {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	//res.status(200).send();
 })
 
 
@@ -79,7 +87,6 @@ app.get('/byCols', async (req, res) => {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	//res.status(200).send();
 })
 
 

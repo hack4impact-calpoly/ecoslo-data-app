@@ -15,7 +15,7 @@ class Home extends React.Component {
                         <img style={{transform: "scale(1.3)", margin: "2% 0"}} src={require("../images/ECOSLO_logo.png")} alt="Eco SLO" />
                     </div>
                     <div className="center-strip">
-                        <span className="upper">Beach Cleanup Database</span>
+                        <span className="upper">Cleanup Database</span>
                     </div>
                     <div style={{height: "25%"}} />
                     <div className="home-buttons">
