@@ -12,8 +12,6 @@ export default class APIWrapper {
             }).join('&');
         }
 
-        console.log(this.baseURL + urlExtension + queryString)
-
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
             xhr.open("GET", this.baseURL + urlExtension + queryString, true);
@@ -24,10 +22,8 @@ export default class APIWrapper {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
                         if (optionalResolve) {
-                            console.log(this.response)
                             optionalResolve(JSON.parse(this.response));
                         } else {
-                            console.log(JSON.parse(this.response))
                             resolve(JSON.parse(this.response));
                         }
                     } else {
