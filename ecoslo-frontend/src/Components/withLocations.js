@@ -11,19 +11,17 @@ export default function withLocations(LocationWrappedComponent) {
         }
 
         updateLocations = async () => {
-            console.log(this.props);
-            const {locations}  = await this.props.apiWrapper.getLocations();
-            console.log(locations)
-            this.setState({
-                locations : locations
-            });
+            try {
+                const locations  = await this.props.apiWrapper.getLocations();
+                console.log(locations);
+                this.setState({
+                    locations : { locations }
+                });
+            } catch (error) {
+                console.log(error);
+                alert(error);
+            }
         }
-
-        // renderLocations = () => {
-        //     return this.state.locations.map((value) => {
-        //         //return <option>{value}</option>
-        //     });
-        // }
 
         render() {
             return <LocationWrappedComponent locations={this.state.locations} {...this.props} />;
