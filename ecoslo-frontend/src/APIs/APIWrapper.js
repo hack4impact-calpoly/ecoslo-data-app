@@ -128,6 +128,10 @@ export default class APIWrapper {
         return this.makeGetRequest("byCols", dataToBeSubmitted);
     }
 
+    sumPerCol(dataToBeSubmitted) {
+        return this.makeGetRequest("sumPerCol", dataToBeSubmitted);
+    }
+
     updateData(dataToBeSubmitted) {
         const postData = this.combineLoginInfoForRequest(dataToBeSubmitted);
         if (!postData) {
