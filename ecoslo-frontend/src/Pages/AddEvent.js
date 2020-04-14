@@ -13,6 +13,9 @@ const sectionStyle ={
 
 const howToGoThrough = [
   [
+    "Summary"
+  ],
+  [
     "Most Likely To Find Items"
   ],
   [
@@ -22,6 +25,10 @@ const howToGoThrough = [
   [
     "Other Trash",
     "Personal Hygiene"
+  ],
+  [
+    "Tiny Trash",
+    "Additional Items"
   ]
 ];
 
@@ -91,6 +98,23 @@ const columnNames = {
       "Foam_Pieces",
       "Glass_Pieces",
       "Plastic_Pieces",
+    ]]
+  },
+  "Summary" : {
+    "columns" : [[
+      "Adult Volunteers",
+      "Child Volunteers",
+      "Distance Covered"
+    ], [
+      "Trash Bags Filled",
+      "Weight Trash",
+      "Weight Recycle"
+    ]]
+  },
+  "Additional Items" : {
+    "columns" : [[
+      "Unusual Items",
+      "Dead Animals"
     ]]
   }
 };

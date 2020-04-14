@@ -60,7 +60,7 @@ app.get('/columns', async (req, res) => {
 			r
 		});
 	}
-	catch (err) {
+	catch (err) {	
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
@@ -83,7 +83,8 @@ app.get('/byCols', async (req, res) => {
 		});
 	}
 	catch (err) {
-		console.log(AppError.stringError(err.message))
+		console.log(err)
+		console.log(AppError.stringError(err))
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}

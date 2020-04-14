@@ -291,7 +291,7 @@ module.exports = class Database {
         console.log("adding");
         if (!this._validateData(row)) {
             console.log("bad data!");
-            throw new Error(Errors.badData);
+            throw new Error(Errors.error.badData);
         }
         const queryStr = this._createRowQuery(row);
         try {
@@ -300,7 +300,7 @@ module.exports = class Database {
             await this._connection.query(queryStr, Object.values(row));
         } catch (err) {
             console.log("here db");
-            throw new Error(Errors.queryError);
+            throw new Error(Errors.error.queryError);
         }
     }
 
@@ -315,7 +315,7 @@ module.exports = class Database {
             }
             return locations;
         } catch (err) {
-            throw new Error(Errors.queryError);
+            throw new Error(Errors.error.queryError);
         }
     }
 
@@ -326,7 +326,7 @@ module.exports = class Database {
             console.log("result:", result.rows);
             return result;
         } catch (err) {
-            throw new Error(Errors.queryError);
+            throw new Error(Errors.error.queryError);
         }
     }
 
@@ -339,13 +339,13 @@ module.exports = class Database {
             console.log(result)
             return result;
         } catch (err) {
-            throw new Error(Errors.queryError);
+            throw new Error(Errors.error.queryError);
         }
     }
 
     async update(req) {
         if(req.body.date == null || req.body.location == null){
-            throw new Error(Errors.badData);
+            throw new Error(Errors.error.badData);
         }
         
         const queryStr = this._createUpdateQuery(req.body.cols, req.body.vals, req.body.date, req.body.location);
@@ -354,19 +354,19 @@ module.exports = class Database {
             const result = await this._connection.query(queryStr);
             return result;
         } catch (err) {
-            throw new Error(Errors.queryError);
+            throw new Error(Errors.error.queryError);
         }
     }
 
     async alterTable(req) {
         if (req.body.action === null) {
-            throw new Error(Errors.badData);
+            throw new Error(Errors.error.badData);
         }
         else{
 
             if(req.body.action === "add"){
                 if(req.body.name === null || req.body.dataType === null){
-                    throw new Error(Errors.badData);
+                    throw new Error(Errors.error.badData);
                 }
                 var queryStr = "ALTER TABLE cleanupdata ADD COLUMN " + req.body.name + " " + req.body.dataType + " DEFAULT -1;"
                 console.log(queryStr);
@@ -374,13 +374,13 @@ module.exports = class Database {
                     const result = await this._connection.query(queryStr);
                     return result;
                 } catch (err) {
-                    throw new Error(Errors.queryError);
+                    throw new Error(Errors.error.queryError);
                 }
             }
 
             else if(req.body.action === "delete"){
                 if(req.body.name === null){
-                    throw new Error(Errors.badData);
+                    throw new Error(Errors.error.badData);
                 }
                 var queryStr = "ALTER TABLE cleanupdata DROP COLUMN " + req.body.name + ";"
                 console.log(queryStr);
@@ -388,7 +388,7 @@ module.exports = class Database {
                     const result = await this._connection.query(queryStr);
                     return result;
                 } catch (err) {
-                    throw new Error(Errors.queryError);
+                    throw new Error(Errors.error.queryError);
                 }
             }
 
@@ -422,10 +422,10 @@ module.exports = class Database {
 
 
     async database(req) {
-        // if (!this._validateColNames(req.body.cols)) {
-        //     console.log("bad data!");
-        //     throw new Error(Errors.badData);
-        // }
+        if (!this._validateColNames(req.body.cols)) {
+            console.log("bad data!");
+            throw new Error(Errors.error.badData);
+        }
         console.log(req.body.dateStart, req.body.dateEnd);
         const queryStr = this._createSelectQuery(req.body.cols, req.body.dateStart, req.body.dateEnd, req.body.locations);
         console.log(queryStr);
@@ -433,7 +433,7 @@ module.exports = class Database {
             const result = await this._connection.query(queryStr);
             console.log(result)
         } catch (err) {
-            throw new Error(Errors.queryError);
+            throw new Error(Errors.error.queryError);
         }
     }
 
