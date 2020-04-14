@@ -9,7 +9,8 @@ const linkToText = {
   "/home" : "Home",
   "/add" : "Add",
   "/view" : "View",
-  "/update" : "Update"
+  "/update" : "Update", 
+  "/alter" : "Alter"
 };
 
 class Header extends React.Component {
