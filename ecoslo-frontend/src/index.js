@@ -8,6 +8,7 @@ import AddEvent from './Pages/AddEvent';
 import Update from './Pages/Update';
 import View from './Pages/View';
 import Login from './Pages/Login';
+import AlterTable from './Pages/AlterTable'; 
 import { Provider } from "react-redux";
 import store from "./redux/reducers/store";
 import APIWrapper from "./APIs/APIWrapper";
@@ -50,6 +51,9 @@ const routing = (
                 </Route>
                 <Route path="/update">
                     <Update apiWrapper={apiWrapper} />
+                </Route>
+                <Route path="/alter">
+                    <AlterTable apiWrapper={apiWrapper}/>
                 </Route>
             </Switch>
         </Router>  
