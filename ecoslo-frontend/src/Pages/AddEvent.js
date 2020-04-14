@@ -104,7 +104,8 @@ const columnNames = {
     "columns" : [[
       "Adult Volunteers",
       "Child Volunteers",
-      "Distance Covered"
+      "Distance Covered",
+      "Total Items"
     ], [
       "Trash Bags Filled",
       "Weight Trash",
