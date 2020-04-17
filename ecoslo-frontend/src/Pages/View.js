@@ -202,6 +202,7 @@ class View extends React.Component {
 
   render() {
     if(this.state.colNames !== undefined){
+      console.log(this.state.locations)
     return (
       <div style={this.marginstyle}>
         <Container>
