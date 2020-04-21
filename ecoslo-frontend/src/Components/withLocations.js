@@ -17,7 +17,7 @@ export default function withLocations(LocationWrappedComponent) {
                 this.setState({locations:  locations});
             } catch (error) {
                 console.log(error);
-                alert(error);
+                // alert(error);
             }
         }
 
