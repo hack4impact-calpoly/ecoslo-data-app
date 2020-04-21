@@ -100,6 +100,9 @@ app.get('/sumPerCol', async (req, res) => {
 		if ("locations" in queryParams) {
 			queryParams["locations"] = queryParams["locations"].split(",");
 		}
+		if ("groupBy" in queryParams) {
+			queryParams["groupBy"] = queryParams["groupBy"].split(",");
+		}
 		let result = await database.sumPerCol(queryParams);
 		res.status(200).json({
 			rows : result.rows

@@ -85,13 +85,13 @@ class Update extends React.Component {
     alert('A name was submitted: ' + data);
     event.preventDefault();
 
-    const res = await this.props.apiWrapper.updateData(data);
-    console.log(res);
-    if (res.message == "Worked") {
+    try {
+      const res = await this.props.apiWrapper.updateData(data);
+      console.log(res);
       alert("Value successfully updated in database.");
     }
-    else {
-      alert("An error occurred. Value was not updated in the database.");
+    catch (error) {
+      alert(error);
     }
   }
 

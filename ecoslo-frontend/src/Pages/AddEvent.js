@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import {Row, Col} from 'react-bootstrap';
 import withLocations from '../Components/withLocations';
+import withColumns from '../Components/withColumns';
 import Select from 'react-dropdown-select';
 
 
@@ -27,8 +28,7 @@ const howToGoThrough = [
     "Personal Hygiene"
   ],
   [
-    "Tiny Trash",
-    "Additional Items"
+    "Tiny Trash"  
   ]
 ];
 
@@ -102,21 +102,22 @@ const columnNames = {
   },
   "Summary" : {
     "columns" : [[
-      "Adult Volunteers",
-      "Child Volunteers",
-      "Distance Covered"
+      "Adult_Volunteers",
+      "Child_Volunteers",
+      "Distance_Covered",
+      "Total_Items"
     ], [
-      "Trash Bags Filled",
-      "Weight Trash",
-      "Weight Recycle"
+      "Trash_Bags_Filled",
+      "Weight_Trash",
+      "Weight_Recycle"
     ]]
   },
-  "Additional Items" : {
+  /* "Additional Items" : {
     "columns" : [[
-      "Unusual Items",
-      "Dead Animals"
+      "Unusual_Items",
+      "Dead_Animals"
     ]]
-  }
+  } */
 };
 
 const zip = (array1, array2) => {
@@ -131,6 +132,17 @@ const zip = (array1, array2) => {
   return zippedArray;
 };
 
+const splitList = (array) => {
+  let splitArr = [];
+  for (let i = 0; i < array.length; i+=2) {
+    let val1 = array[i];
+    let val2 = i + 1 < array.length ? array[i + 1] : null;
+    splitArr.push([val1, val2]);
+  }
+
+  return splitArr;
+};
+
 const convertFieldToLabel = (field) => {
   return field.replace(/_/g, " ");
 };
@@ -139,6 +151,26 @@ class AddEvent extends React.Component {
 
   constructor(props) {
     super(props);
+    this.additionalColumns = ["Unusual_Items", "Dead_Animals"];
+    this.defaultCols = ["location", "date", "name"];
+    for (const key in columnNames) {
+      for (const column of columnNames[key].columns) {
+        for (const field of column) {
+          this.defaultCols.push(field);
+        }
+      }
+    }
+
+    for (const column of this.props.columns) {
+      if (this.defaultCols.indexOf(column) > - 1 && this.additionalColumns.indexOf(column) > -1) {
+        this.additionalColumns.push(column);
+      }
+    }
+
+    if (this.additionalColumns.length !== 0) {
+      howToGoThrough.push(["Additional Items"]);
+    }
+
     this.state = {
       formData : this.getDefaultFormData(),
     }
@@ -151,16 +183,13 @@ class AddEvent extends React.Component {
 
   getDefaultFormData() {
     let formData = {};
-    for (const key in columnNames) {
-      for (const column of columnNames[key].columns) {
-        for (const field of column) {
-          formData[field] = "0";
-        }
-      }
+    for (const field of this.defaultCols) {
+      formData[field] = "0";
     }
 
     formData["location"] = null;
     formData["date"] = null;
+    formData["name"] = null;
 
     return formData;
   }
@@ -225,12 +254,14 @@ class AddEvent extends React.Component {
         toSendFormData[key] = (+value) || 0;
       }
     }
-    let success = this.props.apiWrapper.addData(toSendFormData);
-    if (success) {
+    
+    try {
+      let success = this.props.apiWrapper.addData(toSendFormData);
+      console.log(success)
       alert("Cleanup successfully added to database.")
     }
-    else {
-      alert("An error occurred. Cleanup not added to the database.")
+    catch (error) {
+      alert(error)
     }
   }
 
@@ -253,16 +284,23 @@ class AddEvent extends React.Component {
 
   renderColumnsForSections(titles) {
     let zippedArray;
-    const firstColumnNames = columnNames[titles[0]].columns;
-    if (titles.length === 1) {
-      if (firstColumnNames.length > 1) {
-        zippedArray = zip(firstColumnNames[0], firstColumnNames[1]);
+    if (titles[0] !== "Additional Items") {
+      const firstColumnNames = columnNames[titles[0]].columns;
+      if (titles.length === 1) {
+        if (firstColumnNames.length > 1) {
+          zippedArray = zip(firstColumnNames[0], firstColumnNames[1]);
+        } else {
+          zippedArray = zip(firstColumnNames[0], []);
+        }
       } else {
-        zippedArray = zip(firstColumnNames[0], []);
+        const secondColumnNames = columnNames[titles[1]].columns;
+        zippedArray = zip(firstColumnNames[0], secondColumnNames[0]);
       }
-    } else {
-      const secondColumnNames = columnNames[titles[1]].columns;
-      zippedArray = zip(firstColumnNames[0], secondColumnNames[0]);
+    } else if (titles[0] === "Additional Items") {
+      if (this.additionalColumns.length !== 0) {
+        const splitAdditionalColumns = splitList(this.additionalColumns);
+        zippedArray = splitAdditionalColumns;
+      }
     }
     return zippedArray.map((rowNames, rowIndex) => {
       return (
@@ -338,6 +376,8 @@ class AddEvent extends React.Component {
               onChange={(value) => this.handleLocationChange(value)}
               >
               </Select>
+              <Form.Label>Event Name</Form.Label>
+              <Form.Control placeholder="Enter Event Name" onChange={this.handleOnChange("name")} />
               {/* <Form.Control as="select" onChange={this.handleOnChange("location")} >
               <option>Select a Location</option>
               {/* { this.renderLocations() } */}
@@ -357,4 +397,4 @@ class AddEvent extends React.Component {
   }
 }
 
-export default withLocations(AddEvent);
+export default withColumns(withLocations(AddEvent));

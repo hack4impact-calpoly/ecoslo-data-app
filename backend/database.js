@@ -50,6 +50,8 @@ module.exports = class Database {
         this.noSumColumns.add('event_name');
 
         this._connection = pool;
+        this.dbName = 'cleanupData'
+        //this.dbName = 'cleanupData2'
     }
 
     static create(env) {
@@ -105,7 +107,7 @@ module.exports = class Database {
         console.log("create row string");
         const argStr = this._createArgStr(row);
         const valStr = this._createValStr(row);
-        const queryStr = 'INSERT INTO cleanupData (' + argStr + ') VALUES(' + valStr + ')';
+        const queryStr = 'INSERT INTO ' + this.dbName + ' (' + argStr + ') VALUES(' + valStr + ')';
         console.log(queryStr);
         return queryStr;
     }
@@ -118,7 +120,7 @@ module.exports = class Database {
     }
 
     _createUpdateQuery(colNames, vals, date, location) {
-        var queryStr = 'UPDATE cleanupData SET ';
+        var queryStr = 'UPDATE ' + this.dbName + ' SET ';
         if(colNames.length != vals.length){
             throw new Error(Error.badData);
         }
@@ -144,7 +146,7 @@ module.exports = class Database {
                 queryStr = queryStr.concat(', ');
             }
         }
-        queryStr+= ' FROM cleanupData'
+        queryStr+= ' FROM ' + this.dbName + ''
         if(this._validateDateRange(dateStart, dateEnd)){
             queryStr += ' WHERE (date BETWEEN \'' + dateStart + '\' AND \'' + dateEnd + '\')';
             if(locations!== null && locations.length !== 0){
@@ -152,7 +154,7 @@ module.exports = class Database {
             }
         }
 
-        if(locations !== null && locations.length > 0 && locations[0] !== ''){
+        if(locations !== null && locations.length > 0 && locations[0] !== '' && locations.includes('*') === false){
             if(continuing) {
                 queryStr += ' AND ('
             }
@@ -175,19 +177,18 @@ module.exports = class Database {
 
 
     _createSelectSumQuery(colNames, dateStart, dateEnd, locations, groupBy) {
-        console.log("in create selecr sum query database.js")
         var queryStr = 'SELECT ';
         var i;
         var continuing = false;
         for(i=0; i < colNames.length; i++){
             if(this.noSumColumns.has(colNames[i])){
-                if(colNames[i] === 'date' && groupBy.month === true){
+                if(colNames[i] === 'date' && groupBy.includes('month')){
                     queryStr += 'extract(mon from date) as month';
                 }
-                else if(colNames[i] === 'date' && groupBy.year === true){
+                else if(colNames[i] === 'date' && groupBy.includes('year')){
                     queryStr += 'extract(year from date) as year';
                 }
-                if(colNames[i] === 'date' && groupBy.monYear === true){
+                else if(colNames[i] === 'date' && groupBy.includes('monYear')){
                     queryStr += 'extract(month from date) as month, extract(year from date) as year';
                 }
                 else{
@@ -202,7 +203,7 @@ module.exports = class Database {
             }
         
         }
-        queryStr+= ' FROM cleanupData'
+        queryStr+= ' FROM ' + this.dbName + ''
         if(this._validateDateRange(dateStart, dateEnd)){
             queryStr += ' WHERE (date BETWEEN \'' + dateStart + '\' AND \'' + dateEnd + '\')';
             if(locations!== null && locations.length !== 0){
@@ -210,7 +211,7 @@ module.exports = class Database {
             }
         }
 
-        if(locations !== null && locations.length > 0 && locations[0] !== ''){
+        if(locations !== null && locations.length > 0 && locations[0] !== '' && locations.includes('*') === false){
             if(continuing) {
                 queryStr += ' AND ('
             }
@@ -231,11 +232,11 @@ module.exports = class Database {
 
         continuing = false;
         queryStr += ' GROUP BY ';
-        if(groupBy.location === true){
+        if(groupBy.includes('location')){
             queryStr += 'location';
             continuing = true;
         }
-        if(groupBy.eventName === true) {
+        if(groupBy.includes('eventName')) {
             if(continuing){
                 queryStr += ', event_name'
             }
@@ -244,7 +245,7 @@ module.exports = class Database {
                 continuing = true;
             }
         }
-        if(groupBy.date === true) {
+        if(groupBy.includes('date')) {
             if(continuing){
                 queryStr += ', date'
             }
@@ -253,7 +254,7 @@ module.exports = class Database {
                 continuing = true;
             }
         }
-        else if(groupBy.month === true) {
+        else if(groupBy.includes('month')) {
             if(continuing){
                 queryStr += ', extract(mon from date)'
             }
@@ -262,7 +263,7 @@ module.exports = class Database {
                 continuing = true;
             }
         }
-        else if(groupBy.year === true) {
+        else if(groupBy.includes('year')) {
             if(continuing){
                 queryStr += ', extract(year from date)'
             }
@@ -271,7 +272,7 @@ module.exports = class Database {
                 continuing = true;
             }
         }
-        else if(groupBy.monYear === true) {
+        else if(groupBy.includes('monYear')) {
             if(continuing){
                 queryStr += ', extract(year from date), extract(mon from date)'
             }
@@ -289,10 +290,10 @@ module.exports = class Database {
 
     async add(row) {
         console.log("adding");
-        if (!this._validateData(row)) {
-            console.log("bad data!");
-            throw new Error(Errors.error.badData);
-        }
+        // if (!this._validateData(row)) {
+        //     console.log("bad data!");
+        //     throw new Error(Errors.error.badData);
+        // }
         const queryStr = this._createRowQuery(row);
         try {
             console.log("here9");
@@ -306,7 +307,7 @@ module.exports = class Database {
 
     async getLocations() {
         console.log("getting locations");
-        const queryStr = 'SELECT DISTINCT location FROM cleanupData';
+        const queryStr = 'SELECT DISTINCT location FROM ' + this.dbName + '';
         try {
             const result = await this._connection.query(queryStr);
             let locations = [];
@@ -320,7 +321,7 @@ module.exports = class Database {
     }
 
     async getCols() {
-        const queryStr = 'SELECT * FROM cleanupData';
+        const queryStr = 'SELECT * FROM ' + this.dbName + '';
         try {
             const result = await this._connection.query(queryStr);
             console.log("result:", result.rows);
@@ -368,7 +369,15 @@ module.exports = class Database {
                 if(req.body.name === null || req.body.dataType === null){
                     throw new Error(Errors.error.badData);
                 }
-                var queryStr = "ALTER TABLE cleanupdata ADD COLUMN " + req.body.name + " " + req.body.dataType + " DEFAULT -1;"
+                if(req.body.dataType === 'INT'){
+                    var queryStr = "ALTER TABLE " + this.dbName + " ADD COLUMN " + req.body.name + " " + req.body.dataType + " DEFAULT -1;"
+                }
+                else if(req.body.dataType === 'STRING'){
+                    var queryStr = "ALTER TABLE " + this.dbName + " ADD COLUMN " + req.body.name + " " + 'VARCHAR(1000)' + " DEFAULT '';"
+                }
+                else if(req.body.dataType === 'BOOLEAN'){
+                    var queryStr = "ALTER TABLE " + this.dbName + " ADD COLUMN " + req.body.name + " " + req.body.dataType + ";"
+                }
                 console.log(queryStr);
                 try {
                     const result = await this._connection.query(queryStr);
@@ -382,7 +391,7 @@ module.exports = class Database {
                 if(req.body.name === null){
                     throw new Error(Errors.error.badData);
                 }
-                var queryStr = "ALTER TABLE cleanupdata DROP COLUMN " + req.body.name + ";"
+                var queryStr = "ALTER TABLE " + this.dbName + " DROP COLUMN " + req.body.name + ";"
                 console.log(queryStr);
                 try {
                     const result = await this._connection.query(queryStr);
@@ -396,25 +405,13 @@ module.exports = class Database {
         
     }
 
-    //get has no body
     async sumPerCol(req) {
-        //groupBy
-            //location
-            //eventName
-            //date
-            //month
-            //year
-            //monYear
-        //dateStart
-        //dateEnd
-        //locations
-        console.log("in sum per col database.js")
-        console.log('groupBy', req.body.groupBy)
-        const queryStr = this._createSelectSumQuery(req.body.cols, req.body.dateStart, req.body.dateEnd, req.body.locations, req.body.groupBy);
+        console.log(req.dateStart, req.dateEnd)
+        const queryStr = this._createSelectSumQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.groupBy);
         console.log(queryStr);
         try {
             const result = await this._connection.query(queryStr);
-            console.log(result)
+            return result
         } catch (err) {
             throw new Error(Errors.queryError);
         }
@@ -422,10 +419,10 @@ module.exports = class Database {
 
 
     async database(req) {
-        if (!this._validateColNames(req.body.cols)) {
-            console.log("bad data!");
-            throw new Error(Errors.error.badData);
-        }
+        // if (!this._validateColNames(req.body.cols)) {
+        //     console.log("bad data!");
+        //     throw new Error(Errors.error.badData);
+        // }
         console.log(req.body.dateStart, req.body.dateEnd);
         const queryStr = this._createSelectQuery(req.body.cols, req.body.dateStart, req.body.dateEnd, req.body.locations);
         console.log(queryStr);
