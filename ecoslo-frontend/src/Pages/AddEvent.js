@@ -225,12 +225,14 @@ class AddEvent extends React.Component {
         toSendFormData[key] = (+value) || 0;
       }
     }
-    let success = this.props.apiWrapper.addData(toSendFormData);
-    if (success) {
+    
+    try {
+      let success = this.props.apiWrapper.addData(toSendFormData);
+      console.log(success)
       alert("Cleanup successfully added to database.")
     }
-    else {
-      alert("An error occurred. Cleanup not added to the database.")
+    catch (error) {
+      alert(error)
     }
   }
 
