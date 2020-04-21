@@ -11,6 +11,12 @@ import "../styles/page.css";
 
 
 
+
+
+
+
+
+
 class View extends React.Component {
   constructor(props) {
     super(props);
@@ -93,13 +99,12 @@ class View extends React.Component {
   }
 
   handleInputChange = (event, index) => {
+    
     const target = event.target;
     const value = target.checked;
-
     let sv = this.state.selectedValues
     sv[index] = value
     this.setState({selectedValues: sv})
-    console.log(this.state.selectedValues);
   }
 
   setShow(b) {
@@ -155,9 +160,9 @@ class View extends React.Component {
 
   
 
-  renderForm = ()  => {
+  renderForm = (start, stop)  => {
     if(this.state.colNames !== undefined && this.state.selectedValues !== undefined){
-      let data = this.state.colNames;
+      let data = this.state.colNames.slice(start, stop);
       let formUI = data.map((col, index) => {
         return (
             <td id="table">
@@ -166,22 +171,25 @@ class View extends React.Component {
               name={col}
               checked={this.state.selectedValues[index]}
               onChange={(e) => this.handleInputChange(e, index)}/> {col.split("_").join(" ")}
-              
               </label> 
             </td>
             
         )})
 
        let tableboxes = []
-      for(var i = 0; i < formUI.length; i=(i+5)){
+      for(var i = 0; i < formUI.length; i=(i+4)){
 
         tableboxes.push(
+          <tbody>
           <tr>
             {formUI[i]}
             {formUI[i+1]}
             {formUI[i+2]}
             {formUI[i+3]}
+
+            
           </tr>
+          </tbody>
           
         )
       }
@@ -192,12 +200,16 @@ class View extends React.Component {
         )
       })
 
-        return <Table id = "checktable" size='med' bordered>{finalFormat}</Table>;
+        return <Table id = "checktable" size='med' striped bordered hover>{finalFormat}</Table>;
       }
       else {
         return null
       }
-  }
+  } 
+
+
+
+
 
 
   render() {
@@ -232,8 +244,48 @@ class View extends React.Component {
                   }) }
               </Form.Control>
             </Form.Group>
+
+            <Form.Label>Event Name</Form.Label>
+              <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
+                  <option>Select All</option>
+                  { this.props.locations.map((value) => {
+                    return <option>{value}</option>
+                  }) }
+              </Form.Control>
+
+
             <Form.Label>Select Which Items to View</Form.Label>
-            {this.renderForm()}
+            <div>
+            <Form.Label>    Key Information</Form.Label>
+            </div>
+            {this.renderForm(0, 2)}
+            <div>
+            <Form.Label>Most Likely To Find Items</Form.Label>
+            </div>
+            {this.renderForm(2, 18)}
+            <div>
+            <Form.Label>Fishing Gear</Form.Label>
+            </div>
+            {this.renderForm(18, 22)}
+            <div>
+            <Form.Label>Packaging Materials</Form.Label>
+            </div>
+            {this.renderForm(22, 27)}
+            <div>
+            <Form.Label>Other Trash</Form.Label>
+            </div>
+            {this.renderForm(27, 36)}
+            <div>
+            <Form.Label>Personal Hygine</Form.Label>
+            </div>
+            {this.renderForm(36, 40)}
+            <div>
+            <Form.Label>Tiny Trash</Form.Label>
+            </div>
+            {this.renderForm(40, 43)}
+            <div>
+            <Form.Label>Additional Items</Form.Label>
+            </div>
             <Button type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>
         </Form>
