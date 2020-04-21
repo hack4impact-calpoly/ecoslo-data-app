@@ -2,26 +2,30 @@ const http = require('http');
 
 
 const test = {
-    cols: 
-        ['date',
-        'location',
-        'Plastic_Take_Out_Containers',
-        'Foam_Take_Out_Containers'],
-    dateStart: '2020-01-01',
-    dateEnd: '2020-02-01',
-    locations: ['Avila', 'Avila2']
+    'dateStart': '2020-01-01',
+    'cols': ['date',
+    'location',
+    'Plastic_Take_Out_Containers',
+    'Foam_Take_Out_Containers'] ,
+    'dateEnd': '2020-02-01',
+    'locations': ['Avila', 'Avila2']
 }
 
-let queryString = JSON.stringify(test);
+
+let queryString = "";
+        if (test !== null) {
+            queryString = "?" + Object.keys(test).map((key) => {
+                return encodeURIComponent(key) + '=' + encodeURIComponent(test[key])
+            }).join('&');
+        }
 
 let options = {
     host: 'localhost',
     port: 8000,
-    path: '/byCols',
+    path: '/byCols?' + queryString,
     method: 'GET',
     headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': queryString.length
+        'Content-Type': 'application/json'
     }
 };
 
@@ -39,5 +43,4 @@ req.on('error', (e) => {
     console.log('problem with request: ' + e.message);
 });
 
-console.log("qs: ", queryString);
-req.write(queryString);
+req.end();

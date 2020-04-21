@@ -152,7 +152,7 @@ module.exports = class Database {
             }
         }
 
-        if(locations !== null && locations.length > 0 && locations[0] !== ''){
+        if(locations !== null && locations.length > 0 && locations[0] !== '' && locations.includes('*') === false){
             if(continuing) {
                 queryStr += ' AND ('
             }
@@ -175,19 +175,18 @@ module.exports = class Database {
 
 
     _createSelectSumQuery(colNames, dateStart, dateEnd, locations, groupBy) {
-        console.log("in create selecr sum query database.js")
         var queryStr = 'SELECT ';
         var i;
         var continuing = false;
         for(i=0; i < colNames.length; i++){
             if(this.noSumColumns.has(colNames[i])){
-                if(colNames[i] === 'date' && groupBy.month === true){
+                if(colNames[i] === 'date' && groupBy.includes('month')){
                     queryStr += 'extract(mon from date) as month';
                 }
-                else if(colNames[i] === 'date' && groupBy.year === true){
+                else if(colNames[i] === 'date' && groupBy.includes('year')){
                     queryStr += 'extract(year from date) as year';
                 }
-                if(colNames[i] === 'date' && groupBy.monYear === true){
+                else if(colNames[i] === 'date' && groupBy.includes('monYear')){
                     queryStr += 'extract(month from date) as month, extract(year from date) as year';
                 }
                 else{
@@ -210,7 +209,7 @@ module.exports = class Database {
             }
         }
 
-        if(locations !== null && locations.length > 0 && locations[0] !== ''){
+        if(locations !== null && locations.length > 0 && locations[0] !== '' && locations.includes('*') === false){
             if(continuing) {
                 queryStr += ' AND ('
             }
@@ -231,11 +230,11 @@ module.exports = class Database {
 
         continuing = false;
         queryStr += ' GROUP BY ';
-        if(groupBy.location === true){
+        if(groupBy.includes('location')){
             queryStr += 'location';
             continuing = true;
         }
-        if(groupBy.eventName === true) {
+        if(groupBy.includes('eventName')) {
             if(continuing){
                 queryStr += ', event_name'
             }
@@ -244,7 +243,7 @@ module.exports = class Database {
                 continuing = true;
             }
         }
-        if(groupBy.date === true) {
+        if(groupBy.includes('date')) {
             if(continuing){
                 queryStr += ', date'
             }
@@ -253,7 +252,7 @@ module.exports = class Database {
                 continuing = true;
             }
         }
-        else if(groupBy.month === true) {
+        else if(groupBy.includes('month')) {
             if(continuing){
                 queryStr += ', extract(mon from date)'
             }
@@ -262,7 +261,7 @@ module.exports = class Database {
                 continuing = true;
             }
         }
-        else if(groupBy.year === true) {
+        else if(groupBy.includes('year')) {
             if(continuing){
                 queryStr += ', extract(year from date)'
             }
@@ -271,7 +270,7 @@ module.exports = class Database {
                 continuing = true;
             }
         }
-        else if(groupBy.monYear === true) {
+        else if(groupBy.includes('monYear')) {
             if(continuing){
                 queryStr += ', extract(year from date), extract(mon from date)'
             }
@@ -396,25 +395,13 @@ module.exports = class Database {
         
     }
 
-    //get has no body
     async sumPerCol(req) {
-        //groupBy
-            //location
-            //eventName
-            //date
-            //month
-            //year
-            //monYear
-        //dateStart
-        //dateEnd
-        //locations
-        console.log("in sum per col database.js")
-        console.log('groupBy', req.body.groupBy)
-        const queryStr = this._createSelectSumQuery(req.body.cols, req.body.dateStart, req.body.dateEnd, req.body.locations, req.body.groupBy);
+        console.log(req.dateStart, req.dateEnd)
+        const queryStr = this._createSelectSumQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.groupBy);
         console.log(queryStr);
         try {
             const result = await this._connection.query(queryStr);
-            console.log(result)
+            return result
         } catch (err) {
             throw new Error(Errors.queryError);
         }
