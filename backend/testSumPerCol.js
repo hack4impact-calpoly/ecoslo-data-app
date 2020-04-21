@@ -2,15 +2,24 @@ const http = require('http');
 
 
 const test = {
-    'dateStart': '2020-01-01',
-    'cols': ['date',
-    'location',
-    'Plastic_Take_Out_Containers',
-    'Foam_Take_Out_Containers'] ,
-    'dateEnd': '2020-02-01',
-    'locations': ['Avila', 'Avila2']
+    dateStart: '2004-01-01',
+    dateEnd: '2022-02-01',
+    cols: 
+        ['date',
+        'location',
+        'Plastic_Take_Out_Containers',
+        'Foam_Take_Out_Containers'],
+    locations: ['*'],
+    groupBy: ['month', 'location']
+    // groupBy: JSON.stringify({
+    //     date: false,
+    //     month: true,
+    //     year: false,
+    //     monYear: false,
+    //     location: true,
+    //     eventName: false
+    // })
 }
-
 
 let queryString = "";
         if (test !== null) {
@@ -19,10 +28,11 @@ let queryString = "";
             }).join('&');
         }
 
+console.log(queryString);
 let options = {
     host: 'localhost',
     port: 8000,
-    path: '/byCols?' + queryString,
+    path: '/sumPerCol' + queryString,
     method: 'GET',
     headers: {
         'Content-Type': 'application/json'

@@ -90,6 +90,33 @@ app.get('/byCols', async (req, res) => {
 	}
 })
 
+app.get('/sumPerCol', async (req, res) => {
+	console.log("in sum per col main")
+	try{
+		let queryParams = req.query;
+		if ("cols" in queryParams) {
+			queryParams["cols"] = queryParams["cols"].split(",");
+		}
+		if ("locations" in queryParams) {
+			queryParams["locations"] = queryParams["locations"].split(",");
+		}
+		if ("groupBy" in queryParams) {
+			queryParams["groupBy"] = queryParams["groupBy"].split(",");
+		}
+		let result = await database.sumPerCol(queryParams);
+		res.status(200).json({
+			rows : result.rows
+		});
+	}
+	catch (err) {
+		console.log(AppError.stringError(err.message))
+		res.status(400).send(AppError.stringError(err.message));
+		return;
+	}
+})
+
+
+
 
 app.put('/update', async (req, res) => {
 	console.log("updating");

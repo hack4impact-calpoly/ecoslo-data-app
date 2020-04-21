@@ -12,14 +12,12 @@ export default function withLocations(LocationWrappedComponent) {
 
         updateLocations = async () => {
             try {
-                const locations  = await this.props.apiWrapper.getLocations();
+                const {locations}  = await this.props.apiWrapper.getLocations();
                 console.log(locations);
-                this.setState({
-                    locations : { locations }
-                });
+                this.setState({locations:  locations});
             } catch (error) {
                 console.log(error);
-                alert(error);
+                // alert(error);
             }
         }
 
