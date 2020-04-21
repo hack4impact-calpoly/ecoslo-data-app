@@ -50,8 +50,8 @@ module.exports = class Database {
         this.noSumColumns.add('event_name');
 
         this._connection = pool;
-        this.dbName = 'cleanupData'
-        //this.dbName = 'cleanupData2'
+        //this.dbName = 'cleanupData'
+        this.dbName = 'cleanupData2'
     }
 
     static create(env) {

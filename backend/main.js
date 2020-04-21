@@ -59,6 +59,7 @@ app.get('/columns', async (req, res) => {
 		res.status(200).json({
 			r
 		});
+		console.log("r: ", r);
 	}
 	catch (err) {	
 		res.status(400).send(AppError.stringError(err.message));

@@ -12,9 +12,17 @@ export default function withColumns(ColumnWrappedComponent) {
 
         updateColumns = async () => {
             try {
-                const {columns}  = await this.props.apiWrapper.getColumns();
+                const columns  = await this.props.apiWrapper.getColumns();
                 console.log(columns);
-                this.setState({columns: columns});
+
+                
+                let cols = columns.r.fields.map((content, index) =>{
+                    return content.name
+                  })
+
+
+                //this.setState({cols: })
+                this.setState({columns: cols});
             } catch (error) {
                 console.log(error);
                 // alert(error);
