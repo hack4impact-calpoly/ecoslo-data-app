@@ -2,34 +2,40 @@ const http = require('http');
 
 
 const test = {
+    dateStart: '2004-01-01',
+    dateEnd: '2022-02-01',
     cols: 
         ['date',
         'location',
         'Plastic_Take_Out_Containers',
         'Foam_Take_Out_Containers'],
-    dateStart: '2004-01-01',
-    dateEnd: '2022-02-01',
     locations: ['*'],
-    groupBy: {
-        date: false,
-        month: true,
-        year: false,
-        monYear: false,
-        location: true,
-        eventName: false
-    }
+    groupBy: ['month', 'location']
+    // groupBy: JSON.stringify({
+    //     date: false,
+    //     month: true,
+    //     year: false,
+    //     monYear: false,
+    //     location: true,
+    //     eventName: false
+    // })
 }
 
-let queryString = JSON.stringify(test);
+let queryString = "";
+        if (test !== null) {
+            queryString = "?" + Object.keys(test).map((key) => {
+                return encodeURIComponent(key) + '=' + encodeURIComponent(test[key])
+            }).join('&');
+        }
 
+console.log(queryString);
 let options = {
     host: 'localhost',
     port: 8000,
-    path: '/sumPerCol',
+    path: '/sumPerCol' + queryString,
     method: 'GET',
     headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': queryString.length
+        'Content-Type': 'application/json'
     }
 };
 
@@ -47,5 +53,4 @@ req.on('error', (e) => {
     console.log('problem with request: ' + e.message);
 });
 
-console.log("qs: ", queryString);
-req.write(queryString);
+req.end();
