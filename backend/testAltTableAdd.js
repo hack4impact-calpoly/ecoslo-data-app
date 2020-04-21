@@ -4,7 +4,7 @@ const http = require('http');
 const test = {
     action: 'add',
     name: 'tester',
-    dataType: 'INT'
+    dataType: 'BOOLEAN'
 };
 
 let queryString = JSON.stringify(test);

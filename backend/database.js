@@ -367,7 +367,15 @@ module.exports = class Database {
                 if(req.body.name === null || req.body.dataType === null){
                     throw new Error(Errors.error.badData);
                 }
-                var queryStr = "ALTER TABLE cleanupdata ADD COLUMN " + req.body.name + " " + req.body.dataType + " DEFAULT -1;"
+                if(req.body.dataType === 'INT'){
+                    var queryStr = "ALTER TABLE cleanupdata ADD COLUMN " + req.body.name + " " + req.body.dataType + " DEFAULT -1;"
+                }
+                else if(req.body.dataType === 'STRING'){
+                    var queryStr = "ALTER TABLE cleanupdata ADD COLUMN " + req.body.name + " " + 'VARCHAR(1000)' + " DEFAULT '';"
+                }
+                else if(req.body.dataType === 'BOOLEAN'){
+                    var queryStr = "ALTER TABLE cleanupdata ADD COLUMN " + req.body.name + " " + req.body.dataType + ";"
+                }
                 console.log(queryStr);
                 try {
                     const result = await this._connection.query(queryStr);
