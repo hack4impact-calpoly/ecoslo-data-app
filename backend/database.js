@@ -50,6 +50,8 @@ module.exports = class Database {
         this.noSumColumns.add('event_name');
 
         this._connection = pool;
+        this.dbName = 'cleanupData'
+        //this.dbName = 'cleanupData2'
     }
 
     static create(env) {
@@ -105,7 +107,7 @@ module.exports = class Database {
         console.log("create row string");
         const argStr = this._createArgStr(row);
         const valStr = this._createValStr(row);
-        const queryStr = 'INSERT INTO cleanupData (' + argStr + ') VALUES(' + valStr + ')';
+        const queryStr = 'INSERT INTO ' + this.dbName + ' (' + argStr + ') VALUES(' + valStr + ')';
         console.log(queryStr);
         return queryStr;
     }
@@ -118,7 +120,7 @@ module.exports = class Database {
     }
 
     _createUpdateQuery(colNames, vals, date, location) {
-        var queryStr = 'UPDATE cleanupData SET ';
+        var queryStr = 'UPDATE ' + this.dbName + ' SET ';
         if(colNames.length != vals.length){
             throw new Error(Error.badData);
         }
@@ -144,7 +146,7 @@ module.exports = class Database {
                 queryStr = queryStr.concat(', ');
             }
         }
-        queryStr+= ' FROM cleanupData'
+        queryStr+= ' FROM ' + this.dbName + ''
         if(this._validateDateRange(dateStart, dateEnd)){
             queryStr += ' WHERE (date BETWEEN \'' + dateStart + '\' AND \'' + dateEnd + '\')';
             if(locations!== null && locations.length !== 0){
@@ -201,7 +203,7 @@ module.exports = class Database {
             }
         
         }
-        queryStr+= ' FROM cleanupData'
+        queryStr+= ' FROM ' + this.dbName + ''
         if(this._validateDateRange(dateStart, dateEnd)){
             queryStr += ' WHERE (date BETWEEN \'' + dateStart + '\' AND \'' + dateEnd + '\')';
             if(locations!== null && locations.length !== 0){
@@ -288,10 +290,10 @@ module.exports = class Database {
 
     async add(row) {
         console.log("adding");
-        if (!this._validateData(row)) {
-            console.log("bad data!");
-            throw new Error(Errors.error.badData);
-        }
+        // if (!this._validateData(row)) {
+        //     console.log("bad data!");
+        //     throw new Error(Errors.error.badData);
+        // }
         const queryStr = this._createRowQuery(row);
         try {
             console.log("here9");
@@ -305,7 +307,7 @@ module.exports = class Database {
 
     async getLocations() {
         console.log("getting locations");
-        const queryStr = 'SELECT DISTINCT location FROM cleanupData';
+        const queryStr = 'SELECT DISTINCT location FROM ' + this.dbName + '';
         try {
             const result = await this._connection.query(queryStr);
             let locations = [];
@@ -319,7 +321,7 @@ module.exports = class Database {
     }
 
     async getCols() {
-        const queryStr = 'SELECT * FROM cleanupData';
+        const queryStr = 'SELECT * FROM ' + this.dbName + '';
         try {
             const result = await this._connection.query(queryStr);
             console.log("result:", result.rows);
@@ -368,13 +370,13 @@ module.exports = class Database {
                     throw new Error(Errors.error.badData);
                 }
                 if(req.body.dataType === 'INT'){
-                    var queryStr = "ALTER TABLE cleanupdata ADD COLUMN " + req.body.name + " " + req.body.dataType + " DEFAULT -1;"
+                    var queryStr = "ALTER TABLE " + this.dbName + " ADD COLUMN " + req.body.name + " " + req.body.dataType + " DEFAULT -1;"
                 }
                 else if(req.body.dataType === 'STRING'){
-                    var queryStr = "ALTER TABLE cleanupdata ADD COLUMN " + req.body.name + " " + 'VARCHAR(1000)' + " DEFAULT '';"
+                    var queryStr = "ALTER TABLE " + this.dbName + " ADD COLUMN " + req.body.name + " " + 'VARCHAR(1000)' + " DEFAULT '';"
                 }
                 else if(req.body.dataType === 'BOOLEAN'){
-                    var queryStr = "ALTER TABLE cleanupdata ADD COLUMN " + req.body.name + " " + req.body.dataType + ";"
+                    var queryStr = "ALTER TABLE " + this.dbName + " ADD COLUMN " + req.body.name + " " + req.body.dataType + ";"
                 }
                 console.log(queryStr);
                 try {
@@ -389,7 +391,7 @@ module.exports = class Database {
                 if(req.body.name === null){
                     throw new Error(Errors.error.badData);
                 }
-                var queryStr = "ALTER TABLE cleanupdata DROP COLUMN " + req.body.name + ";"
+                var queryStr = "ALTER TABLE " + this.dbName + " DROP COLUMN " + req.body.name + ";"
                 console.log(queryStr);
                 try {
                     const result = await this._connection.query(queryStr);
@@ -417,10 +419,10 @@ module.exports = class Database {
 
 
     async database(req) {
-        if (!this._validateColNames(req.body.cols)) {
-            console.log("bad data!");
-            throw new Error(Errors.error.badData);
-        }
+        // if (!this._validateColNames(req.body.cols)) {
+        //     console.log("bad data!");
+        //     throw new Error(Errors.error.badData);
+        // }
         console.log(req.body.dateStart, req.body.dateEnd);
         const queryStr = this._createSelectQuery(req.body.cols, req.body.dateStart, req.body.dateEnd, req.body.locations);
         console.log(queryStr);
