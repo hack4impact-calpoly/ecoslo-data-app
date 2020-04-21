@@ -35,81 +35,81 @@ const howToGoThrough = [
 const columnNames = {
   "Most Likely To Find Items" : {
     "columns" : [[
-        "Cigarette_Butts",
-        "Food_Wrappers",
-        "Plastic_Take_Out_Containers",
-        "Foam_Take_Out_Containers",
-        "Plastic_Bottle_Caps",
-        "Metal_Bottle_Caps",
-        "Plastic_Lids",
-        "Straws_And_Stirrers",
-        "Forks_Knives_And_Spoons",
+        "cigarette_butts",
+        "food_wrappers",
+        "plastic_take_out_containers",
+        "foam_take_out_containers",
+        "plastic_bottle_caps",
+        "metal_bottle_caps",
+        "plastic_lids",
+        "straws_and_stirrers",
+        "forks_knives_and_spoons",
       ],[
-        "Plastic_Beverage_Bottles",
-        "Glass_Beverage_Bottles",
-        "Beverage_Cans",
-        "Plastic_Grocery_Bags",
-        "Other_Plastic_Bags",
-        "Paper_Bags",
-        "Paper_Cups_And_Plates",
-        "Plastic_Cups_And_Plates",
-        "Foam_Cups_And_Plates"
+        "plastic_beverage_bottles",
+        "glass_beverage_bottles",
+        "beverage_cans",
+        "plastic_grocery_bags",
+        "other_plastic_bags",
+        "paper_bags",
+        "paper_cups_and_plates",
+        "plastic_cups_and_plates",
+        "foam_cups_and_plates"
       ]
     ],
   },
   "Fishing Gear" : {
     "columns" : [[
-      "Fishing_Buoys_Pots_And_Traps",
-      "Fishing_Net_And_Pieces",
-      "Fishing_Line",
-      "Rope",
+      "fishing_buoys_pots_and_traps",
+      "fishing_net_and_pieces",
+      "fishing_line",
+      "rope",
     ]]
   },
   "Packaging Materials" : {
     "columns" : [[
-      "Six_Pack_Holders",
-      "Other_Plastic_Or_Foam_Packaging",
-      "Other_Plastic_Bottles",
-      "Strapping_Bands",
-      "Tobacco_Packaging_Or_Wrap",
+      "six_pack_holders",
+      "other_plastic_or_foam_packaging",
+      "other_plastic_bottles",
+      "strapping_bands",
+      "tobacco_packaging_or_wrap",
     ]]
   },
   "Personal Hygiene" : {
     "columns" : [[
-      "Condoms",
-      "Diapers",
-      "Syringes",
-      "Tampons",
+      "condoms",
+      "diapers",
+      "syringes",
+      "tampons",
     ]]
   },
   "Other Trash": {
     "columns" : [[
-      "Appliances",
-      "Balloons",
-      "Cigar_Tips",
-      "Cigarette_Lighters",
-      "Construction_Materials",
-      "Fireworks",
-      "Tires",
+      "appliances",
+      "balloons",
+      "cigar_tips",
+      "cigarette_lighters",
+      "construction_materials",
+      "fireworks",
+      "tires",
     ]]
   },
   "Tiny Trash" : {
     "columns" : [[
-      "Foam_Pieces",
-      "Glass_Pieces",
-      "Plastic_Pieces",
+      "foam_pieces",
+      "glass_pieces",
+      "plastic_pieces",
     ]]
   },
   "Summary" : {
     "columns" : [[
-      "Adult_Volunteers",
-      "Child_Volunteers",
-      "Distance_Covered",
-      "Total_Items"
+      "adult_volunteers",
+      "child_volunteers",
+      "distance_covered",
+      "total_items"
     ], [
-      "Trash_Bags_Filled",
-      "Weight_Trash",
-      "Weight_Recycle"
+      "trash_bags_filled",
+      "weight_trash",
+      "weight_recycle"
     ]]
   },
   /* "Additional Items" : {
@@ -143,29 +143,41 @@ const splitList = (array) => {
   return splitArr;
 };
 
+
+function titleCase(str) {
+  var splitStr = str.toLowerCase().split(' ');
+  for (var i = 0; i < splitStr.length; i++) {
+      splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+  }
+  return splitStr.join(' '); 
+}
+
 const convertFieldToLabel = (field) => {
-  return field.replace(/_/g, " ");
+  return titleCase(field.replace(/_/g, " "));
 };
 
 class AddEvent extends React.Component {
 
   constructor(props) {
     super(props);
-    this.additionalColumns = ["Unusual_Items", "Dead_Animals"];
-    this.defaultCols = ["location", "date", "name"];
+    this.additionalColumns = ["unusual_items", "dead_animals"];
+    this.defaultCols = ["location", "date", "event_name"];
     for (const key in columnNames) {
       for (const column of columnNames[key].columns) {
         for (const field of column) {
-          this.defaultCols.push(field);
+          this.defaultCols.push(field.toLowerCase());
         }
       }
     }
+    
 
     for (const column of this.props.columns) {
       if (this.defaultCols.indexOf(column) > - 1 && this.additionalColumns.indexOf(column) > -1) {
         this.additionalColumns.push(column);
       }
     }
+    console.log("props cols: ", this.props.columns);
+    console.log(this.additionalColumns);
 
     if (this.additionalColumns.length !== 0) {
       howToGoThrough.push(["Additional Items"]);
@@ -173,12 +185,41 @@ class AddEvent extends React.Component {
 
     this.state = {
       formData : this.getDefaultFormData(),
+
     }
   }
 
   marginstyle={
     marginTop: '1.2em',
     marginBottom: '2em'
+  }
+
+  updateColumns(){
+    this.additionalColumns = ["unusual_items", "dead_animals"];
+    console.log(this.props.columns)
+    for (const column of this.props.columns) {
+      if (this.defaultCols.indexOf(column) === - 1 && this.additionalColumns.indexOf(column) === -1) {
+        this.additionalColumns.push(column);
+      }
+    }
+    console.log("props cols: ", this.props.columns);
+    console.log(this.additionalColumns);
+
+    if (this.additionalColumns.length !== 0 && howToGoThrough[howToGoThrough.length -1][0] !== "Additional Items") {
+      howToGoThrough.push(["Additional Items"]);
+    }
+
+    this.state = {
+      formData : this.getDefaultFormData(),
+
+    }
+  }
+
+  componentDidUpdate(prevProps){
+    if(this.props.columns !== prevProps.columns){
+      console.log("hello!")
+      this.updateColumns();
+    }
   }
 
   getDefaultFormData() {
@@ -189,7 +230,7 @@ class AddEvent extends React.Component {
 
     formData["location"] = null;
     formData["date"] = null;
-    formData["name"] = null;
+    formData["event_name"] = null;
 
     return formData;
   }
