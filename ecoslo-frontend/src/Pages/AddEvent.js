@@ -112,12 +112,6 @@ const columnNames = {
       "weight_recycle"
     ]]
   },
-  /* "Additional Items" : {
-    "columns" : [[
-      "Unusual_Items",
-      "Dead_Animals"
-    ]]
-  } */
 };
 
 const zip = (array1, array2) => {
@@ -160,7 +154,7 @@ class AddEvent extends React.Component {
 
   constructor(props) {
     super(props);
-    this.additionalColumns = ["unusual_items", "dead_animals"];
+    this.additionalColumns = [];
     this.defaultCols = ["location", "date", "event_name"];
     for (const key in columnNames) {
       for (const column of columnNames[key].columns) {
@@ -195,8 +189,7 @@ class AddEvent extends React.Component {
   }
 
   updateColumns(){
-    this.additionalColumns = ["unusual_items", "dead_animals"];
-    console.log(this.props.columns)
+    this.additionalColumns = [];
     for (const column of this.props.columns) {
       if (this.defaultCols.indexOf(column) === - 1 && this.additionalColumns.indexOf(column) === -1) {
         this.additionalColumns.push(column);
@@ -208,16 +201,11 @@ class AddEvent extends React.Component {
     if (this.additionalColumns.length !== 0 && howToGoThrough[howToGoThrough.length -1][0] !== "Additional Items") {
       howToGoThrough.push(["Additional Items"]);
     }
-
-    this.state = {
-      formData : this.getDefaultFormData(),
-
-    }
+    this.setState({formData : this.getDefaultFormData()})
   }
 
   componentDidUpdate(prevProps){
     if(this.props.columns !== prevProps.columns){
-      console.log("hello!")
       this.updateColumns();
     }
   }
@@ -226,6 +214,22 @@ class AddEvent extends React.Component {
     let formData = {};
     for (const field of this.defaultCols) {
       formData[field] = "0";
+    }
+    for (const field of this.additionalColumns) {
+      if (this.props.colTypes && this.props.colTypes.hasOwnProperty(field)) {
+        const colType = this.props.colTypes[field];
+        if (colType == "string") {
+          formData[field] = "";
+        } else if (colType == "numeric") {
+          formData[field] = "0";
+        } else if (colType == "boolean") {
+          formData[field] = 'False';
+        } else {
+          console.log("error in type");
+        }
+      } else {
+        console.log("Col " + field + " has no col type reported!");
+      }
     }
 
     formData["location"] = null;
@@ -261,7 +265,7 @@ class AddEvent extends React.Component {
     }
   }
 
-  validateEntry(formEntry) {
+  validateNumericEntry(formEntry) {
     if (formEntry.length === 0) {
       return true;
     }
@@ -288,7 +292,7 @@ class AddEvent extends React.Component {
         }
         toSendFormData[key] = value;
       } else {
-        if (!this.validateEntry(value)) {
+        if (!this.validateNumericEntry(value)) {
           alert("Value " + value + " for " + key + "is not an acceptable value.");
           return false;
         }
@@ -337,7 +341,7 @@ class AddEvent extends React.Component {
         const secondColumnNames = columnNames[titles[1]].columns;
         zippedArray = zip(firstColumnNames[0], secondColumnNames[0]);
       }
-    } else if (titles[0] === "Additional Items") {
+    } else {
       if (this.additionalColumns.length !== 0) {
         const splitAdditionalColumns = splitList(this.additionalColumns);
         zippedArray = splitAdditionalColumns;
@@ -357,11 +361,22 @@ class AddEvent extends React.Component {
                         <Form.Label>{labelName}</Form.Label>
                       </Col>
                       <Col>
-                        <Form.Control 
-                          value={this.state.formData[name]}
-                          onChange={this.handleOnChange(name)}
-                          type="text"
-                        />
+                        { titles[0] === "Additional Items" && this.props.colTypes[name] === "boolean" ?
+                          <Form.Control
+                            value={this.state.formData[name]}
+                            as="select"
+                            onChange={this.handleOnChange(name)}
+                          >
+                              <option>True</option>
+                              <option>False</option>
+                          </Form.Control>
+                        :
+                          <Form.Control 
+                            value={this.state.formData[name]}
+                            onChange={this.handleOnChange(name)}
+                            type="text"
+                          />
+                        }
                         <Form.Control.Feedback type="invalid">
                           { `Please provide a valid ${labelName}` } 
                         </Form.Control.Feedback>
@@ -403,7 +418,8 @@ class AddEvent extends React.Component {
      let locOptions = []
      for (var i = 0; i < this.props.locations.length; i++){
       locOptions.push({text: this.props.locations[i]})
-    }
+    };
+    console.log(this.state.formData)
     return (
       <div style={this.marginstyle}>
         <Container>
