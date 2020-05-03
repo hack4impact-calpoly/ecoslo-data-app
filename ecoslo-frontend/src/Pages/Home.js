@@ -1,5 +1,6 @@
 
 import React from "react";
+import Footer from "../Components/footer.js";
 import "../styles/home.css";
 import "../styles/index.css";
 

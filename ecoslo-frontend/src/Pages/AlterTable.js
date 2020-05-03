@@ -111,16 +111,18 @@ class AlterTable extends React.Component {
             action: this.state.formData["action"],
             name: this.state.formData["name"]
         }
+        if(data.name === 'date' || data.name === 'location' || data.name === 'event name'){
+            alert('Cannot delete date, location, or event name.')
+        }
+        else{
 
-        console.log(data); 
-
-        try {
-            const res = await this.props.apiWrapper.alterTable(data);
-            console.log(res);
-            alert("Column successfully deleted from database.");
-          }
-        catch (error) {
-            alert(error);
+            try {
+                const res = await this.props.apiWrapper.alterTable(data);
+                alert("Column successfully deleted from database.");
+            }
+            catch (error) {
+                alert(error);
+            }
         }
     }
 
@@ -133,13 +135,11 @@ class AlterTable extends React.Component {
               {
                 label: 'Yes',
                 onClick: () => {
-                    alert("Column will be added"); 
                     this.handleSubmitAdd(); 
                 }    
               },
               {
-                label: 'No',
-                onClick: () => alert("Column will not be added.")
+                label: 'No'
               }
             ]
         });
@@ -154,13 +154,11 @@ class AlterTable extends React.Component {
               {
                 label: 'Yes',
                 onClick: () => {
-                    alert("Column will be deleted"); 
                     this.handleSubmitDelete(); 
                 }    
               },
               {
-                label: 'No',
-                onClick: () => alert("Column will not be deleted.")
+                label: 'No'
               }
             ]
         });
@@ -173,7 +171,7 @@ class AlterTable extends React.Component {
             <Form>
                 <div>
                 <div><h4>Add a Column</h4></div>
-                <div><strong>Note:</strong> Only add a column if it's absolutely necessary (not just an unusual item). The name of the new column must only include letters and spaces; no numbers or special characters.</div>
+                <div><strong>Note:</strong> Only add a column if it is absolutely necessary. The name of the new column must only include letters and spaces, no numbers or special characters are allowed.</div>
                 <Form.Group controlId="formBasicEmail">
                     <Row></Row>
                     <Row>
@@ -193,7 +191,7 @@ class AlterTable extends React.Component {
                     <Button type="submit" onClick={(e) => this.handleConfirmAdd(e)}>Submit</Button>
                 </Form.Group>
                 <div><h4>Delete a Column</h4></div>
-                <div><strong>Note:</strong> Only delete a column if you are certain it is no longer needed.</div>
+                <div><strong>Note:</strong> Only delete a column if you are certain it is no longer needed. This action cannot be undone.</div>
                 <Form.Group controlId="formBasicEmail">
                     <Row>
                         <Col>
