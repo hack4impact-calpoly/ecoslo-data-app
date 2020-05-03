@@ -1,3 +1,12 @@
+.thick {
+    font-weight: bold;
+  }
+
+.big {
+font-size: large;
+}
+
+
 #form_background {
     background-color:  rgb(120, 180, 255);
     margin: 0% 10%; 
