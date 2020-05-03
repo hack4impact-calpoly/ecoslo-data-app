@@ -73,7 +73,6 @@ module.exports = class Database {
     
     _validateData(data) {
         for (let key of Object.keys(data)) {
-            console.log(key);
             if (!this._possibleKeys.has(key)) {
                 return false;
             }
@@ -104,11 +103,9 @@ module.exports = class Database {
     }
 
     _createRowQuery(row) {
-        console.log("create row string");
         const argStr = this._createArgStr(row);
         const valStr = this._createValStr(row);
         const queryStr = 'INSERT INTO ' + this.dbName + ' (' + argStr + ') VALUES(' + valStr + ')';
-        console.log(queryStr);
         return queryStr;
     }
 
@@ -136,7 +133,6 @@ module.exports = class Database {
     }
 
     _createSelectQuery(colNames, dateStart, dateEnd, locations) {
-        console.log("create col names string");
         var queryStr = 'SELECT ';
         var i;
         var continuing = false;
@@ -289,24 +285,16 @@ module.exports = class Database {
 
 
     async add(row) {
-        console.log("adding");
-        // if (!this._validateData(row)) {
-        //     console.log("bad data!");
-        //     throw new Error(Errors.error.badData);
-        // }
         const queryStr = this._createRowQuery(row);
         try {
-            console.log("here9");
-            console.log(row);
             await this._connection.query(queryStr, Object.values(row));
         } catch (err) {
-            console.log("here db");
+            console.log("ERROR");
             throw new Error(Errors.error.queryError);
         }
     }
 
     async getLocations() {
-        console.log("getting locations");
         const queryStr = 'SELECT DISTINCT location FROM ' + this.dbName + '';
         try {
             const result = await this._connection.query(queryStr);
@@ -324,7 +312,6 @@ module.exports = class Database {
         const queryStr = 'SELECT * FROM ' + this.dbName + '';
         try {
             const result = await this._connection.query(queryStr);
-            console.log("result:", result.rows);
             return result;
         } catch (err) {
             throw new Error(Errors.error.queryError);
@@ -332,12 +319,9 @@ module.exports = class Database {
     }
 
     async getByCol(req) {
-        console.log(req.dateStart, req.dateEnd);
         const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations);
-        console.log(queryStr);
         try {
             let result = await this._connection.query(queryStr);
-            console.log(result)
             return result;
         } catch (err) {
             throw new Error(Errors.error.queryError);
@@ -350,7 +334,7 @@ module.exports = class Database {
         }
         
         const queryStr = this._createUpdateQuery(req.body.cols, req.body.vals, req.body.date, req.body.location);
-        console.log(queryStr);
+
         try {
             const result = await this._connection.query(queryStr);
             return result;
@@ -378,7 +362,6 @@ module.exports = class Database {
                 else if(req.body.dataType === 'BOOLEAN'){
                     var queryStr = "ALTER TABLE " + this.dbName + " ADD COLUMN " + req.body.name + " " + req.body.dataType + ";"
                 }
-                console.log(queryStr);
                 try {
                     const result = await this._connection.query(queryStr);
                     return result;
@@ -392,7 +375,6 @@ module.exports = class Database {
                     throw new Error(Errors.error.badData);
                 }
                 var queryStr = "ALTER TABLE " + this.dbName + " DROP COLUMN " + req.body.name + ";"
-                console.log(queryStr);
                 try {
                     const result = await this._connection.query(queryStr);
                     return result;
@@ -406,9 +388,9 @@ module.exports = class Database {
     }
 
     async sumPerCol(req) {
-        console.log(req.dateStart, req.dateEnd)
+
         const queryStr = this._createSelectSumQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.groupBy);
-        console.log(queryStr);
+
         try {
             const result = await this._connection.query(queryStr);
             return result
@@ -419,16 +401,12 @@ module.exports = class Database {
 
 
     async database(req) {
-        // if (!this._validateColNames(req.body.cols)) {
-        //     console.log("bad data!");
-        //     throw new Error(Errors.error.badData);
-        // }
-        console.log(req.body.dateStart, req.body.dateEnd);
+
         const queryStr = this._createSelectQuery(req.body.cols, req.body.dateStart, req.body.dateEnd, req.body.locations);
-        console.log(queryStr);
+
         try {
             const result = await this._connection.query(queryStr);
-            console.log(result)
+
         } catch (err) {
             throw new Error(Errors.error.queryError);
         }

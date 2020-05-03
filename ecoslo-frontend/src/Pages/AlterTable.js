@@ -78,10 +78,10 @@ class AlterTable extends React.Component {
         let colName = this.state.formData["name"].replace(/ /g,"_"); 
         let value = this.state.formData["dataType"]; 
         let dType; 
-        if (value == "Numeric") {
+        if (value === "Numeric") {
             dType = "INT"; 
         }
-        else if (value == "Text") {
+        else if (value === "Text") {
             dType = "STRING";  
         }
         else {
@@ -128,7 +128,7 @@ class AlterTable extends React.Component {
         event.preventDefault(); 
         confirmAlert({
             title: "Confirm to add column",
-            message: "Are you sure you want to add a column named \'" + this.state.formData['name'] + "\' that stores \'" + this.state.formData['dataType'] + "\'?",
+            message: "Are you sure you want to add a column named '" + this.state.formData['name'] + "' that stores '" + this.state.formData['dataType'] + "'?",
             buttons: [
               {
                 label: 'Yes',
@@ -149,7 +149,7 @@ class AlterTable extends React.Component {
         event.preventDefault(); 
         confirmAlert({
             title: "Confirm to delete column",
-            message: "Are you sure you want to delete the column named \'" + this.state.formData['name'] + "\'?",
+            message: "Are you sure you want to delete the column named '" + this.state.formData['name'] + "'?",
             buttons: [
               {
                 label: 'Yes',
