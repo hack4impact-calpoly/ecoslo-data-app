@@ -81,7 +81,6 @@ class Update extends React.Component {
       location: this.state.location
     }
 
-    alert('A name was submitted: ' + data);
     event.preventDefault();
 
     try {
@@ -119,9 +118,19 @@ class Update extends React.Component {
       dateEnd: this.state.date,
       locations: [this.state.location]
     }
-    let res = await this.props.apiWrapper.getByCols(data);
-    this.setState({tableResult: res})
-    console.log(res)
+    try{
+      let res = await this.props.apiWrapper.getByCols(data);
+      if(res.rows.length != 0){
+        this.setState({tableResult: res})
+      }
+      else{
+        throw "No data found."
+      }
+    }
+    catch(e)
+    {
+      alert("No data found for this date and location.")
+    }
   }
 
   render() {

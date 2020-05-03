@@ -406,7 +406,7 @@ module.exports = class Database {
 
         try {
             const result = await this._connection.query(queryStr);
-
+            return result
         } catch (err) {
             throw new Error(Errors.error.queryError);
         }

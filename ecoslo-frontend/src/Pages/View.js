@@ -196,12 +196,18 @@ class View extends React.Component {
           locations: this.state.locations
         }
     
-        let td = await this.props.apiWrapper.getByCols(d);
-        if(td.rows !== undefined && td.rows.length !== 0){
-          this.setState({tableData: td})
+        try{
+          let td = await this.props.apiWrapper.getByCols(d);
+          if(td.rows !== undefined && td.rows.length !== 0){
+            this.setState({tableData: td})
+          }
+          else{
+            //this.setState({showAlert: true})
+            alert("No data found. Try entering a different date range and location.")
+          }
         }
-        else{
-          this.setState({showAlert: true})
+        catch(e){
+          alert("There was an error in your request. Please check your input and try again.")
         }
       }
       else{
@@ -233,12 +239,18 @@ class View extends React.Component {
           locations: this.state.locations,
           groupBy: groupCols
         }
-        let td = await this.props.apiWrapper.sumPerCol(q);
-        if(td.rows !== undefined && td.rows.length !== 0){
-          this.setState({tableData: td})
+        try{
+          let td = await this.props.apiWrapper.sumPerCol(q);
+          if(td.rows !== undefined && td.rows.length !== 0){
+            this.setState({tableData: td})
+          }
+          else{
+            //this.setState({showAlert: true})
+            alert("No data found. Try entering a different date range and location.")
+          }
         }
-        else{
-          this.setState({showAlert: true})
+        catch(e){
+          alert("There was an error in your request. Please check your input and try again. If you checked any boxes in the group by section, you can only view date, location, and event name if you also selected them under group by.")
         }
 
       }
@@ -409,11 +421,13 @@ renderGroupByCheckBoxes = () => {
   render() {
     if(this.state.colNames !== undefined){
     return (
+      <div>
       <div style={this.marginstyle}>
         <Container>
           {this.noDataAlert()}
         <Form>
           <div>
+            
           <Form.Group>
             <Form.Group>
               <Row>
@@ -449,7 +463,7 @@ renderGroupByCheckBoxes = () => {
         <DataTable data={this.state.tableData}></DataTable>
         
       </div>
-
+</div>
       
     );
 
