@@ -2,7 +2,7 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import {Row, Col} from 'react-bootstrap';
+import {Col} from 'react-bootstrap';
 import withLocations from '../Components/withLocations';
 import withColumns from '../Components/withColumns';
 import Select from 'react-dropdown-select';
@@ -218,11 +218,11 @@ class AddEvent extends React.Component {
     for (const field of this.additionalColumns) {
       if (this.props.colTypes && this.props.colTypes.hasOwnProperty(field)) {
         const colType = this.props.colTypes[field];
-        if (colType == "string") {
+        if (colType === "string") {
           formData[field] = "";
-        } else if (colType == "numeric") {
+        } else if (colType === "numeric") {
           formData[field] = "0";
-        } else if (colType == "boolean") {
+        } else if (colType === "boolean") {
           formData[field] = 'False';
         } else {
           console.log("error in type");

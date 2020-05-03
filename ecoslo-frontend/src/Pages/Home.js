@@ -2,7 +2,6 @@
 import React from "react";
 import "../styles/home.css";
 import "../styles/index.css";
-import { Form } from "react-bootstrap";
 
 class Home extends React.Component {
     render() {

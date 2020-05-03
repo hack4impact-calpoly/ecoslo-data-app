@@ -4,8 +4,7 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import {Row, Col} from 'react-bootstrap';
-import Table from 'react-bootstrap/Table';
+import {Col} from 'react-bootstrap';
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
 
@@ -99,15 +98,16 @@ class Update extends React.Component {
        var curr_inputs = this.state.inputs
        var in_length = curr_inputs.length
        curr_inputs.push((in_length + 1).toString())
-       {this.setState({inputs: curr_inputs})}
+       this.setState({inputs: curr_inputs})
        let curr_input_vals = this.state.input_vals
        curr_input_vals.push(['', ''])
-       {this.setState({input_vals: curr_input_vals})}
+       this.setState({input_vals: curr_input_vals})
       }
 
   async handleDateChange(event) {
     this.setState({date: event.target.value});
   }
+
   async handleLocationChange(event) {
     this.setState({location: event.target.value});
   }

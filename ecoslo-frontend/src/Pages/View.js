@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Alert } from "react-bootstrap"; 
 import Table from "react-bootstrap/Table";
-import { ExportCSV } from '../Components/exportExcel.js'
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
 import "../styles/page.css";
@@ -120,7 +119,7 @@ class View extends React.Component {
           vals.push(false)
         }
         this.setState({colNames: names})
-        this.renderCols()
+        this.initSelectedValues()
       }
     }
     catch(err){
@@ -143,7 +142,7 @@ class View extends React.Component {
     this.setState({locations: selected})
   }
 
-  handleOnChange = (field, validationFunction = null) => event => {
+  handleStringInputChange = (field, validationFunction = null) => event => {
     let curFormData = Object.assign({}, this.state.formData);
     const value = event.target.value;
     if (this.state.formData && (curFormData[field] !== value)) {
@@ -169,16 +168,6 @@ class View extends React.Component {
     this.setState({selectedValues: sv})
   }
 
-
-  handleCheckBoxChange = (event, index) => {
-    
-    const target = event.target;
-    const value = target.checked;
-    let cb = this.state.checkboxes
-    cb[index] = value
-    this.setState({checkboxes: cb})
-  }
-
   setShow(b) {
     this.setState({showAlert: b})
   }
@@ -198,11 +187,6 @@ class View extends React.Component {
         i += 1
         }
       }
-        // for(var i = 0; i < this.state.selectedValues.length; i++){
-        //   if (this.state.selectedValues[i] === true){
-        //     selected.push(this.state.colNames[i])
-        //   }
-      // }
 
       if(this.state.groupByValues[0] === false && this.state.groupByValues[1] === false && this.state.groupByDate === "None"){
         var d = {
@@ -284,11 +268,11 @@ class View extends React.Component {
 
   handleGroupByCheckbox = (e, col) =>{
     var duplicateVals = this.state.groupByValues
-    if (col == "Location"){
+    if (col === "Location"){
       duplicateVals[0] = e.target.checked
       this.setState({groupByValues: duplicateVals})
     }
-    if (col == "Event Name"){
+    if (col === "Event Name"){
       duplicateVals[1] = e.target.checked
       this.setState({groupByValues: duplicateVals})
     }
@@ -297,50 +281,40 @@ class View extends React.Component {
 
 
 
-renderCheckBoxes = () => {
+renderGroupByCheckBoxes = () => {
   if(this.state.colNames !== undefined){
-    let data = ["Location", "Event Name"];
     return(
     <div>
       <Form.Label className="big">Group By</Form.Label>
-      <Table bordered hover size="med">
-        <tbody>
-        <tr>
-    <td><label>
-    <input type="checkbox"
-    name="Location"
-    checked={this.state.groupByValues[0]}
-    onChange={(e) => this.handleGroupByCheckbox(e, "Location")}/> Location
-  </label>
-  </td>
-  <td><label>
+      <div></div>
       <input type="checkbox"
-      name="Event Name"
-      checked={this.state.groupByValues[1]}
-      onChange={(e) => this.handleGroupByCheckbox(e, "Event Name")}/> Event Name
-      </label> 
-      </td>
+        name="Location"
+        checked={this.state.groupByValues[0]}
+        onChange={(e) => this.handleGroupByCheckbox(e, "Location")}/> Location
+      <div></div>
+
+      <input type="checkbox"
+        name="Event Name"
+        checked={this.state.groupByValues[1]}
+        onChange={(e) => this.handleGroupByCheckbox(e, "Event Name")}/> Event Name
       <div>
-      
-      <Form.Control multiple={false} as="select" onChange={(e) => this.handleGroupByDateChange(e)} >
-                  <option>Date</option>
-                  <option>Full Date</option>
-                  <option>Month</option>
-                  <option>Year</option>
-                  <option>Month and Year</option>
-                  
-      </Form.Control>
-      
+        <Form.Control multiple={false} as="select" onChange={(e) => this.handleGroupByDateChange(e)} >
+                    <option>None</option>
+                    <option>Date</option>
+                    <option>Full Date</option>
+                    <option>Month</option>
+                    <option>Year</option>
+                    <option>Month and Year</option>
+                    
+        </Form.Control>
       </div>
-      </tr>
-      </tbody>
-      </Table>
+      <div></div>
       </div>
       );
     }
   }
  
- renderCols = ()  => {
+ initSelectedValues = ()  => {
   if(this.state.colNames !== undefined){
   var counter = -1
   let data = this.state.colNames;
@@ -373,237 +347,58 @@ renderCheckBoxes = () => {
 
   
 
-  renderForm = ()  => {
+  renderItemCheckboxes = ()  => {
     if(this.state.colNames !== undefined){
       let columns = this.state.columnNames;
       let checkboxGroups = Object.keys(columns).map((group, index)=> {
         let checkboxes = Object.keys(columns[group]).map((col, i)=> {
-          if(columns[group][col] !== null){
-            return(
-              <td id="table">
-              <label>
-              <input type="checkbox"
-              name={col}
-              checked={this.state.selectedValues[columns[group][col]]}
-              onChange={(e) => this.handleInputChange(e, columns[group][col])}/> {col.split("_").join(" ")}
-              </label> 
-            </td>
-            )
-          }
-          else{
-            return null
-          }
+            if(columns[group][col] !== null){
+              return(
+                <td id="table">
+                  <input type="checkbox"
+                    name={col}
+                    checked={this.state.selectedValues[columns[group][col]]}
+                    onChange={(e) => this.handleInputChange(e, columns[group][col])}/>
+                    {" " + col.split("_").join(" ")}
+                </td>
+              )
+            }
+            else{
+              return null
+            }
+        })
+
+        let rowGroups = [];
+        while(checkboxes.length){
+          rowGroups.push(checkboxes.splice(0, 5));
+        }
+        let rows = rowGroups.map((colArray, index) => {
+          return(
+            <tr>
+              {colArray.map((col, i) => {
+                  return(
+                    col
+                  );
+              })}
+            </tr>
+          );
         })
         return(
           <div>
           <div className="thick">{group}</div>
           <Table bordered hover size="sm">
           <tbody>
-          <tr>
-            {checkboxes}
-          </tr>
+            {rows}
           </tbody>
           </Table>
           </div>
         )
       })
-
-
-
-
-
-
-      // let formUI = data.map((col, index) => {
-      //   return (
-      //       <td id="table">
-      //         <label>
-      //         <input type="checkbox"
-      //         name={col}
-      //         checked={this.state.selectedValues[index]}
-      //         onChange={(e) => this.handleInputChange(e, index)}/> {col.split("_").join(" ")}
-      //         </label> 
-      //       </td>
-            
-      //   )})
-
-      //  let tableboxes = []
-      // for(var i = 0; i < formUI.length; i=(i+55)){
-      //   tableboxes.push(
-      //     <div>
-      //       <div className="thick">Key Information</div>
-      //     <Table bordered hover size="sm">
-      //     <tbody>
-      //     <tr>
-      //       {formUI[i]}
-      //       {formUI[i+1]}
-      //       {formUI[i+2]}
-      //     </tr>
-      //     </tbody>
-      //     </Table>
-      //     <div className="thick">Summary</div>
-      //     <Table bordered hover size="sm">
-      //     <tbody>
-      //     <tr>
-      //       {formUI[i+3]}
-      //       {formUI[i+4]}            
-      //       {formUI[i+5]}
-      //       {formUI[i+6]}
-      //       </tr>
-      //       <tr>
-      //       {formUI[i+7]}
-      //       {formUI[i+8]}
-      //       {formUI[i+9]}
-      //       </tr>
-      //       </tbody>
-      //       </Table>
-      //       <div className="thick">Most Likely to Find Items</div>
-      //       <Table bordered hover size="sm">
-      //       <tbody>
-      //       <tr>
-      //       {formUI[i+10]}
-      //       {formUI[i+11]}
-      //       {formUI[i+12]}
-      //       {formUI[i+13]}
-      //       </tr>
-      //       <tr>
-      //       {formUI[i+14]}
-      //       {formUI[i+15]}
-      //       {formUI[i+16]}
-      //       {formUI[i+17]}
-      //       </tr>
-      //       <tr>
-      //       {formUI[i+18]}
-      //       {formUI[i+19]}
-      //       {formUI[i+20]}
-      //       {formUI[i+21]}
-      //       </tr>
-      //       <tr>
-      //       {formUI[i+22]}
-      //       {formUI[i+23]}
-      //       {formUI[i+24]}
-      //       {formUI[i+25]}
-      //       </tr>
-      //       <tr>
-      //       {formUI[i+26]}
-      //       {formUI[i+27]}
-      //       </tr>
-      //       </tbody>
-      //       </Table>
-      //       <div className="thick">Fishing Gear</div>
-      //       <Table bordered hover size="sm">
-      //       <tbody>
-      //       <tr>
-      //       {formUI[i+28]}
-      //       {formUI[i+29]}
-      //       {formUI[i+30]}
-      //       {formUI[i+31]}
-      //       </tr>
-      //       </tbody>
-      //       </Table>
-      //       <div className="thick">Packaging Materials</div>
-      //       <Table bordered hover size="sm">
-      //       <tbody>
-      //       <tr>
-      //       {formUI[i+32]}
-      //       {formUI[i+33]}
-      //       {formUI[i+34]}
-      //       {formUI[i+35]}
-      //       </tr>
-      //       <tr>
-      //       {formUI[i+36]}
-      //       </tr>
-      //       </tbody>
-      //       </Table>
-      //       <div className="thick">Other Trash</div>
-      //       <Table bordered hover size="sm">
-      //       <tbody>
-      //       <tr>
-      //       {formUI[i+37]}
-      //       {formUI[i+38]}
-      //       {formUI[i+39]}
-      //       {formUI[i+40]}
-      //       </tr>            
-      //       <tr>
-      //       {formUI[i+41]}
-      //       {formUI[i+42]}
-      //       {formUI[i+43]}
-      //       </tr>
-      //       </tbody>
-      //       </Table>
-      //       <div className="thick">Personal Hygine</div>
-      //       <Table bordered hover size="sm">
-      //       <tbody>
-      //       <tr>
-      //       {formUI[i+44]}
-      //       {formUI[i+45]}
-      //       {formUI[i+46]}
-      //       {formUI[i+47]}
-      //       </tr> 
-      //       </tbody>    
-      //       </Table>
-      //       <div className="thick">Tiny Trash</div>
-      //       <Table bordered hover size="sm">
-      //       <tbody>
-      //       <tr>
-
-      //       {formUI[i+50]}
-      //       {formUI[i+51]}
-      //       {formUI[i+52]}
-      //       </tr>  
-      //       </tbody>   
-      //       </Table>
-      //       <div className="thick">Additonal Items</div>
-      //       <Table bordered hover size="sm">
-      //       <tbody>
-      //       <tr>
-      //       {formUI[i+48]}
-      //       {formUI[i+49]}
-      //       {formUI[i+53]}
-      //       {formUI[i+54]}
-      //       </tr>   
-      //       <tr>
-      //       {formUI[i+55]}
-      //       {formUI[i+56]}
-      //       {formUI[i+57]}
-      //       {formUI[i+58]}
-      //       </tr>  
-      //       <tr>
-      //       {formUI[i+59]}
-      //       {formUI[i+60]}
-      //       {formUI[i+61]}
-      //       {formUI[i+62]}
-      //       </tr> 
-      //       <tr>
-      //       {formUI[i+63]}
-      //       {formUI[i+64]}
-      //       {formUI[i+65]}
-      //       {formUI[i+66]}
-      //       </tr>  
-      //       <tr>
-      //       {formUI[i+67]}
-      //       {formUI[i+68]}
-      //       {formUI[i+69]}
-      //       {formUI[i+70]}
-      //       </tr> 
-      //       <tr>
-      //       {formUI[i+71]}
-      //       {formUI[i+72]}
-      //       {formUI[i+73]}
-      //       {formUI[i+74]}
-      //       </tr> 
-      //       </tbody>
-          
-      //     </Table>
-      //     </div>
-          
-      //   )
-      // }
-         return checkboxGroups;
-       }
-      else {
-        return null
-        
-      }
+     return checkboxGroups;
+    }
+  else {
+    return null
+   }
   } 
 
 
@@ -619,18 +414,17 @@ renderCheckBoxes = () => {
           {this.noDataAlert()}
         <Form>
           <div>
-          <Form.Group controlId="formBasicEmail">
+          <Form.Group>
             <Form.Group>
-            <Row>
-              <Col>
-              <Form.Label className="big">Start Date</Form.Label>
-              <Form.Control placeholder="Enter Date" onChange={this.handleOnChange("dateStart")} />
-              </Col>
-              <Col>
-              <Form.Label className="big">End Date</Form.Label>
-              <Form.Control placeholder="Enter Date" onChange={this.handleOnChange("dateEnd")} />
-              </Col>
-              
+              <Row>
+                <Col>
+                  <Form.Label className="big">Start Date</Form.Label>
+                  <Form.Control placeholder="Enter Date" onChange={this.handleStringInputChange("dateStart")} />
+                </Col>
+                <Col>
+                  <Form.Label className="big">End Date</Form.Label>
+                  <Form.Control placeholder="Enter Date" onChange={this.handleStringInputChange("dateEnd")} />
+                </Col>
               </Row>
               </Form.Group>
               
@@ -641,15 +435,13 @@ renderCheckBoxes = () => {
                     return <option>{value}</option>
                   }) }
               </Form.Control>
-
-
-
             </Form.Group>
-                  <div>
-                    {this.renderCheckBoxes()}
-                  </div>
+
+            <Form.Group>
+              {this.renderGroupByCheckBoxes()}
+            </Form.Group>
             <Form.Label className="big">Select Which Items to View</Form.Label>
-            {this.renderForm()}
+            {this.renderItemCheckboxes()}
             <Button type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>
         </Form>

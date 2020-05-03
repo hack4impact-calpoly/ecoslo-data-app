@@ -18,7 +18,6 @@ app.post('/add', async (req, res) => {
 		res.status(400).send(AppError.stringError(AppError.badAuth));
 		return;
 	}
-	console.log(req.body);
 	try {
 		await database.add(req.body.item);
 	} catch (err) {
@@ -39,7 +38,6 @@ app.post('/altTable', async (req, res) =>{
 })
 
 app.get('/locations', async (req, res) => {
-	console.log("get request locations")
 	try{
 		let result = await database.getLocations();
 		res.status(200).json({
@@ -59,7 +57,6 @@ app.get('/columns', async (req, res) => {
 		res.status(200).json({
 			r
 		});
-		console.log("r: ", r);
 	}
 	catch (err) {	
 		res.status(400).send(AppError.stringError(err.message));
@@ -69,7 +66,6 @@ app.get('/columns', async (req, res) => {
 
 
 app.get('/byCols', async (req, res) => {
-	console.log("getting by cols");
 	try{
 		let queryParams = req.query;
 		if ("cols" in queryParams) {
@@ -84,15 +80,12 @@ app.get('/byCols', async (req, res) => {
 		});
 	}
 	catch (err) {
-		console.log(err)
-		console.log(AppError.stringError(err))
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
 })
 
 app.get('/sumPerCol', async (req, res) => {
-	console.log("in sum per col main")
 	try{
 		let queryParams = req.query;
 		if ("cols" in queryParams) {
@@ -110,7 +103,6 @@ app.get('/sumPerCol', async (req, res) => {
 		});
 	}
 	catch (err) {
-		console.log(AppError.stringError(err.message))
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
@@ -120,7 +112,6 @@ app.get('/sumPerCol', async (req, res) => {
 
 
 app.put('/update', async (req, res) => {
-	console.log("updating");
 	try{
 		const result = await database.update(req);
 		if (result.rowCount > 0) {

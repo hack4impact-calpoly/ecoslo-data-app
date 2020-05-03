@@ -13,7 +13,6 @@ import { Provider } from "react-redux";
 import store from "./redux/reducers/store";
 import APIWrapper from "./APIs/APIWrapper";
 import {
-    Redirect,
     Route,
     BrowserRouter as Router,
     Switch

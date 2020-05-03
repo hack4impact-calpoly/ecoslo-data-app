@@ -5,11 +5,6 @@ import { Table, Container, Row, Col } from "react-bootstrap";
 
 class DataTable extends React.Component {
 
-    constructor(props) {
-        super(props);
-
-    }
-
     marginstyle={
         marginTop: '1.5em',
         marginBottom: '1.2em'
