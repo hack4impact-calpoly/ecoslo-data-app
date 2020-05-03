@@ -110,19 +110,17 @@ class View extends React.Component {
   }
 
   async componentDidMount(){
-    console.log("colnames", this.state.colNames);
     try {
-      if(this.state.colNames === undefined || this.state.selectedValues === undefined) {
+      if(this.state.colNames === undefined) {
         let res = await this.props.apiWrapper.getColumns();
         var names = []
         var vals = []
-        console.log(res.r.fields)
         for (var i = 0; i < res.r.fields.length; i++){
           names.push(res.r.fields[i].name)
           vals.push(false)
         }
         this.setState({colNames: names})
-        this.setState({selectedValues: vals})
+        this.renderCols()
       }
     }
     catch(err){
@@ -134,8 +132,6 @@ class View extends React.Component {
   handleLocationChange (event) {
     let selected = []
     for(var i = 0; i < event.target.options.length; i++){
-      console.log(event.target.options[i].value)
-      console.log(event.target.options[i].selected)
       if(event.target.options[i].value === 'Select All' && event.target.options[i].selected){
         selected=[]
         break;
@@ -192,14 +188,22 @@ class View extends React.Component {
 
     if(this.state.colNames !== undefined) {
       var selected = []
-      for(var i = 0; i < this.state.selectedValues.length; i++){
-        if (this.state.selectedValues[i] === true){
-          selected.push(this.state.colNames[i])
+      let data = this.state.columnNames
+      var i = 0
+      for(var key in data){
+        for(var index in data[key]){
+          if(data[key][index] !== null && this.state.selectedValues[i] === true){
+            selected.push(this.state.colNames[i])
+          }
+        i += 1
         }
       }
+        // for(var i = 0; i < this.state.selectedValues.length; i++){
+        //   if (this.state.selectedValues[i] === true){
+        //     selected.push(this.state.colNames[i])
+        //   }
+      // }
 
-      console.log('LOCATIONS SATE')
-      console.log(this.state.locations)
       if(this.state.groupByValues[0] === false && this.state.groupByValues[1] === false && this.state.groupByDate === "None"){
         var d = {
           dateStart: this.state.formData['dateStart'],
@@ -218,7 +222,6 @@ class View extends React.Component {
       }
       else{
         var groupCols = []
-        console.log("groupby", this.state.groupByValues[0])
         if(this.state.groupByValues[0] === true){
           
           groupCols.push("location")
@@ -239,7 +242,6 @@ class View extends React.Component {
           }
           
         }
-        console.log("groupcols", groupCols)
         var q = {
           dateStart: this.state.formData['dateStart'],
           dateEnd: this.state.formData['dateEnd'],
@@ -275,7 +277,6 @@ class View extends React.Component {
   }
 
   handleGroupByDateChange (event) {
-    console.log("target", event.target.value)
     this.setState({groupByDate: event.target.value})
   }
 
@@ -297,7 +298,7 @@ class View extends React.Component {
 
 
 renderCheckBoxes = () => {
-  if(this.state.colNames !== undefined && this.state.selectedValues !== undefined){
+  if(this.state.colNames !== undefined){
     let data = ["Location", "Event Name"];
     return(
     <div>
@@ -359,12 +360,12 @@ renderCheckBoxes = () => {
       counter += 1;
       columns["Additional Items"][data[i]] = counter
       values.push(false)
-      console.log(columns["Additional Items"][data[i]])
     }
 
   }
-  this.setState({columnNames : columns})
   this.setState({selectedValues : values})
+  this.setState({columnNames : columns})
+
  }
 }
 
@@ -377,16 +378,21 @@ renderCheckBoxes = () => {
       let columns = this.state.columnNames;
       let checkboxGroups = Object.keys(columns).map((group, index)=> {
         let checkboxes = Object.keys(columns[group]).map((col, i)=> {
-          return(
-            <td id="table">
-            <label>
-            <input type="checkbox"
-            name={col}
-            checked={this.state.selectedValues[columns[group][col]]}
-            onChange={(e) => this.handleInputChange(e, columns[group][col])}/> {col.split("_").join(" ")}
-            </label> 
-          </td>
-          )
+          if(columns[group][col] !== null){
+            return(
+              <td id="table">
+              <label>
+              <input type="checkbox"
+              name={col}
+              checked={this.state.selectedValues[columns[group][col]]}
+              onChange={(e) => this.handleInputChange(e, columns[group][col])}/> {col.split("_").join(" ")}
+              </label> 
+            </td>
+            )
+          }
+          else{
+            return null
+          }
         })
         return(
           <div>
@@ -595,7 +601,6 @@ renderCheckBoxes = () => {
          return checkboxGroups;
        }
       else {
-        console.log("happened")
         return null
         
       }
@@ -608,7 +613,6 @@ renderCheckBoxes = () => {
 
   render() {
     if(this.state.colNames !== undefined){
-      console.log(this.state.locations)
     return (
       <div style={this.marginstyle}>
         <Container>
@@ -645,7 +649,6 @@ renderCheckBoxes = () => {
                     {this.renderCheckBoxes()}
                   </div>
             <Form.Label className="big">Select Which Items to View</Form.Label>
-            {this.renderCols()}
             {this.renderForm()}
             <Button type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>
