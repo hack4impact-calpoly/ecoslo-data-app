@@ -5,7 +5,6 @@ import Container from 'react-bootstrap/Container';
 import { Col, Row, Alert } from "react-bootstrap"; 
 import Table from "react-bootstrap/Table";
 import DataTable from '../Components/DataTable.js';
-import Footer from '../Components/footer.js';
 import withLocations from '../Components/withLocations';
 import "../styles/page.css";
 
