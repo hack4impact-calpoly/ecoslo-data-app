@@ -11,12 +11,14 @@ import withLocations from '../Components/withLocations';
 class Update extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {inputs: ["1"],
-     cols: {Cigarette_Butts: '', Food_Wrappers: '', Plastic_Take_Out_Containers: '', Plastic_Bottle_Caps: '', Metal_Bottle_Caps: '',Plastic_Lids: '', Straws_And_Stirrers: '', 
+     cols: {Event_Name: '', Adult_Volunteers: '', Child_Volunteers: '', Distance_Covered: '', Trash_Bags_Filled: '', Weight_Trash: '', Weight_Recycle: '', Total_Items: '',
+     Cigarette_Butts: '', Food_Wrappers: '', Plastic_Take_Out_Containers: '', Foam_Take_Out_Containers: '', Plastic_Bottle_Caps: '', Metal_Bottle_Caps: '',Plastic_Lids: '', Straws_And_Stirrers: '', 
      Forks_Knives_And_Spoons: '', Plastic_Beverage_Bottles: '', Glass_Beverage_Bottles: '', Beverage_Cans: '', Plastic_Grocery_Bags: '', Other_Plastic_Bags: '', Paper_Bags: '', 
      Paper_Cups_And_Plates: '', Plastic_Cups_And_Plates: '', Foam_Cups_And_Plates: '', Fishing_Buoys_Pots_And_Traps: '', Fishing_Net_And_Pieces: '', Fishing_Line: '', Rope: '', 
      Six_Pack_Holders: '', Other_Plastic_Or_Foam_Packaging: '', Other_Plastic_Bottles: '', Strapping_Bands: '', Tobacco_Packaging_Or_Wrap: '', Appliances: '', Balloons: '', Cigar_Tips: '', 
-     Cigarette_Lighters: '', Construction_Materials: '', Fireworks: '', Tires: '', Condoms: '', Diapers: '', Syringes: '', Tampons: '', Foam_Pieces: '', Glass_Pieces: '', Plastic_Pieces: ''},
+     Cigarette_Lighters: '', Construction_Materials: '', Fireworks: '', Tires: '', Condoms: '', Diapers: '', Syringes: '', Tampons: '', Unusual_Items: '', Dead_Animals: '', Foam_Pieces: '', Glass_Pieces: '', Plastic_Pieces: ''},
      input_vals: [['', '']],
      date: "",
      location: "",
@@ -56,7 +58,7 @@ class Update extends React.Component {
   
   handleChangeTextBox(event, index) {
     var new_list_input = this.state.input_vals;
-    new_list_input[index][1] = event.target.value
+    new_list_input[index][1] = event.target.value;
     this.setState({input_vals: new_list_input});
   }
 
@@ -71,7 +73,11 @@ class Update extends React.Component {
     let vals=[]
     for (let i = 0; i < this.state.input_vals.length; i++){
       cols.push(this.state.input_vals[i][0]);
-      vals.push(this.state.input_vals[i][1])
+      var val = this.state.input_vals[i][1]; 
+      if (isNaN(val)) {
+        val = "'" + val + "'";  
+      }
+      vals.push(val); 
     }
 
     let data = {
@@ -177,8 +183,8 @@ class Update extends React.Component {
 
         <Form.Row>
           <Col xs={11}>
-            <Form.Label><div className="loc_spacing">Number</div></Form.Label>
-            <Form.Control placeholder="Enter number" name={index.toString()} value={this.state.input_vals[index][1]} onChange={(e) => this.handleChangeTextBox(e, index)}/>
+            <Form.Label><div className="loc_spacing">Value</div></Form.Label>
+            <Form.Control placeholder="Enter value" name={index.toString()} value={this.state.input_vals[index][1]} onChange={(e) => this.handleChangeTextBox(e, index)}/>
           </Col>
         </Form.Row>
             </div>
