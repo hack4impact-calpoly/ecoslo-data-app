@@ -156,10 +156,12 @@ class AddEvent extends React.Component {
     super(props);
     this.additionalColumns = [];
     this.defaultCols = ["location", "date", "event_name"];
+    this.defaultColTypes = { "location" : "string", "date" : "string", "event_name" : "string" };
     for (const key in columnNames) {
       for (const column of columnNames[key].columns) {
         for (const field of column) {
           this.defaultCols.push(field.toLowerCase());
+          this.defaultColTypes[field.toLowerCase()] = "numeric";
         }
       }
     }
@@ -179,7 +181,6 @@ class AddEvent extends React.Component {
 
     this.state = {
       formData : this.getDefaultFormData(),
-
     }
   }
 
@@ -201,7 +202,7 @@ class AddEvent extends React.Component {
     if (this.additionalColumns.length !== 0 && howToGoThrough[howToGoThrough.length -1][0] !== "Additional Items") {
       howToGoThrough.push(["Additional Items"]);
     }
-    this.setState({formData : this.getDefaultFormData()})
+    this.setState({formData : Object.assign(this.state.formData, this.getDefaultAdditionalData())})
   }
 
   componentDidUpdate(prevProps){
@@ -210,11 +211,8 @@ class AddEvent extends React.Component {
     }
   }
 
-  getDefaultFormData() {
+  getDefaultAdditionalData() {
     let formData = {};
-    for (const field of this.defaultCols) {
-      formData[field] = "0";
-    }
     for (const field of this.additionalColumns) {
       if (this.props.colTypes && this.props.colTypes.hasOwnProperty(field)) {
         const colType = this.props.colTypes[field];
@@ -232,20 +230,28 @@ class AddEvent extends React.Component {
       }
     }
 
-    formData["location"] = null;
-    formData["date"] = null;
-    formData["event_name"] = null;
-
     return formData;
   }
 
+  getDefaultFormData() {
+    let formData = {};
+    for (const field of this.defaultCols) {
+      if (this.defaultColTypes[field] === "numeric") {
+        formData[field] = "0";
+      } else if (this.defaultColTypes[field] === "boolean") {
+        formData[field] = 'False';
+      } else if (this.defaultColTypes[field] === "string") {
+        formData[field] = null;
+      }
+    }
+
+    return Object.assign(formData, this.getDefaultAdditionalData());
+  }
+
   handleLocationChange (item) {
-    console.log(item)
-    console.log(item[0].text)
     let old = this.state.formData;
     old['location'] = item[0].text
     this.setState({formData: old})
-    console.log(this.state.formData)
   }
 
   handleOnChange = (field, validationFunction = null) => event => {
@@ -284,20 +290,28 @@ class AddEvent extends React.Component {
     let toSendFormData = {};
     for (const pair of Object.entries(this.state.formData)) {
       const key = pair[0], value = pair[1] === null ? null : pair[1].trim();
-
-      if (key === "location" || key === "date") {
-        if (value === null) {
-          alert("Please input an acceptable value for " + key);
+      console.log(key, value)
+      if (this.defaultColTypes[key] === "string") {
+        if (value === null || value.length === 0) {
+          alert("Please input an acceptable value for " + convertFieldToLabel(key) + " at least one character in length.");
           return false;
         }
         toSendFormData[key] = value;
-      } else {
+      } else if (this.defaultColTypes[key] === "numeric") {
         if (!this.validateNumericEntry(value)) {
-          alert("Value " + value + " for " + key + "is not an acceptable value.");
+          alert("Value " + value + " for " + convertFieldToLabel(key) + " is not an acceptable value.");
           return false;
         }
         toSendFormData[key] = (+value) || 0;
+      } else if (this.defaultColTypes[key] === "boolean") {
+        if (!this.validateBooleanEntry(value)) {
+          alert("Value for " + convertFieldToLabel(key) + " must be true or false!");
+          return false;
+        }
+      } else {
+        console.log("Unknown column type for", convertFieldToLabel(key));
       }
+
     }
     
     try {
@@ -419,7 +433,6 @@ class AddEvent extends React.Component {
      for (var i = 0; i < this.props.locations.length; i++){
       locOptions.push({text: this.props.locations[i]})
     };
-    console.log(this.state.formData)
     return (
       <div style={this.marginstyle}>
         <Container>
@@ -434,7 +447,7 @@ class AddEvent extends React.Component {
               >
               </Select>
               <Form.Label>Event Name</Form.Label>
-              <Form.Control placeholder="Enter Event Name" onChange={this.handleOnChange("name")} />
+              <Form.Control placeholder="Enter Event Name" onChange={this.handleOnChange("event_name")} />
               {/* <Form.Control as="select" onChange={this.handleOnChange("location")} >
               <option>Select a Location</option>
               {/* { this.renderLocations() } */}
