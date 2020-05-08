@@ -13,6 +13,7 @@ function authenticateInput(input) {
 	return true;
 }
 
+
 app.post('/add', async (req, res) => {
 	if (!authenticateInput(req.body.item)) {
 		res.status(400).send(AppError.stringError(AppError.badAuth));

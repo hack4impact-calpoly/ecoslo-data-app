@@ -53,6 +53,10 @@ class DataTable extends React.Component {
 
         return (
             <div>
+                <div>
+                <ExportCSV csvData={this.props.data} fileName={"Cleanup Data"}></ExportCSV>
+            </div>
+            <div>
             <Container style={this.marginstyle}>
                 <Row>
                     <Col xxs={2}></Col>
@@ -69,8 +73,10 @@ class DataTable extends React.Component {
             <Col xxs={2}></Col>
             </Row>
             </Container>
-            
-                <ExportCSV csvData={this.props.data} fileName={"Cleanup Data"}></ExportCSV>
+            </div>
+
+
+
             </div>
             
         );
