@@ -1,8 +1,21 @@
 const {Pool} = require('pg');
 const Errors = require('./errors');
 
+
+const dataTypeConverter = {
+    "16": "boolean",
+    "23": "numeric",
+    "1082": "string",
+    "1043": "string"
+}
+
 module.exports = class Database {
+
+
+
     constructor(pool) {
+
+
         this._possibleKeys = new Set(['date', 'location', 'Cigarette_Butts', 'Food_Wrappers', 'Plastic_Take_Out_Containers', 'Foam_Take_Out_Containers',
         'Plastic_Bottle_Caps',
         'Metal_Bottle_Caps',
@@ -311,7 +324,14 @@ module.exports = class Database {
     async getCols() {
         const queryStr = 'SELECT * FROM ' + this.dbName + '';
         try {
-            const result = await this._connection.query(queryStr);
+            let result = await this._connection.query(queryStr);
+            
+
+            for(var i = 0; i < result.fields.length; i ++){
+                result.fields[i].format = dataTypeConverter[`${result.fields[i].dataTypeID}`]
+            }
+            //console.log(result)
+
             return result;
         } catch (err) {
             throw new Error(Errors.error.queryError);
