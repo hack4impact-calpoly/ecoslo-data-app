@@ -6,7 +6,8 @@ const {Client} = require('pg');
 
 
 module.exports = class Database {
-    constructor(pool) {
+    //constructor(pool) {
+    constructor(client) {
         this._possibleKeys = new Set(['date', 'location', 'Cigarette_Butts', 'Food_Wrappers', 'Plastic_Take_Out_Containers', 'Foam_Take_Out_Containers',
         'Plastic_Bottle_Caps',
         'Metal_Bottle_Caps',
@@ -57,18 +58,22 @@ module.exports = class Database {
         //this.dbName = 'cleanupData'
         this.dbName = 'cleanupData2'
 
-
+        this.client = client
         //for HEROKU
-        const client = new Client({
-            connectionString: process.env.DATABASE_URL,
-            ssl: true,
-        });
+        // const client = new Client({
+        //     connectionString: process.env.DATABASE_URL,
+        //     ssl: true,
+        // });
         client.connect();
     }
 
     static create(env) {
         if (env == null) {
-            return new Database(new Pool());
+            //return new Database(new Pool());
+            return new Database(new Client({
+                connectionString: process.env.DATABASE_URL,
+                ssl: true,
+            }))
         }
         return null;
     }
