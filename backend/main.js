@@ -9,6 +9,13 @@ app.use(cors());
 app.options('*', cors());
 const database = Database.create(null);
 
+
+// const client = new Client({
+// 	connectionString: process.env.DATABASE_URL,
+// 	ssl: true,
+// });
+// client.connect();
+
 function authenticateInput(input) {
 	return true;
 }
