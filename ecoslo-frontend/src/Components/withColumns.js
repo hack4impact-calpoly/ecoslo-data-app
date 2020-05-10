@@ -14,16 +14,13 @@ export default function withColumns(ColumnWrappedComponent) {
         updateColumns = async () => {
             try {
                 const columns = await this.props.apiWrapper.getColumns();
-                console.log(columns);
                 
                 let colTypes = {};
                 
                 let cols = columns.r.fields.map((content, index) => {
-                    console.log(content);
                     colTypes[content.name] = content.format;
                     return content.name;
                 });
-                console.log(colTypes);
                 this.setState({columns: cols, colTypes: colTypes});
             } catch (error) {
                 const cols = [];

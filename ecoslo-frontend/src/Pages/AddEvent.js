@@ -171,15 +171,13 @@ class AddEvent extends React.Component {
         this.additionalColumns.push(column);
       }
     }
-    console.log("props cols: ", this.props.columns);
-    console.log(this.additionalColumns);
 
     if (this.additionalColumns.length !== 0) {
       howToGoThrough.push(["Additional Items"]);
     }
 
     this.state = {
-      formData : this.getDefaultFormData(defaultCols),
+      formData: this.getDefaultFormData(defaultCols),
       defaultCols : defaultCols
     }
   }
@@ -192,27 +190,26 @@ class AddEvent extends React.Component {
   updateColumns(){
     this.additionalColumns = [];
     let newSet = new Set(this.state.defaultCols);
-    let newFormData = {...this.state.formData};
+    //let newFormData = {...this.state.formData};
     const columnSet = new Set(this.props.columns);
     for (const column of this.props.columns) {
       const defaultHasColumn = this.state.defaultCols.has(column);
-      if (defaultHasColumn === -1 && this.additionalColumns.indexOf(column) === -1) {
+      if (defaultHasColumn === false && this.additionalColumns.indexOf(column) === -1) {
         this.additionalColumns.push(column);
       }
     }
     for (const val of this.state.defaultCols.keys()) {
       if (!columnSet.has(val)) {
         newSet.delete(val);
-        delete newFormData.column;
+        //delete newFormData.column;
       }
     }
-    console.log("props cols: ", this.props.columns);
-    console.log(this.additionalColumns);
 
     if (this.additionalColumns.length !== 0 && howToGoThrough[howToGoThrough.length -1][0] !== "Additional Items") {
       howToGoThrough.push(["Additional Items"]);
     }
-    this.setState({formData : Object.assign(newFormData, this.getDefaultAdditionalData()), defaultCols : newSet});
+    //this.setState({formData : Object.assign(newFormData, this.getDefaultAdditionalData()), defaultCols : newSet});
+    this.setState({formData: Object.assign(this.state.formData, this.getDefaultAdditionalData()), defaultCols : newSet})
   }
 
   componentDidUpdate(prevProps){
@@ -231,7 +228,7 @@ class AddEvent extends React.Component {
         } else if (colType === "numeric") {
           formData[field] = "0";
         } else if (colType === "boolean") {
-          formData[field] = 'False';
+          formData[field] = 'false';
         } else {
           console.log("error in type");
         }
@@ -239,7 +236,6 @@ class AddEvent extends React.Component {
         console.log("Col " + field + " has no col type reported!");
       }
     }
-
     return formData;
   }
 
@@ -249,13 +245,13 @@ class AddEvent extends React.Component {
       if (this.defaultColTypes[field] === "numeric") {
         formData[field] = "0";
       } else if (this.defaultColTypes[field] === "boolean") {
-        formData[field] = 'False';
+        formData[field] = 'false';
       } else if (this.defaultColTypes[field] === "string") {
         formData[field] = null;
       }
     }
-
-    return Object.assign(formData, this.getDefaultAdditionalData());
+    Object.assign(formData, this.getDefaultAdditionalData());
+    return formData;
   }
 
   handleLocationChange (item) {
@@ -296,25 +292,24 @@ class AddEvent extends React.Component {
     return regex.test(formEntry);
   }
 
-  handleSubmit = () => {
+  async handleSubmit(event) {
     let toSendFormData = {};
     for (const pair of Object.entries(this.state.formData)) {
       const key = pair[0], value = pair[1] === null ? null : pair[1].trim();
-      console.log(key, value)
-      if (this.defaultColTypes[key] === "string") {
+      if (this.props.colTypes[key] === "string") {
         if (value === null || value.length === 0) {
           alert("Please input an acceptable value for " + convertFieldToLabel(key) + " at least one character in length.");
           return false;
         }
         toSendFormData[key] = value;
-      } else if (this.defaultColTypes[key] === "numeric") {
+      } else if (this.props.colTypes[key] === "numeric") {
         if (!this.validateNumericEntry(value)) {
           alert("Value " + value + " for " + convertFieldToLabel(key) + " is not an acceptable value.");
           return false;
         }
         toSendFormData[key] = (+value) || 0;
-      } else if (this.defaultColTypes[key] === "boolean") {
-        if (!this.validateBooleanEntry(value)) {
+      } else if (this.props.colTypes[key] === "boolean") {
+        if (value.toLowerCase() !== "true" && value.toLowerCase() !== "false") {
           alert("Value for " + convertFieldToLabel(key) + " must be true or false!");
           return false;
         }
@@ -325,7 +320,7 @@ class AddEvent extends React.Component {
     }
     
     try {
-      let success = this.props.apiWrapper.addData(toSendFormData);
+      let success = await this.props.apiWrapper.addData(toSendFormData);
       console.log(success)
       alert("Cleanup successfully added to database.")
     }
@@ -410,8 +405,8 @@ class AddEvent extends React.Component {
                             as="select"
                             onChange={this.handleOnChange(name)}
                           >
-                              <option>True</option>
-                              <option>False</option>
+                              <option>true</option>
+                              <option>false</option>
                           </Form.Control>
                         :
                           <Form.Control 
@@ -486,7 +481,7 @@ class AddEvent extends React.Component {
               {/* </Form.Control>  */}
             </Form.Group>
             { this.renderFormAfterFirstPart() }
-            <Button onClick={this.handleSubmit}>
+            <Button onClick={(e) => this.handleSubmit(e)}>
               Submit
             </Button>
           </Form>
