@@ -32,7 +32,7 @@ function authenticateInput(input) {
 // 	console.log("IM HEREEEEEEEE")
 // 	//res.redirect('/todo');
 //  });
-app.use(express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
+app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
 
 app.get('*', function(request, response) {
     response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
