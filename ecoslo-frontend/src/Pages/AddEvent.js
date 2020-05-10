@@ -6,6 +6,8 @@ import {Col} from 'react-bootstrap';
 import withLocations from '../Components/withLocations';
 import withColumns from '../Components/withColumns';
 import Select from 'react-dropdown-select';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 
 const sectionStyle ={
@@ -179,8 +181,9 @@ class AddEvent extends React.Component {
 
     this.state = {
       formData : this.getDefaultFormData(),
-
+      date : new Date(),
     }
+    
   }
 
   marginstyle={
@@ -239,6 +242,15 @@ class AddEvent extends React.Component {
     return formData;
   }
 
+  handleDateChange = date => {
+    this.setState({date: date});
+    console.log(this.date)
+    let old = this.state.formData;
+    old['date'] = date.toDateString()
+    this.setState({formData: old })
+    console.log(this.state.formData)
+  };
+
   handleLocationChange (item) {
     console.log(item)
     console.log(item[0].text)
@@ -266,6 +278,7 @@ class AddEvent extends React.Component {
   }
 
   validateNumericEntry(formEntry) {
+    console.log(formEntry)
     if (formEntry.length === 0) {
       return true;
     }
@@ -425,8 +438,10 @@ class AddEvent extends React.Component {
         <Container>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="formBasicEmail">
-              <Form.Label>Date</Form.Label>
-              <Form.Control placeholder="Enter Date" onChange={this.handleOnChange("date")} />
+              <Form.Label>Date (Click to Change)</Form.Label>
+              <br></br>
+                <DatePicker selected={this.state.date} onChange={this.handleDateChange} dateFormat={'MM/dd/yyyy'} />
+              <br></br>
               <Form.Label>Location</Form.Label>
               <Select multiple={false} create={true} searchable={true} labelField="text" valueField="text" options={locOptions} values={[]}
               //onCreateNew={(item) => locOptions.push(item)}
