@@ -71,8 +71,8 @@ module.exports = class Database {
         if (env == null) {
             //return new Database(new Pool());
             return new Database(new Client({
-                connectionString: process.env.DATABASE_URL,
-                ssl: true,
+                connectionString: process.env.DATABASE_URL
+                // ssl: true,
             }))
         }
         return null;
