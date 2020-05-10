@@ -20,6 +20,11 @@ function authenticateInput(input) {
 	return true;
 }
 
+app.get('/', function(req, res){
+	console.log("IM HEREEEEEEEE")
+	//res.redirect('/todo');
+ });
+
 app.post('/add', async (req, res) => {
 	if (!authenticateInput(req.body.item)) {
 		res.status(400).send(AppError.stringError(AppError.badAuth));
