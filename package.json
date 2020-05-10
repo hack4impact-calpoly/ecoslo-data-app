@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./backend/main.js",
-    "heroku-postbuild": "cd ecoslo-frontend && npm install && npm start"
+    "heroku-postbuild": "cd ecoslo-frontend && npm install && npm run build"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "pg": "^7.18.2"
+    "pg": "^7.18.2",
+    "serve": "^11.3.0"
   },
   "engines": {
     "node": "12.14.1"
