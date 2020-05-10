@@ -46,11 +46,11 @@ class Login extends React.Component {
                                     <MDBCardBody className="mx-4">
                                         <div className="text-center">
                                             <h3 className="dark-grey-text mb-5">
-                                                <strong>Sign in</strong>
+                                                <strong>EcoSLO Database Sign In</strong>
                                             </h3>
                                         </div>
                                         <MDBInput
-                                            label="Your email"
+                                            label="Your username"
                                             group
                                             type="email"
                                             validate
