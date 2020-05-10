@@ -31,6 +31,13 @@ class DataTable extends React.Component {
 
     createRow (index) {
         let res = Object.entries(index).map(([key, value]) => {
+            console.log("v: ", value)
+            if(value === false){
+                return <td>{'false'}</td>
+            }
+            else if(value === true){
+                return <td>{'true'}</td>
+            }
             return <td>{value}</td>
         });
         return res;
