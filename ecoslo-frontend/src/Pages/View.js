@@ -456,7 +456,7 @@ renderGroupByCheckBoxes = () => {
             </Form.Group>
             <Form.Label className="big">Select Which Items to View</Form.Label>
             {this.renderItemCheckboxes()}
-            <Button type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
+            <Button variant="outline-primary" type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>
         </Form>
         </Container>
