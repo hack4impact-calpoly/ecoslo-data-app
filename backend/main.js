@@ -23,10 +23,10 @@ function authenticateInput(input) {
 
 app.use(Express.static(path.join(__dirname, '../ecoslo-frontend/public')));
 
-app.get('*', (req,res) =>{
-	console.log("am i here or no...")
-    res.sendFile(path.join(__dirname, '../ecoslo-frontend/public/index.html'));
-});
+// app.get('*', (req,res) =>{
+// 	console.log("am i here or no...")
+//     res.sendFile(path.join(__dirname, '../ecoslo-frontend/public/index.html'));
+// });
 
 // app.get('/', function(req, res){
 // 	console.log("IM HEREEEEEEEE")
