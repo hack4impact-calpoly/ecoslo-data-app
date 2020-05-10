@@ -2,6 +2,7 @@ const Express = require('express');
 const AppError = require('./errors');
 const Database = require('./database');
 const cors = require('cors');
+const path = require('path');
 
 const app = Express();
 app.use(Express.json());
@@ -20,7 +21,7 @@ function authenticateInput(input) {
 	return true;
 }
 
-app.use(express.static(path.join(__dirname, 'ecoslo-frontend/public')));
+app.use(Express.static(path.join(__dirname, 'ecoslo-frontend/public')));
 
 app.get('*', (req,res) =>{
 	console.log("am i here or no...")
