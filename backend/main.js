@@ -21,11 +21,11 @@ function authenticateInput(input) {
 	return true;
 }
 
-app.use(Express.static(path.join(__dirname, 'ecoslo-frontend/public')));
+app.use(Express.static(path.join(__dirname, '../ecoslo-frontend/public')));
 
 app.get('*', (req,res) =>{
 	console.log("am i here or no...")
-    res.sendFile(path.join('../ecoslo-frontend/public/index.html'));
+    res.sendFile(path.join(__dirname, '../ecoslo-frontend/public/index.html'));
 });
 
 // app.get('/', function(req, res){
