@@ -155,20 +155,19 @@ class AddEvent extends React.Component {
   constructor(props) {
     super(props);
     this.additionalColumns = [];
-    this.defaultCols = ["location", "date", "event_name"];
+    let defaultCols = new Set(["location", "date", "event_name"]);
     this.defaultColTypes = { "location" : "string", "date" : "string", "event_name" : "string" };
     for (const key in columnNames) {
       for (const column of columnNames[key].columns) {
         for (const field of column) {
-          this.defaultCols.push(field.toLowerCase());
+          defaultCols.add(field.toLowerCase());
           this.defaultColTypes[field.toLowerCase()] = "numeric";
         }
       }
     }
     
-
     for (const column of this.props.columns) {
-      if (this.defaultCols.indexOf(column) > - 1 && this.additionalColumns.indexOf(column) > -1) {
+      if (!defaultCols.has(column) && this.additionalColumns.indexOf(column) > -1) {
         this.additionalColumns.push(column);
       }
     }
@@ -180,7 +179,8 @@ class AddEvent extends React.Component {
     }
 
     this.state = {
-      formData : this.getDefaultFormData(),
+      formData : this.getDefaultFormData(defaultCols),
+      defaultCols : defaultCols
     }
   }
 
@@ -191,9 +191,19 @@ class AddEvent extends React.Component {
 
   updateColumns(){
     this.additionalColumns = [];
+    let newSet = new Set(this.state.defaultCols);
+    let newFormData = {...this.state.formData};
+    const columnSet = new Set(this.props.columns);
     for (const column of this.props.columns) {
-      if (this.defaultCols.indexOf(column) === - 1 && this.additionalColumns.indexOf(column) === -1) {
+      const defaultHasColumn = this.state.defaultCols.has(column);
+      if (defaultHasColumn === -1 && this.additionalColumns.indexOf(column) === -1) {
         this.additionalColumns.push(column);
+      }
+    }
+    for (const val of this.state.defaultCols.keys()) {
+      if (!columnSet.has(val)) {
+        newSet.delete(val);
+        delete newFormData.column;
       }
     }
     console.log("props cols: ", this.props.columns);
@@ -202,7 +212,7 @@ class AddEvent extends React.Component {
     if (this.additionalColumns.length !== 0 && howToGoThrough[howToGoThrough.length -1][0] !== "Additional Items") {
       howToGoThrough.push(["Additional Items"]);
     }
-    this.setState({formData : Object.assign(this.state.formData, this.getDefaultAdditionalData())})
+    this.setState({formData : Object.assign(newFormData, this.getDefaultAdditionalData()), defaultCols : newSet});
   }
 
   componentDidUpdate(prevProps){
@@ -233,9 +243,9 @@ class AddEvent extends React.Component {
     return formData;
   }
 
-  getDefaultFormData() {
+  getDefaultFormData(defaultCols) {
     let formData = {};
-    for (const field of this.defaultCols) {
+    for (const field of defaultCols) {
       if (this.defaultColTypes[field] === "numeric") {
         formData[field] = "0";
       } else if (this.defaultColTypes[field] === "boolean") {
@@ -344,16 +354,35 @@ class AddEvent extends React.Component {
   renderColumnsForSections(titles) {
     let zippedArray;
     if (titles[0] !== "Additional Items") {
-      const firstColumnNames = columnNames[titles[0]].columns;
+      let firstColumnNames0 = columnNames[titles[0]].columns[0];
+      for (let i = 0; i < firstColumnNames0.length; i++) {
+        if (!this.state.defaultCols.has(firstColumnNames0[i])) {
+          firstColumnNames0.splice(i, 1);
+          i--;
+        }
+      }
       if (titles.length === 1) {
-        if (firstColumnNames.length > 1) {
-          zippedArray = zip(firstColumnNames[0], firstColumnNames[1]);
+        if (columnNames[titles[0]].columns.length > 1) {
+          let firstColumnNames1 = columnNames[titles[0]].columns[1];
+          for (let i = 0; i < firstColumnNames1.length; i++) {
+            if (!this.state.defaultCols.has(firstColumnNames1[i])) {
+              firstColumnNames1.splice(i, 1);
+              i--;
+            }
+          }
+          zippedArray = zip(firstColumnNames0, firstColumnNames1);
         } else {
-          zippedArray = zip(firstColumnNames[0], []);
+          zippedArray = zip(firstColumnNames0, []);
         }
       } else {
-        const secondColumnNames = columnNames[titles[1]].columns;
-        zippedArray = zip(firstColumnNames[0], secondColumnNames[0]);
+        let secondColumnNames = columnNames[titles[1]].columns[0];
+        for (let i = 0; i < secondColumnNames.length; i++) {
+          if (!this.state.defaultCols.has(secondColumnNames[i])) {
+            secondColumnNames.splice(i, 1);
+            i--;
+          }
+        }
+        zippedArray = zip(firstColumnNames0, secondColumnNames);
       }
     } else {
       if (this.additionalColumns.length !== 0) {

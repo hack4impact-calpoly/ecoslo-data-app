@@ -24,16 +24,10 @@ export default function withColumns(ColumnWrappedComponent) {
                     return content.name;
                 });
                 console.log(colTypes);
-                // cols.push(...["unusual_items", "dead_animals"]);
-                // colTypes["unusual_items"] = "numeric";
-                // colTypes["dead_animals"] = "string";
                 this.setState({columns: cols, colTypes: colTypes});
             } catch (error) {
-                //const cols = ["unusual_items", "dead_animals"];
                 const cols = [];
                 const colTypes = {};
-                // colTypes["unusual_items"] = "numeric";
-                // colTypes["dead_animals"] = "boolean";
                 console.log("withColumns error:", error);
                 // alert(error);
                 this.setState({columns: cols, colTypes: colTypes});
