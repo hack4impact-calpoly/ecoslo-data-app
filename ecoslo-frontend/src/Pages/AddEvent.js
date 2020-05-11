@@ -246,7 +246,10 @@ class AddEvent extends React.Component {
   getDefaultFormData(defaultCols) {
     let formData = {};
     for (const field of defaultCols) {
-      if (this.defaultColTypes[field] === "numeric") {
+      if(field == 'date'){
+        formData[field] = this.formatDate(new Date());
+      }
+      else if (this.defaultColTypes[field] === "numeric") {
         formData[field] = "0";
       } else if (this.defaultColTypes[field] === "boolean") {
         formData[field] = 'false';
@@ -258,13 +261,25 @@ class AddEvent extends React.Component {
     return formData;
   }
 
-  handleDateChange = date => {
-    this.setState({date: date});
-    console.log(this.date)
-    let old = this.state.formData;
-    old['date'] = date.toDateString()
-    this.setState({formData: old })
-    console.log(this.state.formData)
+  formatDate(d) {
+    var month = '' + (d.getMonth() + 1)
+    var day = '' + d.getDate()
+    var year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+  };
+
+  handleDateChange(dateInput) {
+    this.setState({date: dateInput});
+    let full = this.state.formData;
+    console.log("formData: ", this.state.formData)
+    full['date'] = this.formatDate(dateInput)
+    this.setState({formData: full})
   };
 
   handleLocationChange (item) {
@@ -312,6 +327,7 @@ class AddEvent extends React.Component {
       const key = pair[0], value = pair[1] === null ? null : pair[1].trim();
       if (this.props.colTypes[key] === "string") {
         if (value === null || value.length === 0) {
+          console.log("format in submit of date: ", key)
           alert("Please input an acceptable value for " + convertFieldToLabel(key) + " at least one character in length.");
           return false;
         }
@@ -478,23 +494,15 @@ class AddEvent extends React.Component {
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Date (Click to Change)</Form.Label>
               <br></br>
-                <DatePicker selected={this.state.date} onChange={this.handleDateChange} dateFormat={'MM/dd/yyyy'} />
+                <DatePicker selected={this.state.date} onChange={(e) => this.handleDateChange(e)} dateFormat={'yyyy/MM/dd'} />
               <br></br>
               <Form.Label>Location</Form.Label>
               <Select multiple={false} create={true} searchable={true} labelField="text" valueField="text" options={locOptions} values={[]}
-              //onCreateNew={(item) => locOptions.push(item)}
               onChange={(value) => this.handleLocationChange(value)}
               >
               </Select>
               <Form.Label>Event Name</Form.Label>
               <Form.Control placeholder="Enter Event Name" onChange={this.handleOnChange("event_name")} />
-              {/* <Form.Control as="select" onChange={this.handleOnChange("location")} >
-              <option>Select a Location</option>
-              {/* { this.renderLocations() } */}
-              {/* { this.props.locations.map((value) => {
-                return <option>{value}</option>
-              }) } */}
-              {/* </Form.Control>  */}
             </Form.Group>
             { this.renderFormAfterFirstPart() }
             <Button onClick={(e) => this.handleSubmit(e)}>
