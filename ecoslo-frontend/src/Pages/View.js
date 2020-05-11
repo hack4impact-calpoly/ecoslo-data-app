@@ -6,6 +6,8 @@ import { Col, Row, Alert } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "../styles/page.css";
 
 
@@ -15,11 +17,13 @@ class View extends React.Component {
     super(props);
     
     this.state = {
+      dateStartVal: new Date(),
+      dateEndVal: new Date(),
       displayReady: false,
       formData : {
         "location": null, 
         "dateStart" : null,
-        "dateEnd": null
+        "dateEnd": null,
       },
       locations: [],
       showAlert: false,
@@ -101,6 +105,7 @@ class View extends React.Component {
         }
       }
     };
+
   }
 
   marginstyle={
@@ -141,6 +146,47 @@ class View extends React.Component {
     }
     this.setState({locations: selected})
   }
+
+  formatDate(d) {
+
+    var month = '' + (d.getMonth() + 1)
+    var day = '' + d.getDate()
+    var year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+  };
+
+  initDateValues(){
+    let full = this.state.formData;
+    full['dateStart'] = this.formatDate(new Date());
+    full['dateEnd'] = this.formatDate(new Date());
+    this.setState({
+      formData: full
+    })
+  }
+
+  handleStartDateChange(dateInput) {
+    let full = this.state.formData;
+    full['dateStart'] = this.formatDate(dateInput);
+    this.setState({
+      dateStartVal: dateInput,
+      formData: full
+    })
+  };
+
+  handleEndDateChange(dateInput) {
+    let full = this.state.formData;
+    full['dateEnd'] = this.formatDate(dateInput);
+    this.setState({
+      dateEndVal: dateInput,
+      formData: full
+    })
+  };
 
   handleStringInputChange = (field, validationFunction = null) => event => {
     let curFormData = Object.assign({}, this.state.formData);
@@ -202,7 +248,6 @@ class View extends React.Component {
             this.setState({tableData: td})
           }
           else{
-            //this.setState({showAlert: true})
             alert("No data found. Try entering a different date range and location.")
           }
         }
@@ -245,7 +290,6 @@ class View extends React.Component {
             this.setState({tableData: td})
           }
           else{
-            //this.setState({showAlert: true})
             alert("No data found. Try entering a different date range and location.")
           }
         }
@@ -420,6 +464,10 @@ renderGroupByCheckBoxes = () => {
 
   render() {
     if(this.state.colNames !== undefined){
+      if(this.state.formData['dateStart'] === null){
+        this.initDateValues()
+      }
+      
     return (
       <div>
       <div style={this.marginstyle}>
@@ -433,11 +481,15 @@ renderGroupByCheckBoxes = () => {
               <Row>
                 <Col>
                   <Form.Label className="big">Start Date</Form.Label>
-                  <Form.Control placeholder="Enter Date" onChange={this.handleStringInputChange("dateStart")} />
+                  <br></br>
+                    <DatePicker selected={this.state.dateStartVal} onChange={(e) => this.handleStartDateChange(e)} dateFormat={'yyyy/MM/dd'} />
+                  <br></br>
                 </Col>
                 <Col>
                   <Form.Label className="big">End Date</Form.Label>
-                  <Form.Control placeholder="Enter Date" onChange={this.handleStringInputChange("dateEnd")} />
+                  <br></br>
+                    <DatePicker selected={this.state.dateEndVal} onChange={(e) => this.handleEndDateChange(e)} dateFormat={'yyyy/MM/dd'} />
+                  <br></br>
                 </Col>
               </Row>
               </Form.Group>
