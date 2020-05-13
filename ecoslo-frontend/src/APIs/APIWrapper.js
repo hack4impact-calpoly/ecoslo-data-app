@@ -22,9 +22,11 @@ export default class APIWrapper {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
                         if (optionalResolve) {
-                            optionalResolve(JSON.parse(this.response));
+                            //optionalResolve(JSON.parse(this.response));
+                            optionalResolve(this.response);
                         } else {
-                            resolve(JSON.parse(this.response));
+                            //resolve(JSON.parse(this.response));
+                            resolve(this.response);
                         }
                     } else {
                         reject(this.response);
