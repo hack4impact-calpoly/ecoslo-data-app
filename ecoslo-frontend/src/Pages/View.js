@@ -258,11 +258,11 @@ class View extends React.Component {
       else{
         var groupCols = []
         if(this.state.groupByValues[0] === true){
-          
           groupCols.push("location")
         
         }
         if(this.state.groupByValues[1] === true){
+          console.log("im in here")
           groupCols.push("event_name")
         }
         if(this.state.groupByDate !== "None"){
@@ -329,8 +329,10 @@ class View extends React.Component {
       this.setState({groupByValues: duplicateVals})
     }
     if (col === "Event Name"){
+      console.log(e.target.checked)
       duplicateVals[1] = e.target.checked
       this.setState({groupByValues: duplicateVals})
+      console.log(this.state.groupByValues)
     }
 
   }

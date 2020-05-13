@@ -245,7 +245,7 @@ module.exports = class Database {
             queryStr += 'location';
             continuing = true;
         }
-        if(groupBy.includes('eventName')) {
+        if(groupBy.includes('event_name')) {
             if(continuing){
                 queryStr += ', event_name'
             }
@@ -410,7 +410,7 @@ module.exports = class Database {
     async sumPerCol(req) {
 
         const queryStr = this._createSelectSumQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.groupBy);
-
+        console.log(queryStr)
         try {
             const result = await this._connection.query(queryStr);
             return result
