@@ -1,6 +1,6 @@
 export default class APIWrapper {
     constructor(store) {
-        this.baseURL = "http://localhost:8000/";
+        this.baseURL = "http://ecoslo-data-app.herokuapp.com/";
         this.store = store;
     }
     
