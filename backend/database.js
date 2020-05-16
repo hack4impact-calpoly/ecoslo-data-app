@@ -186,13 +186,14 @@ module.exports = class Database {
 
 
     _createSelectSumQuery(colNames, dateStart, dateEnd, locations, groupBy) {
+        console.log("groupBy: ", groupBy)
         var queryStr = 'SELECT ';
         var i;
         var continuing = false;
         for(i=0; i < colNames.length; i++){
             if(this.noSumColumns.has(colNames[i])){
                 if(colNames[i] === 'date' && groupBy.includes('month')){
-                    queryStr += 'extract(mon from date) as month';
+                    queryStr += 'extract(month from date) as month';
                 }
                 else if(colNames[i] === 'date' && groupBy.includes('year')){
                     queryStr += 'extract(year from date) as year';
@@ -265,10 +266,10 @@ module.exports = class Database {
         }
         else if(groupBy.includes('month')) {
             if(continuing){
-                queryStr += ', extract(mon from date)'
+                queryStr += ', extract(month from date)'
             }
             else{
-                queryStr += 'extract(mon from date)';
+                queryStr += 'extract(month from date)';
                 continuing = true;
             }
         }
@@ -283,10 +284,10 @@ module.exports = class Database {
         }
         else if(groupBy.includes('monYear')) {
             if(continuing){
-                queryStr += ', extract(year from date), extract(mon from date)'
+                queryStr += ', extract(year from date), extract(month from date)'
             }
             else{
-                queryStr += 'extract(year from date), extract(mon from date)';
+                queryStr += 'extract(year from date), extract(month from date)';
                 continuing = true;
             }
         }

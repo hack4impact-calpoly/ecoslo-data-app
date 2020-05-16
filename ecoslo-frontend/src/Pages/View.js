@@ -29,7 +29,7 @@ class View extends React.Component {
       showAlert: false,
       groupByCols: [],
       groupByValues: [false, false],
-      groupByDate: "None",
+      groupByDate: "Select Date Option...",
 
       columnNames : {
         "Key Information" : {
@@ -234,7 +234,7 @@ class View extends React.Component {
         }
       }
 
-      if(this.state.groupByValues[0] === false && this.state.groupByValues[1] === false && this.state.groupByDate === "None"){
+      if(this.state.groupByValues[0] === false && this.state.groupByValues[1] === false && this.state.groupByDate === "Select Date Option..."){
         var d = {
           dateStart: this.state.formData['dateStart'],
           dateEnd: this.state.formData['dateEnd'],
@@ -262,14 +262,13 @@ class View extends React.Component {
         
         }
         if(this.state.groupByValues[1] === true){
-          console.log("im in here")
           groupCols.push("event_name")
         }
-        if(this.state.groupByDate !== "None"){
+        if(this.state.groupByDate !== "Select Date Option..."){
           if(this.state.groupByDate === "Month and Year"){
             groupCols.push("monYear")
           }
-          if(this.state.groupByDate === "Full Date"){
+          else if(this.state.groupByDate === "Full Date"){
             groupCols.push("date")
           }
           else{
@@ -357,8 +356,7 @@ renderGroupByCheckBoxes = () => {
         onChange={(e) => this.handleGroupByCheckbox(e, "Event Name")}/> Event Name
       <div>
         <Form.Control multiple={false} as="select" onChange={(e) => this.handleGroupByDateChange(e)} >
-                    <option>None</option>
-                    <option>Date</option>
+                    <option>Select Date Option...</option>
                     <option>Full Date</option>
                     <option>Month</option>
                     <option>Year</option>
