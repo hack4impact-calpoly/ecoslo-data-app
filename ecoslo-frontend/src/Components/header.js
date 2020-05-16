@@ -6,6 +6,7 @@ import "../styles/header.css";
 import "../styles/index.css";
 
 const linkToText = {
+  "/login" : "Login",
   "/home" : "Home",
   "/add" : "Add",
   "/view" : "View",

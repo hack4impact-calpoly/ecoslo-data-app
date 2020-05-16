@@ -294,6 +294,17 @@ module.exports = class Database {
         }
     }
 
+    async getUser(username) {
+        const queryString = `SELECT * FROM Users WHERE Username = $1`;
+        try {
+            const result = await this._connection.query(queryString, [username]);
+            return result.rows[0];
+        } catch (err) {
+            console.log("ERROR");
+            throw new Error(Errors.error.queryError);
+        }
+    }
+
     async getLocations() {
         const queryStr = 'SELECT DISTINCT location FROM ' + this.dbName + '';
         try {

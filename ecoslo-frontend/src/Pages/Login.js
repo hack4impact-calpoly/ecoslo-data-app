@@ -31,7 +31,7 @@ class Login extends React.Component {
             email: this.state.email,
             password: this.state.password
         });
-        // let apiReturnValue = this.props.apiWrapper.login(this.state.email, this.state.password);
+        let apiReturnValue = this.props.apiWrapper.login(this.state.email, this.state.password);
     }
 
     render() {
@@ -105,3 +105,4 @@ export default connect(
     null,
     mapDispatchToProps,
 )(Login);
+

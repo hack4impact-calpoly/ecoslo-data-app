@@ -181,6 +181,7 @@ class AddEvent extends React.Component {
 
     this.state = {
       formData : this.getDefaultFormData(),
+      publicState: "None",
     }
   }
 
@@ -247,6 +248,11 @@ class AddEvent extends React.Component {
 
     return Object.assign(formData, this.getDefaultAdditionalData());
   }
+
+  handlePublicChange (event) {
+    this.setState({publicState: event.target.value})
+  }
+
 
   handleLocationChange (item) {
     let old = this.state.formData;
@@ -448,6 +454,11 @@ class AddEvent extends React.Component {
               </Select>
               <Form.Label>Event Name</Form.Label>
               <Form.Control placeholder="Enter Event Name" onChange={this.handleOnChange("event_name")} />
+              <Form.Label>Public or Private Event</Form.Label>
+              <Form.Control multiple={false} as="select" onChange={(e) => this.handlePublicChange(e)} >
+                    <option>Public</option>
+                    <option>Private</option>
+              </Form.Control>
               {/* <Form.Control as="select" onChange={this.handleOnChange("location")} >
               <option>Select a Location</option>
               {/* { this.renderLocations() } */}

@@ -431,6 +431,9 @@ renderGroupByCheckBoxes = () => {
           <Form.Group>
             <Form.Group>
               <Row>
+              <Button size="sm" variant="light">?</Button>
+              </Row>
+              <Row>
                 <Col>
                   <Form.Label className="big">Start Date</Form.Label>
                   <Form.Control placeholder="Enter Date" onChange={this.handleStringInputChange("dateStart")} />
