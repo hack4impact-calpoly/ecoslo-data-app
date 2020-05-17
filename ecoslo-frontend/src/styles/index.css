@@ -1,0 +1,42 @@
+:root {
+    --header-size: 10vh;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+        monospace;
+}
+
+.page {
+    width: 100vw;
+    height: calc(100vh - var(--header-size));
+}
+
+.upper {
+    text-transform: uppercase;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+}
+
+.tablemargin {
+    margin-left: 100px,
+}
+
+button {
+    cursor: pointer;
+}
+
