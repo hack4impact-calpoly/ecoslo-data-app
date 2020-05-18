@@ -36,16 +36,7 @@ app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
 
 
 
-  app.get('/db', async (req, res) => {
-    try {
-	  let result = await database.testing();
-	  console.log("result in app.get: ", result);
-	  //res.render('pages/db', result );
-    } catch (err) {
-      console.error(err);
-      res.send("Error " + err);
-    }
-  })
+  
 
 app.post('/add', async (req, res) => {
 	if (!authenticateInput(req.body.item)) {
@@ -84,6 +75,17 @@ app.get('/locations', async (req, res) => {
 		return;
 	}
 })
+
+app.get('/db', async (req, res) => {
+    try {
+	  let result = await database.testing();
+	  console.log("result in app.get: ", result);
+	  //res.render('pages/db', result );
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
+  })
 
 app.get('/columns', async (req, res) => {
 	try{

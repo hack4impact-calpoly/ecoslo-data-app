@@ -334,10 +334,20 @@ module.exports = class Database {
         try {
             //const result = await this._connection.query(queryStr);
             const result = await this.client.query(queryStr);
+            consolelog("result in getCols: ", result)
             return result;
         } catch (err) {
             throw new Error(Errors.error.queryError);
         }
+    }
+
+    async testing(){
+        //const clientC = await this.client.connect();
+      const result = await this.client.query('SELECT * FROM cleanupData2');
+      console.log("result in testing: ", result)
+      const results = { 'results': (result) ? result.rows : null};
+      return results;
+      client.release();
     }
 
     async getByCol(req) {
@@ -440,14 +450,7 @@ module.exports = class Database {
         }
     }
 
-    async testing(){
-        //const clientC = await this.client.connect();
-      const result = await this.client.query('SELECT * FROM cleanupData2');
-      console.log("result in testing: ", result)
-      const results = { 'results': (result) ? result.rows : null};
-      return results;
-      client.release();
-    }
+    
 
     
 
