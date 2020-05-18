@@ -86,7 +86,7 @@ module.exports = class Database {
         return queryStr;
     }
 
-    _createSelectQuery(colNames, dateStart, dateEnd, locations) {
+    _createSelectQuery(colNames, dateStart, dateEnd, locations, public) {
         var queryStr = 'SELECT ';
         var i;
         var continuing = false;
@@ -122,11 +122,28 @@ module.exports = class Database {
             }
             queryStr+= ')'
         }
+
+        if(public !==null && public !== "all"){
+            if(continuing) {
+                queryStr += ' AND ('
+            }
+            else {
+                queryStr+= ' WHERE ('
+            }
+            
+            if(public==='true'){
+                queryStr+= 'public\' = true'
+            }
+            if(public==='false'){
+                queryStr+= 'public\' = false'
+            }
+            queryStr+= ')'
+        }
         return queryStr;
     }
 
 
-    _createSelectSumQuery(colNames, dateStart, dateEnd, locations, groupBy) {
+    _createSelectSumQuery(colNames, dateStart, dateEnd, locations, groupBy, public) {
         console.log("groupBy: ", groupBy)
         var queryStr = 'SELECT ';
         var i;
@@ -177,6 +194,23 @@ module.exports = class Database {
                 else{
                     queryStr += 'location = \'' + locations[i] + '\' OR '
                 }
+            }
+            queryStr+= ')'
+        }
+
+        if(public !==null && public !== "all"){
+            if(continuing) {
+                queryStr += ' AND ('
+            }
+            else {
+                queryStr+= ' WHERE ('
+            }
+            
+            if(public==='true'){
+                queryStr+= 'public\' = true'
+            }
+            if(public==='false'){
+                queryStr+= 'public\' = false'
             }
             queryStr+= ')'
         }
@@ -281,7 +315,7 @@ module.exports = class Database {
     }
 
     async getByCol(req) {
-        const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations);
+        const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.public);
         try {
             let result = await this._connection.query(queryStr);
             return result;
@@ -351,7 +385,7 @@ module.exports = class Database {
 
     async sumPerCol(req) {
 
-        const queryStr = this._createSelectSumQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.groupBy);
+        const queryStr = this._createSelectSumQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.groupBy, req.public);
         console.log(queryStr)
         try {
             const result = await this._connection.query(queryStr);
