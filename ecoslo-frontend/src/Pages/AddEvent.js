@@ -327,7 +327,6 @@ class AddEvent extends React.Component {
       const key = pair[0], value = pair[1] === null ? null : pair[1].trim();
       if (this.props.colTypes[key] === "string") {
         if (value === null || value.length === 0) {
-          console.log("format in submit of date: ", key)
           alert("Please input an acceptable value for " + convertFieldToLabel(key) + " at least one character in length.");
           return false;
         }
@@ -340,9 +339,10 @@ class AddEvent extends React.Component {
         toSendFormData[key] = (+value) || 0;
       } else if (this.props.colTypes[key] === "boolean") {
         if (value.toLowerCase() !== "true" && value.toLowerCase() !== "false") {
-          alert("Value for " + convertFieldToLabel(key) + " must be true or false!");
+          alert("Value for " + convertFieldToLabel(key) + " must be true or false.");
           return false;
         }
+        toSendFormData[key] = value;
       } else {
         console.log("Unknown column type for", convertFieldToLabel(key));
       }
