@@ -37,7 +37,9 @@ class DataTable extends React.Component {
             else if(value === true){
                 return <td>{'true'}</td>
             }
-            return <td>{value}</td>
+            else{
+                return <td>{value}</td>
+            }
         });
         return res;
     }

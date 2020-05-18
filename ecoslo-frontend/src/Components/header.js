@@ -10,7 +10,7 @@ const linkToText = {
   "/add" : "Add",
   "/view" : "View",
   "/update" : "Update", 
-  "/alter" : "Alter"
+  "/alter" : "Alter Table"
 };
 
 class Header extends React.Component {

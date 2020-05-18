@@ -15,21 +15,12 @@ class Update extends React.Component {
     super(props);
 
     this.state = {inputs: ["1"],
-     cols: {Event_Name: '', Adult_Volunteers: '', Child_Volunteers: '', Distance_Covered: '', Trash_Bags_Filled: '', Weight_Trash: '', Weight_Recycle: '', Total_Items: '',
-     Cigarette_Butts: '', Food_Wrappers: '', Plastic_Take_Out_Containers: '', Foam_Take_Out_Containers: '', Plastic_Bottle_Caps: '', Metal_Bottle_Caps: '',Plastic_Lids: '', Straws_And_Stirrers: '', 
-     Forks_Knives_And_Spoons: '', Plastic_Beverage_Bottles: '', Glass_Beverage_Bottles: '', Beverage_Cans: '', Plastic_Grocery_Bags: '', Other_Plastic_Bags: '', Paper_Bags: '', 
-     Paper_Cups_And_Plates: '', Plastic_Cups_And_Plates: '', Foam_Cups_And_Plates: '', Fishing_Buoys_Pots_And_Traps: '', Fishing_Net_And_Pieces: '', Fishing_Line: '', Rope: '', 
-     Six_Pack_Holders: '', Other_Plastic_Or_Foam_Packaging: '', Other_Plastic_Bottles: '', Strapping_Bands: '', Tobacco_Packaging_Or_Wrap: '', Appliances: '', Balloons: '', Cigar_Tips: '', 
-     Cigarette_Lighters: '', Construction_Materials: '', Fireworks: '', Tires: '', Condoms: '', Diapers: '', Syringes: '', Tampons: '', Unusual_Items: '', Dead_Animals: '', Foam_Pieces: '', Glass_Pieces: '', Plastic_Pieces: ''},
      input_vals: [['', '']],
      date: this.formatDate(new Date()),
      location: "",
      tableResult: [],
      dateValue: new Date()
-    
-  };
-    
-
+    };
   }
 
   marginstyle={
@@ -39,9 +30,14 @@ class Update extends React.Component {
 
   async componentDidMount(){
     let res = await this.props.apiWrapper.getColumns();
+    console.log("res: ", res)
     let options = res.r.fields.map((content, index) =>{
       return <option>{content.name}</option>
     })
+    let optionTypes = res.r.fields.map((content, index) =>{
+      return <option>{content.format}</option>
+    })
+    this.setState({colTypes: optionTypes})
     this.setState({colNames: options})
   }
 
