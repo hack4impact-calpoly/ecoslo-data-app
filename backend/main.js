@@ -34,9 +34,17 @@ function authenticateInput(input) {
 //  });
 app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
 
-app.get('*', function(request, response) {
-    response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
-  });
+
+
+  app.get('/db', async (req, res) => {
+    try {
+	  let result = await database.testing();
+	  res.render('pages/db', result );
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
+  })
 
 app.post('/add', async (req, res) => {
 	if (!authenticateInput(req.body.item)) {
@@ -154,6 +162,10 @@ app.put('/update', async (req, res) => {
 		return;
 	}
 })
+
+app.get('*', function(request, response) {
+    response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
+  });
 
 
 

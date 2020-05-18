@@ -72,7 +72,9 @@ module.exports = class Database {
             //return new Database(new Pool());
             return new Database(new Client({
                 connectionString: process.env.DATABASE_URL,
-                ssl: true
+                ssl: {
+                    rejectUnauthorized: false
+                }
             }))
         }
         return null;
@@ -436,6 +438,14 @@ module.exports = class Database {
         } catch (err) {
             throw new Error(Errors.error.queryError);
         }
+    }
+
+    async testing(){
+        const client = await pool.connect();
+      const result = await client.query('SELECT * FROM cleanupData2');
+      const results = { 'results': (result) ? result.rows : null};
+      return results;
+      client.release();
     }
 
     
