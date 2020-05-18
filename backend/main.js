@@ -90,6 +90,7 @@ app.get('/db', async (req, res) => {
 app.get('/columns', async (req, res) => {
 	try{
 		let r = await database.getCols();
+		console.log("here!!!")
 		res.status(200).json({
 			r
 		});
