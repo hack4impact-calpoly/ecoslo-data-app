@@ -9,6 +9,9 @@ import withLocations from '../Components/withLocations';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/page.css";
+import { FaInfoCircle } from "react-icons/fa";
+import { FaQuestionCircle } from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 
 
 
@@ -342,7 +345,7 @@ renderGroupByCheckBoxes = () => {
   if(this.state.colNames !== undefined){
     return(
     <div>
-      <Form.Label className="big">Group By</Form.Label>
+      <Form.Label className="big">Group By</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Optional Field. Help here."/>
       <div></div>
       <input type="checkbox"
         name="Location"
@@ -480,13 +483,14 @@ renderGroupByCheckBoxes = () => {
             <Form.Group>
               <Row>
                 <Col>
-                  <Form.Label className="big">Start Date</Form.Label>
+                  <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Required. Help here."/>
+                  <ReactTooltip place="right" type="dark" effect="solid"/>
                   <br></br>
                     <DatePicker selected={this.state.dateStartVal} onChange={(e) => this.handleStartDateChange(e)} dateFormat={'yyyy/MM/dd'} />
                   <br></br>
                 </Col>
                 <Col>
-                  <Form.Label className="big">End Date</Form.Label>
+                  <Form.Label className="big">End Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Required. Help here."/>
                   <br></br>
                     <DatePicker selected={this.state.dateEndVal} onChange={(e) => this.handleEndDateChange(e)} dateFormat={'yyyy/MM/dd'} />
                   <br></br>
@@ -494,7 +498,7 @@ renderGroupByCheckBoxes = () => {
               </Row>
               </Form.Group>
               
-              <Form.Label className="big">Location</Form.Label>
+              <Form.Label className="big">Location</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Required. Help here."/>
               <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
                   <option>Select All</option>
                   { this.props.locations.map((value) => {
@@ -506,7 +510,7 @@ renderGroupByCheckBoxes = () => {
             <Form.Group>
               {this.renderGroupByCheckBoxes()}
             </Form.Group>
-            <Form.Label className="big">Select Which Items to View</Form.Label>
+            <Form.Label className="big">Select Which Items to View</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Required. Help here."/>
             {this.renderItemCheckboxes()}
             <Button variant="outline-primary" type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>
