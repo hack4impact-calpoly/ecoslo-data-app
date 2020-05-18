@@ -441,8 +441,8 @@ module.exports = class Database {
     }
 
     async testing(){
-        const clientC = await this.client.connect();
-      const result = await clientC.query('SELECT * FROM cleanupData2');
+        //const clientC = await this.client.connect();
+      const result = await client.query('SELECT * FROM cleanupData2');
       const results = { 'results': (result) ? result.rows : null};
       return results;
       client.release();
