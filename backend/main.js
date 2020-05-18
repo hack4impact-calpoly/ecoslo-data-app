@@ -39,7 +39,8 @@ app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
   app.get('/db', async (req, res) => {
     try {
 	  let result = await database.testing();
-	  res.render('pages/db', result );
+	  console.log("result in app.get: ", result);
+	  //res.render('pages/db', result );
     } catch (err) {
       console.error(err);
       res.send("Error " + err);
