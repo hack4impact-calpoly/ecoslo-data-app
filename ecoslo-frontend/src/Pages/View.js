@@ -6,7 +6,11 @@ import { Col, Row, Alert } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "../styles/page.css";
+import { FaInfoCircle } from "react-icons/fa";
+import { FaQuestionCircle } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
 
 
@@ -16,17 +20,19 @@ class View extends React.Component {
     super(props);
     
     this.state = {
+      dateStartVal: new Date(),
+      dateEndVal: new Date(),
       displayReady: false,
       formData : {
         "location": null, 
         "dateStart" : null,
-        "dateEnd": null
+        "dateEnd": null,
       },
       locations: [],
       showAlert: false,
       groupByCols: [],
       groupByValues: [false, false],
-      groupByDate: "None",
+      groupByDate: "Select Date Option...",
 
       columnNames : {
         "Key Information" : {
@@ -102,6 +108,7 @@ class View extends React.Component {
         }
       }
     };
+
   }
 
   marginstyle={
@@ -142,6 +149,47 @@ class View extends React.Component {
     }
     this.setState({locations: selected})
   }
+
+  formatDate(d) {
+
+    var month = '' + (d.getMonth() + 1)
+    var day = '' + d.getDate()
+    var year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+  };
+
+  initDateValues(){
+    let full = this.state.formData;
+    full['dateStart'] = this.formatDate(new Date());
+    full['dateEnd'] = this.formatDate(new Date());
+    this.setState({
+      formData: full
+    })
+  }
+
+  handleStartDateChange(dateInput) {
+    let full = this.state.formData;
+    full['dateStart'] = this.formatDate(dateInput);
+    this.setState({
+      dateStartVal: dateInput,
+      formData: full
+    })
+  };
+
+  handleEndDateChange(dateInput) {
+    let full = this.state.formData;
+    full['dateEnd'] = this.formatDate(dateInput);
+    this.setState({
+      dateEndVal: dateInput,
+      formData: full
+    })
+  };
 
   handleStringInputChange = (field, validationFunction = null) => event => {
     let curFormData = Object.assign({}, this.state.formData);
@@ -189,7 +237,7 @@ class View extends React.Component {
         }
       }
 
-      if(this.state.groupByValues[0] === false && this.state.groupByValues[1] === false && this.state.groupByDate === "None"){
+      if(this.state.groupByValues[0] === false && this.state.groupByValues[1] === false && this.state.groupByDate === "Select Date Option..."){
         var d = {
           dateStart: this.state.formData['dateStart'],
           dateEnd: this.state.formData['dateEnd'],
@@ -203,7 +251,6 @@ class View extends React.Component {
             this.setState({tableData: td})
           }
           else{
-            //this.setState({showAlert: true})
             alert("No data found. Try entering a different date range and location.")
           }
         }
@@ -214,18 +261,17 @@ class View extends React.Component {
       else{
         var groupCols = []
         if(this.state.groupByValues[0] === true){
-          
           groupCols.push("location")
         
         }
         if(this.state.groupByValues[1] === true){
           groupCols.push("event_name")
         }
-        if(this.state.groupByDate !== "None"){
+        if(this.state.groupByDate !== "Select Date Option..."){
           if(this.state.groupByDate === "Month and Year"){
             groupCols.push("monYear")
           }
-          if(this.state.groupByDate === "Full Date"){
+          else if(this.state.groupByDate === "Full Date"){
             groupCols.push("date")
           }
           else{
@@ -246,7 +292,6 @@ class View extends React.Component {
             this.setState({tableData: td})
           }
           else{
-            //this.setState({showAlert: true})
             alert("No data found. Try entering a different date range and location.")
           }
         }
@@ -286,8 +331,10 @@ class View extends React.Component {
       this.setState({groupByValues: duplicateVals})
     }
     if (col === "Event Name"){
+      console.log(e.target.checked)
       duplicateVals[1] = e.target.checked
       this.setState({groupByValues: duplicateVals})
+      console.log(this.state.groupByValues)
     }
 
   }
@@ -325,8 +372,7 @@ renderGroupByCheckBoxes = () => {
         onChange={(e) => this.handleGroupByCheckbox(e, "Event Name")}/> Event Name
       <div>
         <Form.Control multiple={false} as="select" onChange={(e) => this.handleGroupByDateChange(e)} >
-                    <option>None</option>
-                    <option>Date</option>
+                    <option>Select Date Option...</option>
                     <option>Full Date</option>
                     <option>Month</option>
                     <option>Year</option>
@@ -434,6 +480,10 @@ renderGroupByCheckBoxes = () => {
 
   render() {
     if(this.state.colNames !== undefined){
+      if(this.state.formData['dateStart'] === null){
+        this.initDateValues()
+      }
+      
     return (
       <div>
       <div style={this.marginstyle}>
@@ -454,28 +504,22 @@ renderGroupByCheckBoxes = () => {
               </Row>
               <Row>
                 <Col>
-                  <Form.Label className="big"><a data-tip data-for='start'>Start Date</a></Form.Label>
-                  <ReactTooltip place="right" type="dark" effect="float" id='start' >
-                  <div> You will see data from cleanups that occured on or before this date. </div>
-                  </ReactTooltip>
-                  <Form.Control placeholder="Enter Date" onChange={this.handleStringInputChange("dateStart")} />
+                  <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Required. Help here."/>
+                  <ReactTooltip place="right" type="dark" effect="solid"/>
+                  <br></br>
+                    <DatePicker selected={this.state.dateStartVal} onChange={(e) => this.handleStartDateChange(e)} dateFormat={'yyyy/MM/dd'} />
+                  <br></br>
                 </Col>
                 <Col>
-                  <Form.Label className="big"><a data-tip data-for='end'>End Date</a></Form.Label>
-                  <ReactTooltip place="right" type="dark" effect="float" id='end' >
-                    <div> You will see data from cleanups that occurred on or after this date.   </div>
-                    <div> If this date is different than the start date, you will see data </div>
-                    <div>from cleanups that fall within this date range.   </div>
-                  </ReactTooltip>
-                  <Form.Control placeholder="Enter Date" onChange={this.handleStringInputChange("dateEnd")} />
+                  <Form.Label className="big">End Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Required. Help here."/>
+                  <br></br>
+                    <DatePicker selected={this.state.dateEndVal} onChange={(e) => this.handleEndDateChange(e)} dateFormat={'yyyy/MM/dd'} />
+                  <br></br>
                 </Col>
               </Row>
               </Form.Group>
               
-              <Form.Label className="big"><a data-tip data-for='location'>Location</a></Form.Label>
-              <ReactTooltip place="right" type="dark" effect="float" id='location' >
-                    <div> You will see data from the locations that you select.    </div>
-                  </ReactTooltip>
+              <Form.Label className="big">Location</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Required. Help here."/>
               <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
                   <option>Select All</option>
                   { this.props.locations.map((value) => {
@@ -487,16 +531,7 @@ renderGroupByCheckBoxes = () => {
             <Form.Group>
               {this.renderGroupByCheckBoxes()}
             </Form.Group>
-            <Form.Label className="big"><a data-tip data-for='select'>Select Which Items to View</a></Form.Label>
-            <ReactTooltip place="right" type="dark" effect="float" id='select' >
-                    <div> To include data collected about a particular item, </div>
-                    <div>check the box next to it and it will appear as a column </div>
-                    <div>in the table labeled with the item’s name. If there was </div>
-                    <div>data about that item collected at one of the cleanups in </div>
-                    <div>the range of dates and location you select, it will appear </div>
-                    <div>in this column. If there is no data collected on that item </div>
-                    <div>at a particular cleanup, it will be empty.   </div>
-            </ReactTooltip>
+            <Form.Label className="big">Select Which Items to View</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Required. Help here."/>
             {this.renderItemCheckboxes()}
             <Button variant="outline-primary" type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>

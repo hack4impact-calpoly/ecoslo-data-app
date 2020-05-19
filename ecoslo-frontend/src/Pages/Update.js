@@ -7,27 +7,24 @@ import Container from 'react-bootstrap/Container';
 import {Col} from 'react-bootstrap';
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
+<<<<<<< HEAD
 import ReactTooltip from "react-tooltip";
+=======
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+>>>>>>> 2e4696ab6fca3a1581cb7d7a2673151f5975a945
 
 class Update extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {inputs: ["1"],
-     cols: {Event_Name: '', Adult_Volunteers: '', Child_Volunteers: '', Distance_Covered: '', Trash_Bags_Filled: '', Weight_Trash: '', Weight_Recycle: '', Total_Items: '',
-     Cigarette_Butts: '', Food_Wrappers: '', Plastic_Take_Out_Containers: '', Foam_Take_Out_Containers: '', Plastic_Bottle_Caps: '', Metal_Bottle_Caps: '',Plastic_Lids: '', Straws_And_Stirrers: '', 
-     Forks_Knives_And_Spoons: '', Plastic_Beverage_Bottles: '', Glass_Beverage_Bottles: '', Beverage_Cans: '', Plastic_Grocery_Bags: '', Other_Plastic_Bags: '', Paper_Bags: '', 
-     Paper_Cups_And_Plates: '', Plastic_Cups_And_Plates: '', Foam_Cups_And_Plates: '', Fishing_Buoys_Pots_And_Traps: '', Fishing_Net_And_Pieces: '', Fishing_Line: '', Rope: '', 
-     Six_Pack_Holders: '', Other_Plastic_Or_Foam_Packaging: '', Other_Plastic_Bottles: '', Strapping_Bands: '', Tobacco_Packaging_Or_Wrap: '', Appliances: '', Balloons: '', Cigar_Tips: '', 
-     Cigarette_Lighters: '', Construction_Materials: '', Fireworks: '', Tires: '', Condoms: '', Diapers: '', Syringes: '', Tampons: '', Unusual_Items: '', Dead_Animals: '', Foam_Pieces: '', Glass_Pieces: '', Plastic_Pieces: ''},
      input_vals: [['', '']],
-     date: "",
+     date: this.formatDate(new Date()),
      location: "",
-     tableResult: []
-    
-  };
-    
-
+     tableResult: [],
+     dateValue: new Date()
+    };
   }
 
   marginstyle={
@@ -37,20 +34,22 @@ class Update extends React.Component {
 
   async componentDidMount(){
     let res = await this.props.apiWrapper.getColumns();
+    console.log("res: ", res)
     let options = res.r.fields.map((content, index) =>{
       return <option>{content.name}</option>
     })
+    let optionTypes = res.r.fields.map((content, index) =>{
+      return <option>{content.format}</option>
+    })
+    this.setState({colTypes: optionTypes})
     this.setState({colNames: options})
   }
 
   handleRemove(event, index) {
     var list_remove = this.state.inputs;
     var list_remove_vals = this.state.input_vals;
-    console.log(list_remove);
-    console.log(index);
     list_remove.splice(index, 1)
     list_remove_vals.splice(index, 1)
-    console.log(list_remove);
     this.setState({inputs: list_remove});
     this.setState({input_vals: list_remove_vals});
 
@@ -68,6 +67,27 @@ class Update extends React.Component {
     new_list_input[index][0] = event.target.value
     this.setState({input_vals: new_list_input});
   }
+
+
+
+  formatDate(d) {
+    var month = '' + (d.getMonth() + 1)
+    var day = '' + d.getDate()
+    var year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+  };
+
+  handleDateChange(dateInput) {
+    this.setState({
+      dateValue: dateInput,
+      date: this.formatDate(dateInput)})
+  };
 
   async handleSubmit(event) {
     let cols=[]
@@ -92,7 +112,6 @@ class Update extends React.Component {
 
     try {
       const res = await this.props.apiWrapper.updateData(data);
-      console.log(res);
       alert("Value successfully updated in database.");
     }
     catch (error) {
@@ -109,10 +128,6 @@ class Update extends React.Component {
        curr_input_vals.push(['', ''])
        this.setState({input_vals: curr_input_vals})
       }
-
-  async handleDateChange(event) {
-    this.setState({date: event.target.value});
-  }
 
   async handleLocationChange(event) {
     this.setState({location: event.target.value});
@@ -155,11 +170,18 @@ class Update extends React.Component {
         <Form>
           
         <Form.Group controlId="formBasicEmail">
+<<<<<<< HEAD
 
 
         <Form.Label><div className="date_spacing">Date</div></Form.Label>
         <Form.Control placeholder="Enter Date" value={this.state.date} onChange={(e) => this.handleDateChange(e)}/>
 
+=======
+          <Form.Label>Date (Click to Change)</Form.Label>
+              <br></br>
+                <DatePicker selected={this.state.dateValue} onChange={(e) => this.handleDateChange(e)} dateFormat={'yyyy/MM/dd'} />
+              <br></br>
+>>>>>>> 2e4696ab6fca3a1581cb7d7a2673151f5975a945
         <Form.Label><div className="loc_spacing">Location</div></Form.Label>
         <Form.Control as="select" value={this.state.location} onChange={(e) => this.handleLocationChange(e)}>
         <option>Choose...</option>

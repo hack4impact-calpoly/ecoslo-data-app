@@ -112,8 +112,8 @@ class AlterTable extends React.Component {
             action: this.state.formData["action"],
             name: this.state.formData["name"]
         }
-        if(data.name === 'date' || data.name === 'location' || data.name === 'event name'){
-            alert('Cannot delete date, location, or event name.')
+        if(data.name === 'date' || data.name === 'location' || data.name === 'event name' || data.name == 'public'){
+            alert('Cannot delete date, location, event name, or public.')
         }
         else{
 

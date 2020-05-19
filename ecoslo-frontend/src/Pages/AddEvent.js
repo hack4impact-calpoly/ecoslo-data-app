@@ -7,6 +7,8 @@ import withLocations from '../Components/withLocations';
 import withColumns from '../Components/withColumns';
 import Select from 'react-dropdown-select';
 import ReactTooltip from "react-tooltip";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 
 const sectionStyle ={
@@ -156,34 +158,34 @@ class AddEvent extends React.Component {
   constructor(props) {
     super(props);
     this.additionalColumns = [];
-    this.defaultCols = ["location", "date", "event_name"];
+    let defaultCols = new Set(["location", "date", "event_name"]);
     this.defaultColTypes = { "location" : "string", "date" : "string", "event_name" : "string" };
     for (const key in columnNames) {
       for (const column of columnNames[key].columns) {
         for (const field of column) {
-          this.defaultCols.push(field.toLowerCase());
+          defaultCols.add(field.toLowerCase());
           this.defaultColTypes[field.toLowerCase()] = "numeric";
         }
       }
     }
     
-
     for (const column of this.props.columns) {
-      if (this.defaultCols.indexOf(column) > - 1 && this.additionalColumns.indexOf(column) > -1) {
+      if (!defaultCols.has(column) && this.additionalColumns.indexOf(column) > -1) {
         this.additionalColumns.push(column);
       }
     }
-    console.log("props cols: ", this.props.columns);
-    console.log(this.additionalColumns);
 
     if (this.additionalColumns.length !== 0) {
       howToGoThrough.push(["Additional Items"]);
     }
 
     this.state = {
-      formData : this.getDefaultFormData(),
       publicState: "false",
+      formData: this.getDefaultFormData(defaultCols),
+      defaultCols: defaultCols,
+      date: new Date()
     }
+    
   }
 
   marginstyle={
@@ -193,18 +195,27 @@ class AddEvent extends React.Component {
 
   updateColumns(){
     this.additionalColumns = [];
+    let newSet = new Set(this.state.defaultCols);
+    //let newFormData = {...this.state.formData};
+    const columnSet = new Set(this.props.columns);
     for (const column of this.props.columns) {
-      if (this.defaultCols.indexOf(column) === - 1 && this.additionalColumns.indexOf(column) === -1) {
+      const defaultHasColumn = this.state.defaultCols.has(column);
+      if (defaultHasColumn === false && this.additionalColumns.indexOf(column) === -1) {
         this.additionalColumns.push(column);
       }
     }
-    console.log("props cols: ", this.props.columns);
-    console.log(this.additionalColumns);
+    for (const val of this.state.defaultCols.keys()) {
+      if (!columnSet.has(val)) {
+        newSet.delete(val);
+        //delete newFormData.column;
+      }
+    }
 
     if (this.additionalColumns.length !== 0 && howToGoThrough[howToGoThrough.length -1][0] !== "Additional Items") {
       howToGoThrough.push(["Additional Items"]);
     }
-    this.setState({formData : Object.assign(this.state.formData, this.getDefaultAdditionalData())})
+    //this.setState({formData : Object.assign(newFormData, this.getDefaultAdditionalData()), defaultCols : newSet});
+    this.setState({formData: Object.assign(this.state.formData, this.getDefaultAdditionalData()), defaultCols : newSet})
   }
 
   componentDidUpdate(prevProps){
@@ -223,7 +234,7 @@ class AddEvent extends React.Component {
         } else if (colType === "numeric") {
           formData[field] = "0";
         } else if (colType === "boolean") {
-          formData[field] = 'False';
+          formData[field] = 'false';
         } else {
           console.log("error in type");
         }
@@ -231,29 +242,51 @@ class AddEvent extends React.Component {
         console.log("Col " + field + " has no col type reported!");
       }
     }
-
     return formData;
   }
 
-  getDefaultFormData() {
+  getDefaultFormData(defaultCols) {
     let formData = {};
-    for (const field of this.defaultCols) {
-      if (this.defaultColTypes[field] === "numeric") {
+    for (const field of defaultCols) {
+      if(field == 'date'){
+        formData[field] = this.formatDate(new Date());
+      }
+      else if (this.defaultColTypes[field] === "numeric") {
         formData[field] = "0";
       } else if (this.defaultColTypes[field] === "boolean") {
-        formData[field] = 'False';
+        formData[field] = 'false';
       } else if (this.defaultColTypes[field] === "string") {
         formData[field] = null;
       }
     }
-
-    return Object.assign(formData, this.getDefaultAdditionalData());
+    Object.assign(formData, this.getDefaultAdditionalData());
+    return formData;
   }
 
   handlePublicChange (event) {
     this.setState({publicState: event.target.value})
   }
 
+  formatDate(d) {
+    var month = '' + (d.getMonth() + 1)
+    var day = '' + d.getDate()
+    var year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+  };
+
+  handleDateChange(dateInput) {
+    this.setState({date: dateInput});
+    let full = this.state.formData;
+    console.log("formData: ", this.state.formData)
+    full['date'] = this.formatDate(dateInput)
+    this.setState({formData: full})
+  };
 
   handleLocationChange (item) {
     let old = this.state.formData;
@@ -279,6 +312,7 @@ class AddEvent extends React.Component {
   }
 
   validateNumericEntry(formEntry) {
+    console.log(formEntry)
     if (formEntry.length === 0) {
       return true;
     }
@@ -293,28 +327,28 @@ class AddEvent extends React.Component {
     return regex.test(formEntry);
   }
 
-  handleSubmit = () => {
+  async handleSubmit(event) {
     let toSendFormData = {};
     for (const pair of Object.entries(this.state.formData)) {
       const key = pair[0], value = pair[1] === null ? null : pair[1].trim();
-      console.log(key, value)
-      if (this.defaultColTypes[key] === "string") {
+      if (this.props.colTypes[key] === "string") {
         if (value === null || value.length === 0) {
           alert("Please input an acceptable value for " + convertFieldToLabel(key) + " at least one character in length.");
           return false;
         }
         toSendFormData[key] = value;
-      } else if (this.defaultColTypes[key] === "numeric") {
+      } else if (this.props.colTypes[key] === "numeric") {
         if (!this.validateNumericEntry(value)) {
           alert("Value " + value + " for " + convertFieldToLabel(key) + " is not an acceptable value.");
           return false;
         }
         toSendFormData[key] = (+value) || 0;
-      } else if (this.defaultColTypes[key] === "boolean") {
-        if (!this.validateBooleanEntry(value)) {
-          alert("Value for " + convertFieldToLabel(key) + " must be true or false!");
+      } else if (this.props.colTypes[key] === "boolean") {
+        if (value.toLowerCase() !== "true" && value.toLowerCase() !== "false") {
+          alert("Value for " + convertFieldToLabel(key) + " must be true or false.");
           return false;
         }
+        toSendFormData[key] = value;
       } else {
         console.log("Unknown column type for", convertFieldToLabel(key));
       }
@@ -322,7 +356,7 @@ class AddEvent extends React.Component {
     }
     
     try {
-      let success = this.props.apiWrapper.addData(toSendFormData);
+      let success = await this.props.apiWrapper.addData(toSendFormData);
       console.log(success)
       alert("Cleanup successfully added to database.")
     }
@@ -351,16 +385,35 @@ class AddEvent extends React.Component {
   renderColumnsForSections(titles) {
     let zippedArray;
     if (titles[0] !== "Additional Items") {
-      const firstColumnNames = columnNames[titles[0]].columns;
+      let firstColumnNames0 = columnNames[titles[0]].columns[0];
+      for (let i = 0; i < firstColumnNames0.length; i++) {
+        if (!this.state.defaultCols.has(firstColumnNames0[i])) {
+          firstColumnNames0.splice(i, 1);
+          i--;
+        }
+      }
       if (titles.length === 1) {
-        if (firstColumnNames.length > 1) {
-          zippedArray = zip(firstColumnNames[0], firstColumnNames[1]);
+        if (columnNames[titles[0]].columns.length > 1) {
+          let firstColumnNames1 = columnNames[titles[0]].columns[1];
+          for (let i = 0; i < firstColumnNames1.length; i++) {
+            if (!this.state.defaultCols.has(firstColumnNames1[i])) {
+              firstColumnNames1.splice(i, 1);
+              i--;
+            }
+          }
+          zippedArray = zip(firstColumnNames0, firstColumnNames1);
         } else {
-          zippedArray = zip(firstColumnNames[0], []);
+          zippedArray = zip(firstColumnNames0, []);
         }
       } else {
-        const secondColumnNames = columnNames[titles[1]].columns;
-        zippedArray = zip(firstColumnNames[0], secondColumnNames[0]);
+        let secondColumnNames = columnNames[titles[1]].columns[0];
+        for (let i = 0; i < secondColumnNames.length; i++) {
+          if (!this.state.defaultCols.has(secondColumnNames[i])) {
+            secondColumnNames.splice(i, 1);
+            i--;
+          }
+        }
+        zippedArray = zip(firstColumnNames0, secondColumnNames);
       }
     } else {
       if (this.additionalColumns.length !== 0) {
@@ -388,8 +441,8 @@ class AddEvent extends React.Component {
                             as="select"
                             onChange={this.handleOnChange(name)}
                           >
-                              <option>True</option>
-                              <option>False</option>
+                              <option>true</option>
+                              <option>false</option>
                           </Form.Control>
                         :
                           <Form.Control 
@@ -451,11 +504,12 @@ class AddEvent extends React.Component {
             </ReactTooltip>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="formBasicEmail">
-              <Form.Label>Date</Form.Label>
-              <Form.Control placeholder="Enter Date" onChange={this.handleOnChange("date")} />
+              <Form.Label>Date (Click to Change)</Form.Label>
+              <br></br>
+                <DatePicker selected={this.state.date} onChange={(e) => this.handleDateChange(e)} dateFormat={'yyyy/MM/dd'} />
+              <br></br>
               <Form.Label>Location</Form.Label>
               <Select multiple={false} create={true} searchable={true} labelField="text" valueField="text" options={locOptions} values={[]}
-              //onCreateNew={(item) => locOptions.push(item)}
               onChange={(value) => this.handleLocationChange(value)}
               >
               </Select>
@@ -475,7 +529,7 @@ class AddEvent extends React.Component {
               {/* </Form.Control>  */}
             </Form.Group>
             { this.renderFormAfterFirstPart() }
-            <Button onClick={this.handleSubmit}>
+            <Button onClick={(e) => this.handleSubmit(e)}>
               Submit
             </Button>
           </Form>

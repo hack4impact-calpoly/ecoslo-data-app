@@ -31,7 +31,15 @@ class DataTable extends React.Component {
 
     createRow (index) {
         let res = Object.entries(index).map(([key, value]) => {
-            return <td>{value}</td>
+            if(value === false){
+                return <td>{'false'}</td>
+            }
+            else if(value === true){
+                return <td>{'true'}</td>
+            }
+            else{
+                return <td>{value}</td>
+            }
         });
         return res;
     }
@@ -48,7 +56,6 @@ class DataTable extends React.Component {
 
 
     render() {
-        console.log(this.props.data);
         if (this.props.data !== undefined && (this.props.data.rows !== undefined && this.props.data.rows !== [])){
 
         return (
@@ -82,7 +89,6 @@ class DataTable extends React.Component {
         );
     }
     else {
-        console.log("HERE3")
         return <div></div>
     }
 }
