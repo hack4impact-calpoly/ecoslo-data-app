@@ -86,7 +86,7 @@ module.exports = class Database {
         return queryStr;
     }
 
-    _createSelectQuery(colNames, dateStart, dateEnd, locations, public) {
+    _createSelectQuery(colNames, dateStart, dateEnd, locations, isPublicString) {
         var queryStr = 'SELECT ';
         var i;
         var continuing = false;
@@ -123,7 +123,7 @@ module.exports = class Database {
             queryStr+= ')'
         }
 
-        if(public !==null && public !== "all"){
+        if(isPublicString !==null && isPublicString !== "all"){
             if(continuing) {
                 queryStr += ' AND ('
             }
@@ -131,10 +131,10 @@ module.exports = class Database {
                 queryStr+= ' WHERE ('
             }
             
-            if(public==='true'){
+            if(isPublicString==='true'){
                 queryStr+= 'public\' = true'
             }
-            if(public==='false'){
+            if(isPublicString==='false'){
                 queryStr+= 'public\' = false'
             }
             queryStr+= ')'
@@ -143,7 +143,7 @@ module.exports = class Database {
     }
 
 
-    _createSelectSumQuery(colNames, dateStart, dateEnd, locations, groupBy, public) {
+    _createSelectSumQuery(colNames, dateStart, dateEnd, locations, groupBy, isPublicString) {
         console.log("groupBy: ", groupBy)
         var queryStr = 'SELECT ';
         var i;
@@ -198,7 +198,7 @@ module.exports = class Database {
             queryStr+= ')'
         }
 
-        if(public !==null && public !== "all"){
+        if(isPublicString !==null && isPublicString !== "all"){
             if(continuing) {
                 queryStr += ' AND ('
             }
@@ -206,10 +206,10 @@ module.exports = class Database {
                 queryStr+= ' WHERE ('
             }
             
-            if(public==='true'){
+            if(isPublicString==='true'){
                 queryStr+= 'public\' = true'
             }
-            if(public==='false'){
+            if(isPublicString==='false'){
                 queryStr+= 'public\' = false'
             }
             queryStr+= ')'
