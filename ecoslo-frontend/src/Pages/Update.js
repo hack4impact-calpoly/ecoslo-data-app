@@ -7,12 +7,9 @@ import Container from 'react-bootstrap/Container';
 import {Col} from 'react-bootstrap';
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
-<<<<<<< HEAD
 import ReactTooltip from "react-tooltip";
-=======
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
->>>>>>> 2e4696ab6fca3a1581cb7d7a2673151f5975a945
 
 class Update extends React.Component {
   constructor(props) {
@@ -170,18 +167,10 @@ class Update extends React.Component {
         <Form>
           
         <Form.Group controlId="formBasicEmail">
-<<<<<<< HEAD
-
-
-        <Form.Label><div className="date_spacing">Date</div></Form.Label>
-        <Form.Control placeholder="Enter Date" value={this.state.date} onChange={(e) => this.handleDateChange(e)}/>
-
-=======
           <Form.Label>Date (Click to Change)</Form.Label>
               <br></br>
                 <DatePicker selected={this.state.dateValue} onChange={(e) => this.handleDateChange(e)} dateFormat={'yyyy/MM/dd'} />
               <br></br>
->>>>>>> 2e4696ab6fca3a1581cb7d7a2673151f5975a945
         <Form.Label><div className="loc_spacing">Location</div></Form.Label>
         <Form.Control as="select" value={this.state.location} onChange={(e) => this.handleLocationChange(e)}>
         <option>Choose...</option>
