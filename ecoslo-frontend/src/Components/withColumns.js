@@ -17,11 +17,11 @@ export default function withColumns(ColumnWrappedComponent) {
                 console.log("IN UPDATE COLUMNS: ", columns, '\n');
                 console.log("COLUMNS[R] value: ", columns["r"], '\n');
                 console.log("COLUMNS.R value: ", columns.r, '\n');
-                console.log("COLUMNS.R.FIELDS value: ", columns["r"].fields, '\n');
-
-
-                console.log("keys: ", Object.keys(columns));
+                console.log("keys: ", Object.keys(columns), '\n');
                 console.log("values: ", Object.values(columns));
+
+
+                
                 
                 let colTypes = {};
                 
