@@ -30,7 +30,6 @@ app.post('/add', async (req, res) => {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	//res.status(200).send();
 })
 
 app.post('/altTable', async (req, res) =>{
@@ -40,7 +39,6 @@ app.post('/altTable', async (req, res) =>{
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	//res.status(200).send();
 	res.status(200).json({});
 })
 

@@ -1,12 +1,9 @@
-//const {Pool} = require('pg');
 const Errors = require('./errors');
 
-//for heroku postgres
 const {Client} = require('pg');
 
 
 module.exports = class Database {
-    //constructor(pool) {
     constructor(client) {
         this._possibleKeys = new Set(['date', 'location', 'Cigarette_Butts', 'Food_Wrappers', 'Plastic_Take_Out_Containers', 'Foam_Take_Out_Containers',
         'Plastic_Bottle_Caps',
@@ -54,22 +51,14 @@ module.exports = class Database {
         this.noSumColumns.add('unusual_items');
         this.noSumColumns.add('event_name');
 
-        //this._connection = pool;
-        //this.dbName = 'cleanupData'
         this.dbName = 'cleanupData2'
 
         this.client = client
-        //for HEROKU
-        // const client = new Client({
-        //     connectionString: process.env.DATABASE_URL,
-        //     ssl: true,
-        // });
         client.connect();
     }
 
     static create(env) {
         if (env == null) {
-            //return new Database(new Pool());
             return new Database(new Client({
                 connectionString: process.env.DATABASE_URL,
                 ssl: {
@@ -431,10 +420,5 @@ module.exports = class Database {
             throw new Error(Errors.error.queryError);
         }
     }
-
-    
-
-    
-
 
 }
