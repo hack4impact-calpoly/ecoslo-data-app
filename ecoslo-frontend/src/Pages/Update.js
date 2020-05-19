@@ -7,6 +7,7 @@ import Container from 'react-bootstrap/Container';
 import {Col} from 'react-bootstrap';
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
+import ReactTooltip from "react-tooltip";
 
 class Update extends React.Component {
   constructor(props) {
@@ -145,8 +146,16 @@ class Update extends React.Component {
       <div style={this.marginstyle}>
 
         <Container>
+              <a data-tip data-for='global'> ? </a>
+              <ReactTooltip place="right" type="dark" effect="float" id='global' >
+              <p>Use this page to update a preexisting data entry.</p>
+              <div> You can update one or multiple items in the table, and you </div>
+              <div>select which item to update based on the event’s date and location.</div>
+              </ReactTooltip>
         <Form>
+          
         <Form.Group controlId="formBasicEmail">
+
 
         <Form.Label><div className="date_spacing">Date</div></Form.Label>
         <Form.Control placeholder="Enter Date" value={this.state.date} onChange={(e) => this.handleDateChange(e)}/>

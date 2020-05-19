@@ -6,6 +6,7 @@ import {Col} from 'react-bootstrap';
 import withLocations from '../Components/withLocations';
 import withColumns from '../Components/withColumns';
 import Select from 'react-dropdown-select';
+import ReactTooltip from "react-tooltip";
 
 
 const sectionStyle ={
@@ -181,7 +182,7 @@ class AddEvent extends React.Component {
 
     this.state = {
       formData : this.getDefaultFormData(),
-      publicState: "None",
+      publicState: "false",
     }
   }
 
@@ -442,6 +443,12 @@ class AddEvent extends React.Component {
     return (
       <div style={this.marginstyle}>
         <Container>
+            <a data-tip data-for='group'>?</a>
+            <ReactTooltip place="right" type="dark" effect="float" id='group' >
+                          <div>Use this page to add a new beach cleanup entry. If </div>
+                          <div>there were no items found for an entry, you can leave </div>
+                            <div>the value as zero.</div>
+            </ReactTooltip>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Date</Form.Label>

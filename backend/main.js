@@ -37,9 +37,9 @@ passport.use(new LocalStrategy(
     }
   ));
 
-  bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
+  //bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
 	// Store hash in your password DB.
-});
+//});
 
 
 

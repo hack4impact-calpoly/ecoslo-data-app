@@ -7,6 +7,7 @@ import Table from "react-bootstrap/Table";
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
 import "../styles/page.css";
+import ReactTooltip from "react-tooltip";
 
 
 
@@ -297,7 +298,20 @@ renderGroupByCheckBoxes = () => {
   if(this.state.colNames !== undefined){
     return(
     <div>
-      <Form.Label className="big">Group By</Form.Label>
+      <Form.Label className="big"><a data-tip data-for='group'>Group By</a></Form.Label>
+      <ReactTooltip place="right" type="dark" effect="float" id='group' >
+                    <p> You will see compiled information in the table based on what you select. 
+                      <div>If you select “location”, all of the data from that location that you have </div>
+                      <div>selected from “most likely to find items” will be summed and placed in a SINGLE </div>
+                      <div>column. Similarly, if you select “event name”, all information will be grouped </div>
+                      <div>into one column for particular event names. </div>   </p>
+                    <p>
+                      <div>It is important to note that you do not have to select any option under “Group By.” </div>
+                      <div>However, if you do, you can only select to display the same item under the “Key </div>
+                      <div>Information” when selecting which items to view. For example, if you select “Location” </div>
+                      <div>under Group By, you can only select “Location” under Key Information, as well.</div>
+                    </p>
+      </ReactTooltip>
       <div></div>
       <input type="checkbox"
         name="Location"
@@ -431,21 +445,37 @@ renderGroupByCheckBoxes = () => {
           <Form.Group>
             <Form.Group>
               <Row>
-              <Button size="sm" variant="light">?</Button>
+              <a data-tip data-for='top'> ? </a>
+              <ReactTooltip place="right" type="dark" effect="float" id='top' >
+              <div> This page generates a table that contains cleanup data from a   </div>
+              <div> combination of dates, locations, and events you select below.</div>
+              </ReactTooltip>
+              
               </Row>
               <Row>
                 <Col>
-                  <Form.Label className="big">Start Date</Form.Label>
+                  <Form.Label className="big"><a data-tip data-for='start'>Start Date</a></Form.Label>
+                  <ReactTooltip place="right" type="dark" effect="float" id='start' >
+                  <div> You will see data from cleanups that occured on or before this date. </div>
+                  </ReactTooltip>
                   <Form.Control placeholder="Enter Date" onChange={this.handleStringInputChange("dateStart")} />
                 </Col>
                 <Col>
-                  <Form.Label className="big">End Date</Form.Label>
+                  <Form.Label className="big"><a data-tip data-for='end'>End Date</a></Form.Label>
+                  <ReactTooltip place="right" type="dark" effect="float" id='end' >
+                    <div> You will see data from cleanups that occurred on or after this date.   </div>
+                    <div> If this date is different than the start date, you will see data </div>
+                    <div>from cleanups that fall within this date range.   </div>
+                  </ReactTooltip>
                   <Form.Control placeholder="Enter Date" onChange={this.handleStringInputChange("dateEnd")} />
                 </Col>
               </Row>
               </Form.Group>
               
-              <Form.Label className="big">Location</Form.Label>
+              <Form.Label className="big"><a data-tip data-for='location'>Location</a></Form.Label>
+              <ReactTooltip place="right" type="dark" effect="float" id='location' >
+                    <div> You will see data from the locations that you select.    </div>
+                  </ReactTooltip>
               <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
                   <option>Select All</option>
                   { this.props.locations.map((value) => {
@@ -457,7 +487,16 @@ renderGroupByCheckBoxes = () => {
             <Form.Group>
               {this.renderGroupByCheckBoxes()}
             </Form.Group>
-            <Form.Label className="big">Select Which Items to View</Form.Label>
+            <Form.Label className="big"><a data-tip data-for='select'>Select Which Items to View</a></Form.Label>
+            <ReactTooltip place="right" type="dark" effect="float" id='select' >
+                    <div> To include data collected about a particular item, </div>
+                    <div>check the box next to it and it will appear as a column </div>
+                    <div>in the table labeled with the item’s name. If there was </div>
+                    <div>data about that item collected at one of the cleanups in </div>
+                    <div>the range of dates and location you select, it will appear </div>
+                    <div>in this column. If there is no data collected on that item </div>
+                    <div>at a particular cleanup, it will be empty.   </div>
+            </ReactTooltip>
             {this.renderItemCheckboxes()}
             <Button variant="outline-primary" type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>

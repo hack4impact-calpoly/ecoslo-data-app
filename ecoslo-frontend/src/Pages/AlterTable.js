@@ -6,6 +6,7 @@ import { Row, Col } from "react-bootstrap";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import "../styles/page.css";
+import ReactTooltip from "react-tooltip";
 
 class AlterTable extends React.Component {
     constructor(props) {
@@ -169,6 +170,21 @@ class AlterTable extends React.Component {
             <div style={this.marginstyle}>
             <Container>
             <Form>
+                <Row>
+                <a data-tip data-for='global'> ? </a>
+                <ReactTooltip place="right" type="dark" effect="float" id='global' >
+                <p>Use this page to add a column to store data collected on a new item.</p>
+                <div>Make sure it is an item that has been encountered at </div>
+                <div>multiple cleanups or that you expect to see more frequently, </div>
+                <div>as opposed to an item that has only been encountered once </div>
+                <div>on a cleanup, which would fall under the “unusual item” column.</div>
+                <p></p>
+                <div> You can also use this page to delete a column to remove data collected </div>
+                <div>on a particular item across all cleanups, which you might do if you </div>
+                <div>find that you no longer need data about an item or if it is an item </div>
+                <div>that isn’t found frequently and would be better suited as an “unusual item.” </div>
+                </ReactTooltip>
+                </Row>
                 <div>
                 <div><h4>Add a Column</h4></div>
                 <div><strong>Note:</strong> Only add a column if it is absolutely necessary. The name of the new column must only include letters and spaces, no numbers or special characters are allowed.</div>
