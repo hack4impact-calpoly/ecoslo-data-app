@@ -14,11 +14,13 @@ export default function withColumns(ColumnWrappedComponent) {
         updateColumns = async () => {
             try {
                 const columns = await this.props.apiWrapper.getColumns();
+                console.log("keys: ", Object.keys(columns), '\n');
+                console.log("values: ", Object.values(columns));
+                
                 console.log("IN UPDATE COLUMNS: ", columns, '\n');
                 console.log("COLUMNS[R] value: ", columns["r"], '\n');
                 console.log("COLUMNS.R value: ", columns.r, '\n');
-                console.log("keys: ", Object.keys(columns), '\n');
-                console.log("values: ", Object.values(columns));
+                
 
 
                 

@@ -23,11 +23,11 @@ export default class APIWrapper {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
                         if (optionalResolve) {
-                            //optionalResolve(JSON.parse(this.response));
-                            optionalResolve(this.response);
+                            optionalResolve(JSON.parse(this.response));
+                            //optionalResolve(this.response);
                         } else {
-                            //resolve(JSON.parse(this.response));
-                            resolve(this.response);
+                            resolve(JSON.parse(this.response));
+                            //resolve(this.response);
                         }
                     } else {
                         reject(this.response);
@@ -50,12 +50,13 @@ export default class APIWrapper {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
                         if (optionalResolve) {
-                            optionalResolve((this.response));
+                            //optionalResolve((this.response));
+                            optionalResolve(JSON.parse(this.response));
                         } else {
-                            resolve((this.response));
+                            resolve(JSON.parse(this.response));
                         }
                     } else {
-                        reject(this.response);
+                        reject((this.response));
                     }
                 }
             };
