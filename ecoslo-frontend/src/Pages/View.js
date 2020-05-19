@@ -33,12 +33,16 @@ class View extends React.Component {
       groupByCols: [],
       groupByValues: [false, false],
       groupByDate: "Select Date Option...",
+      pubPrivCols: [],
+      pubPrivValues: [false, false],
+      pubPrivSend: "",
 
       columnNames : {
         "Key Information" : {
           "date" : null,
           "event_name" : null,
           "location": null,
+          "public": null
         },
         "Most Likely To Find Items" : {
           "cigarette_butts" : null,
@@ -236,13 +240,27 @@ class View extends React.Component {
         i += 1
         }
       }
-
+      let p = ""
+      if(this.state.pubPrivValues[0] === false && this.state.pubPrivValues[1] === false || this.state.pubPrivValues[0] === true && this.state.pubPrivValues[1] === true){
+        //this.setState({pubPrivSend: "all"})
+        p = "all"
+      }
+      else if(this.state.pubPrivValues[0] === true && this.state.pubPrivValues[1] === false){
+        //this.setState({pubPrivSend: "true"})
+        p = "true"
+      }
+      else{
+        //this.setState({pubPrivSend: "false"})
+        p = "false"
+      }
       if(this.state.groupByValues[0] === false && this.state.groupByValues[1] === false && this.state.groupByDate === "Select Date Option..."){
+        console.log("pub", this.state.pubPrivSend)
         var d = {
           dateStart: this.state.formData['dateStart'],
           dateEnd: this.state.formData['dateEnd'],
           cols: selected,
-          locations: this.state.locations
+          locations: this.state.locations,
+          public: p
         }
     
         try{
@@ -260,6 +278,7 @@ class View extends React.Component {
       }
       else{
         var groupCols = []
+        
         if(this.state.groupByValues[0] === true){
           groupCols.push("location")
         
@@ -277,6 +296,7 @@ class View extends React.Component {
           else{
             groupCols.push(this.state.groupByDate.toLowerCase())
           }
+        
           
         }
         var q = {
@@ -284,7 +304,8 @@ class View extends React.Component {
           dateEnd: this.state.formData['dateEnd'],
           cols: selected,
           locations: this.state.locations,
-          groupBy: groupCols
+          groupBy: groupCols, 
+          public: p
         }
         try{
           let td = await this.props.apiWrapper.sumPerCol(q);
@@ -385,6 +406,49 @@ renderGroupByCheckBoxes = () => {
       );
     }
   }
+
+renderPublicPrivateCheckBoxes = () => {
+ if(this.state.colNames !== undefined){
+    return(
+    <div>
+      <Form.Label className="big"><a data-tip data-for='public'>Public and Private Events</a></Form.Label>
+      <ReactTooltip place="right" type="dark" effect="float" id='public' >
+                    <p> You can view only private or only public events here. 
+                      <div>You do not have to select either box, and default shows all events, public or private. </div></p>
+      </ReactTooltip>
+      <div></div>
+      <input type="checkbox"
+        name="Public"
+        checked={this.state.pubPrivValues[0]}
+        onChange={(e) => this.handlePubPrivCheckbox(e, "Public")}/> Public
+      <div></div>
+
+      <input type="checkbox"
+        name="Private"
+        checked={this.state.pubPrivValues[1]}
+        onChange={(e) => this.handlePubPrivCheckbox(e, "Private")}/> Private
+      <div></div>
+      </div>
+      );
+    }
+}
+
+handlePubPrivCheckbox = (e, col) =>{
+  var duplicateVals = this.state.pubPrivValues
+  if (col === "Public"){
+    duplicateVals[0] = e.target.checked
+    this.setState({pubPrivValues: duplicateVals})
+  }
+  if (col === "Private"){
+    console.log(e.target.checked)
+    duplicateVals[1] = e.target.checked
+    this.setState({pubPrivValues: duplicateVals})
+    console.log(this.state.pubPrivValues)
+  }
+}
+
+
+
  
  initSelectedValues = ()  => {
   if(this.state.colNames !== undefined){
@@ -504,14 +568,15 @@ renderGroupByCheckBoxes = () => {
               </Row>
               <Row>
                 <Col>
-                  <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Required. Help here."/>
+                  <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see data from cleanups that occurred on or after this date. 
+"/>
                   <ReactTooltip place="right" type="dark" effect="solid"/>
                   <br></br>
                     <DatePicker selected={this.state.dateStartVal} onChange={(e) => this.handleStartDateChange(e)} dateFormat={'yyyy/MM/dd'} />
                   <br></br>
                 </Col>
                 <Col>
-                  <Form.Label className="big">End Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Required. Help here."/>
+                  <Form.Label className="big">End Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see data from cleanups that occured on or before this date, within a range if start date is included."/>
                   <br></br>
                     <DatePicker selected={this.state.dateEndVal} onChange={(e) => this.handleEndDateChange(e)} dateFormat={'yyyy/MM/dd'} />
                   <br></br>
@@ -519,7 +584,7 @@ renderGroupByCheckBoxes = () => {
               </Row>
               </Form.Group>
               
-              <Form.Label className="big">Location</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Required. Help here."/>
+              <Form.Label className="big">Location</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see data from the locations that you select. "/>
               <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
                   <option>Select All</option>
                   { this.props.locations.map((value) => {
@@ -531,7 +596,12 @@ renderGroupByCheckBoxes = () => {
             <Form.Group>
               {this.renderGroupByCheckBoxes()}
             </Form.Group>
-            <Form.Label className="big">Select Which Items to View</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="Required. Help here."/>
+            <Form.Group>
+              {this.renderPublicPrivateCheckBoxes()}
+            </Form.Group>
+
+
+            <Form.Label className="big">Select Which Items to View</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="To include data collected about a particular item, check the box next to it and it will appear as a column in the table labeled with the item’s name. If there was data about that item collected at one of the cleanups in the range of dates and location you select, it will appear in this column. If there is no data collected on that item at a particular cleanup, it will be empty."/>
             {this.renderItemCheckboxes()}
             <Button variant="outline-primary" type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>

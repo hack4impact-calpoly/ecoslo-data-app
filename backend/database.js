@@ -132,10 +132,10 @@ module.exports = class Database {
             }
             
             if(isPublicString==='true'){
-                queryStr+= 'public\' = true'
+                queryStr+= 'public = true'
             }
             if(isPublicString==='false'){
-                queryStr+= 'public\' = false'
+                queryStr+= 'public = false'
             }
             queryStr+= ')'
         }
@@ -207,10 +207,10 @@ module.exports = class Database {
             }
             
             if(isPublicString==='true'){
-                queryStr+= 'public\' = true'
+                queryStr+= 'public = true'
             }
             if(isPublicString==='false'){
-                queryStr+= 'public\' = false'
+                queryStr+= 'public = false'
             }
             queryStr+= ')'
         }
@@ -274,7 +274,9 @@ module.exports = class Database {
 
 
     async add(row) {
+
         const queryStr = this._createRowQuery(row);
+        console.log("query", queryStr)
         try {
             await this._connection.query(queryStr, Object.values(row));
         } catch (err) {
@@ -326,7 +328,9 @@ module.exports = class Database {
     }
 
     async getByCol(req) {
+        console.log("req", req.public)
         const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.public);
+        console.log("query", queryStr)
         try {
             let result = await this._connection.query(queryStr);
             return result;
@@ -395,9 +399,10 @@ module.exports = class Database {
     }
 
     async sumPerCol(req) {
-
+        console.log("req", req.public)
         const queryStr = this._createSelectSumQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.groupBy, req.public);
-        console.log(queryStr)
+        console.log("query", queryStr)
+        //console.log(queryStr)
         try {
             const result = await this._connection.query(queryStr);
             return result
