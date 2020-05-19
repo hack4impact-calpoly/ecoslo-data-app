@@ -15,8 +15,8 @@ export default function withColumns(ColumnWrappedComponent) {
             try {
                 const columns = await this.props.apiWrapper.getColumns();
                 console.log("IN UPDATE COLUMNS: ", columns, '\n');
-                console.log("COLUMNS.R value: ", columns.r, '\n');
-                console.log("COLUMNS.R.FIELDS value: ", columns.r.fields, '\n');
+                console.log("COLUMNS[R] value: ", columns["r"], '\n');
+                console.log("COLUMNS.R.FIELDS value: ", columns["r"].fields, '\n');
                 
                 let colTypes = {};
                 
