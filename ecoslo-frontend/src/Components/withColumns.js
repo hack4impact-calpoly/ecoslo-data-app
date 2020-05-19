@@ -16,11 +16,12 @@ export default function withColumns(ColumnWrappedComponent) {
                 const columns = await this.props.apiWrapper.getColumns();
                 console.log("IN UPDATE COLUMNS: ", columns, '\n');
                 console.log("COLUMNS[R] value: ", columns["r"], '\n');
+                console.log("COLUMNS.R value: ", columns.r, '\n');
                 console.log("COLUMNS.R.FIELDS value: ", columns["r"].fields, '\n');
                 
                 let colTypes = {};
                 
-                let cols = columns.r[0].fields.map((content, index) => {
+                let cols = columns.r.fields.map((content, index) => {
                     colTypes[content.name] = content.format;
                     return content.name;
                 });
