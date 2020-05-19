@@ -306,7 +306,6 @@ module.exports = class Database {
     async add(row) {
         const queryStr = this._createRowQuery(row);
         try {
-            //await this._connection.query(queryStr, Object.values(row));
             await this.client.query(queryStr);
         } catch (err) {
             console.log("ERROR");
@@ -317,7 +316,6 @@ module.exports = class Database {
     async getLocations() {
         const queryStr = 'SELECT DISTINCT location FROM ' + this.dbName + '';
         try {
-            //const result = await this._connection.query(queryStr);
             const result = await this.client.query(queryStr);
             let locations = [];
             for (const obj of result.rows) {
@@ -332,7 +330,6 @@ module.exports = class Database {
     async getCols() {
         const queryStr = 'SELECT * FROM ' + this.dbName + '';
         try {
-            //const result = await this._connection.query(queryStr);
             const result = await this.client.query(queryStr);
             console.log("result in getCols: ", result)
             return result;
@@ -341,19 +338,9 @@ module.exports = class Database {
         }
     }
 
-    async testing(){
-        //const clientC = await this.client.connect();
-      const result = await this.client.query('SELECT * FROM cleanupData2');
-      console.log("result in testing: ", result)
-      const results = { 'results': (result) ? result.rows : null};
-      return results;
-      client.release();
-    }
-
     async getByCol(req) {
         const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations);
         try {
-            //let result = await this._connection.query(queryStr);
             const result = await this.client.query(queryStr);
             return result;
         } catch (err) {
@@ -369,7 +356,6 @@ module.exports = class Database {
         const queryStr = this._createUpdateQuery(req.body.cols, req.body.vals, req.body.date, req.body.location);
 
         try {
-            //const result = await this._connection.query(queryStr);
             const result = await this.client.query(queryStr);
             return result;
         } catch (err) {
@@ -397,7 +383,6 @@ module.exports = class Database {
                     var queryStr = "ALTER TABLE " + this.dbName + " ADD COLUMN " + req.body.name + " " + req.body.dataType + ";"
                 }
                 try {
-                    //const result = await this._connection.query(queryStr);
                     const result = await this.client.query(queryStr);
                     return result;
                 } catch (err) {
@@ -411,7 +396,6 @@ module.exports = class Database {
                 }
                 var queryStr = "ALTER TABLE " + this.dbName + " DROP COLUMN " + req.body.name + ";"
                 try {
-                    //const result = await this._connection.query(queryStr);
                     const result = await this.client.query(queryStr);
                     return result;
                 } catch (err) {
@@ -428,7 +412,6 @@ module.exports = class Database {
         const queryStr = this._createSelectSumQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.groupBy);
 
         try {
-            //const result = await this._connection.query(queryStr);
             const result = await this.client.query(queryStr);
             return result
         } catch (err) {
@@ -442,7 +425,6 @@ module.exports = class Database {
         const queryStr = this._createSelectQuery(req.body.cols, req.body.dateStart, req.body.dateEnd, req.body.locations);
 
         try {
-            //const result = await this._connection.query(queryStr);
             const result = await this.client.query(queryStr);
             return result
         } catch (err) {

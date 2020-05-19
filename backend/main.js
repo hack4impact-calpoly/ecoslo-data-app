@@ -11,32 +11,12 @@ app.options('*', cors());
 const database = Database.create(null);
 
 
-// const client = new Client({
-// 	connectionString: process.env.DATABASE_URL,
-// 	ssl: true,
-// });
-// client.connect();
-
 function authenticateInput(input) {
 	return true;
 }
 
-//app.use(Express.static(path.join(__dirname, '../ecoslo-frontend/public')));
-
-// app.get('*', (req,res) =>{
-// 	console.log("am i here or no...")
-//     res.sendFile(path.join(__dirname, '../ecoslo-frontend/public/index.html'));
-// });
-
-// app.get('/', function(req, res){
-// 	console.log("IM HEREEEEEEEE")
-// 	//res.redirect('/todo');
-//  });
 app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
 
-
-
-  
 
 app.post('/add', async (req, res) => {
 	if (!authenticateInput(req.body.item)) {
@@ -44,12 +24,13 @@ app.post('/add', async (req, res) => {
 		return;
 	}
 	try {
-		await database.add(req.body.item);
+		let result = await database.add(req.body.item);
+		res.status(200).json({})
 	} catch (err) {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	res.status(200).send();
+	//res.status(200).send();
 })
 
 app.post('/altTable', async (req, res) =>{
@@ -59,7 +40,8 @@ app.post('/altTable', async (req, res) =>{
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	res.status(200).send();
+	//res.status(200).send();
+	res.status(200).json({});
 })
 
 app.get('/locations', async (req, res) => {
@@ -76,21 +58,9 @@ app.get('/locations', async (req, res) => {
 	}
 })
 
-app.get('/db', async (req, res) => {
-    try {
-	  let result = await database.testing();
-	  console.log("result in app.get: ", result);
-	  //res.render('pages/db', result );
-    } catch (err) {
-      console.error(err);
-      res.send("Error " + err);
-    }
-  })
-
 app.get('/columns', async (req, res) => {
 	try{
 		let r = await database.getCols();
-		console.log("here!!!")
 		res.status(200).json({
 			r
 		});
@@ -174,4 +144,3 @@ app.get('*', function(request, response) {
 
 
 app.listen(process.env.PORT || 8000)
-//app.listen(8000);
