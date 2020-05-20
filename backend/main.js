@@ -16,6 +16,7 @@ app.use(Express.json());
 app.use(cors());
 app.options('*', cors());
 const database = Database.create(null);
+
 app.use(bodyParser.urlencoded({
 	extended: true
   }));
