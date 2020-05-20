@@ -1,6 +1,7 @@
 export default class APIWrapper {
     constructor(store) {
-        this.baseURL = "http://localhost:8000/";
+        // this.baseURL = "https://ecoslo-data-app.herokuapp.com:" + (process.env.PORT || 8000).toString() + '/';
+        this.baseURL = "https://ecoslo-data-app.herokuapp.com/"
         this.store = store;
     }
     
@@ -23,8 +24,10 @@ export default class APIWrapper {
                     if (this.status === 200) {
                         if (optionalResolve) {
                             optionalResolve(JSON.parse(this.response));
+                            //optionalResolve(this.response);
                         } else {
                             resolve(JSON.parse(this.response));
+                            //resolve(this.response);
                         }
                     } else {
                         reject(this.response);
@@ -47,12 +50,13 @@ export default class APIWrapper {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
                         if (optionalResolve) {
-                            optionalResolve((this.response));
+                            //optionalResolve((this.response));
+                            optionalResolve(JSON.parse(this.response));
                         } else {
-                            resolve((this.response));
+                            resolve(JSON.parse(this.response));
                         }
                     } else {
-                        reject(this.response);
+                        reject((this.response));
                     }
                 }
             };

@@ -1,4 +1,3 @@
-const {Pool} = require('pg');
 const Errors = require('./errors');
 
 
@@ -8,12 +7,50 @@ const dataTypeConverter = {
     "1082": "string",
     "1043": "string"
 }
+const {Client} = require('pg');
+
 
 module.exports = class Database {
-
-
-
-    constructor(pool) {
+    constructor(client) {
+        this._possibleKeys = new Set(['date', 'location', 'Cigarette_Butts', 'Food_Wrappers', 'Plastic_Take_Out_Containers', 'Foam_Take_Out_Containers',
+        'Plastic_Bottle_Caps',
+        'Metal_Bottle_Caps',
+        'Plastic_Lids',
+        'Straws_And_Stirrers',
+        'Forks_Knives_And_Spoons',
+        'Plastic_Beverage_Bottles',
+        'Glass_Beverage_Bottles',
+        'Beverage_Cans',
+        'Plastic_Grocery_Bags',
+        'Other_Plastic_Bags',
+        'Paper_Bags',
+        'Paper_Cups_And_Plates',
+        'Plastic_Cups_And_Plates',
+        'Foam_Cups_And_Plates',
+        'Fishing_Buoys_Pots_And_Traps',
+        'Fishing_Net_And_Pieces',
+        'Fishing_Line',
+        'Rope',
+        'Six_Pack_Holders',
+        'Other_Plastic_Or_Foam_Packaging',
+        'Other_Plastic_Bottles',
+        'Strapping_Bands',
+        'Tobacco_Packaging_Or_Wrap',
+        'Appliances',
+        'Balloons',
+        'Cigar_Tips',
+        'Cigarette_Lighters',
+        'Construction_Materials',
+        'Fireworks',
+        'Tires',
+        'Condoms',
+        'Diapers',
+        'Syringes',
+        'Tampons',
+        'Foam_Pieces',
+        'Glass_Pieces',
+        'Plastic_Pieces'
+]);
 
         this.noSumColumns = new Set();
         this.noSumColumns.add('date');
@@ -21,14 +58,20 @@ module.exports = class Database {
         this.noSumColumns.add('unusual_items');
         this.noSumColumns.add('event_name');
 
-        this._connection = pool;
-        //this.dbName = 'cleanupData'
         this.dbName = 'cleanupData2'
+
+        this.client = client
+        client.connect();
     }
 
     static create(env) {
         if (env == null) {
-            return new Database(new Pool());
+            return new Database(new Client({
+                connectionString: process.env.DATABASE_URL,
+                ssl: {
+                    rejectUnauthorized: false
+                }
+            }))
         }
         return null;
     }
@@ -278,7 +321,7 @@ module.exports = class Database {
         const queryStr = this._createRowQuery(row);
         console.log("query", queryStr)
         try {
-            await this._connection.query(queryStr, Object.values(row));
+            await this.client.query(queryStr);
         } catch (err) {
             console.log("ERROR");
             throw new Error(Errors.error.queryError);
@@ -299,7 +342,7 @@ module.exports = class Database {
     async getLocations() {
         const queryStr = 'SELECT DISTINCT location FROM ' + this.dbName + '';
         try {
-            const result = await this._connection.query(queryStr);
+            const result = await this.client.query(queryStr);
             let locations = [];
             for (const obj of result.rows) {
                 locations.push(obj['location']);
@@ -313,14 +356,11 @@ module.exports = class Database {
     async getCols() {
         const queryStr = 'SELECT * FROM ' + this.dbName + '';
         try {
-            let result = await this._connection.query(queryStr);
-            
-
+            const result = await this.client.query(queryStr);
+            console.log("result in getCols: ", result)
             for(var i = 0; i < result.fields.length; i ++){
                 result.fields[i].format = dataTypeConverter[`${result.fields[i].dataTypeID}`]
             }
-            //console.log(result)
-
             return result;
         } catch (err) {
             throw new Error(Errors.error.queryError);
@@ -332,7 +372,7 @@ module.exports = class Database {
         const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.public);
         console.log("query", queryStr)
         try {
-            let result = await this._connection.query(queryStr);
+            const result = await this.client.query(queryStr);
             return result;
         } catch (err) {
             throw new Error(Errors.error.queryError);
@@ -347,7 +387,7 @@ module.exports = class Database {
         const queryStr = this._createUpdateQuery(req.body.cols, req.body.vals, req.body.date, req.body.location);
 
         try {
-            const result = await this._connection.query(queryStr);
+            const result = await this.client.query(queryStr);
             return result;
         } catch (err) {
             throw new Error(Errors.error.queryError);
@@ -374,7 +414,7 @@ module.exports = class Database {
                     var queryStr = "ALTER TABLE " + this.dbName + " ADD COLUMN " + req.body.name + " " + req.body.dataType + ";"
                 }
                 try {
-                    const result = await this._connection.query(queryStr);
+                    const result = await this.client.query(queryStr);
                     return result;
                 } catch (err) {
                     throw new Error(Errors.error.queryError);
@@ -387,7 +427,7 @@ module.exports = class Database {
                 }
                 var queryStr = "ALTER TABLE " + this.dbName + " DROP COLUMN " + req.body.name + ";"
                 try {
-                    const result = await this._connection.query(queryStr);
+                    const result = await this.client.query(queryStr);
                     return result;
                 } catch (err) {
                     throw new Error(Errors.error.queryError);
@@ -404,7 +444,7 @@ module.exports = class Database {
         console.log("query", queryStr)
         //console.log(queryStr)
         try {
-            const result = await this._connection.query(queryStr);
+            const result = await this.client.query(queryStr);
             return result
         } catch (err) {
             throw new Error(Errors.queryError);
@@ -417,14 +457,11 @@ module.exports = class Database {
         const queryStr = this._createSelectQuery(req.body.cols, req.body.dateStart, req.body.dateEnd, req.body.locations);
 
         try {
-            const result = await this._connection.query(queryStr);
+            const result = await this.client.query(queryStr);
             return result
         } catch (err) {
             throw new Error(Errors.error.queryError);
         }
     }
-
-    
-
 
 }

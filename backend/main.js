@@ -9,6 +9,7 @@ const JWTStrategy = require('passport-jwt').Strategy;
 const bcrypt = require('bcrypt');
 
 
+const path = require('path');
 
 const app = Express();
 app.use(Express.json());
@@ -43,9 +44,13 @@ passport.use(new LocalStrategy(
 
 
 
+
 function authenticateInput(input) {
 	return true;
 }
+
+app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
+
 
 app.post('/add', async (req, res) => {
 	console.log(req.body)
@@ -54,12 +59,12 @@ app.post('/add', async (req, res) => {
 		return;
 	}
 	try {
-		await database.add(req.body.item);
+		let result = await database.add(req.body.item);
+		res.status(200).json({})
 	} catch (err) {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	res.status(200).send();
 })
 
 app.post('/login', async (req, res) => {
@@ -74,7 +79,7 @@ app.post('/altTable', async (req, res) =>{
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	res.status(200).send();
+	res.status(200).json({});
 })
 
 app.get('/locations', async (req, res) => {
@@ -170,7 +175,10 @@ app.put('/update', async (req, res) => {
 	}
 })
 
+app.get('*', function(request, response) {
+    response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
+  });
 
 
 
-app.listen(8000);
+app.listen(process.env.PORT || 8000)
