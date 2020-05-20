@@ -31,7 +31,7 @@ class Login extends React.Component {
             email: this.state.email,
             password: this.state.password
         });
-        // let apiReturnValue = this.props.apiWrapper.login(this.state.email, this.state.password);
+        let apiReturnValue = this.props.apiWrapper.login(this.state.email, this.state.password);
     }
 
     render() {
@@ -46,11 +46,11 @@ class Login extends React.Component {
                                     <MDBCardBody className="mx-4">
                                         <div className="text-center">
                                             <h3 className="dark-grey-text mb-5">
-                                                <strong>Sign in</strong>
+                                                <strong>EcoSLO Database Sign In</strong>
                                             </h3>
                                         </div>
                                         <MDBInput
-                                            label="Your email"
+                                            label="Your username"
                                             group
                                             type="email"
                                             validate
@@ -105,3 +105,4 @@ export default connect(
     null,
     mapDispatchToProps,
 )(Login);
+

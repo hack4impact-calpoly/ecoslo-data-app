@@ -82,6 +82,8 @@ export default class APIWrapper {
     }
 
     login(email, password) {
+        console.log("email", email)
+        console.log("password", password)
         if (
             email === null ||
             email.length === 0 ||

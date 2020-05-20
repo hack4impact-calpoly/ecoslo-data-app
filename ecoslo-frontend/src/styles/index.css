@@ -32,6 +32,11 @@ code {
     align-self: center;
 }
 
+.tablemargin {
+    margin-left: 100px,
+}
+
 button {
     cursor: pointer;
 }
+

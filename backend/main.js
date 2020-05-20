@@ -2,6 +2,13 @@ const Express = require('express');
 const AppError = require('./errors');
 const Database = require('./database');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const JWTStrategy = require('passport-jwt').Strategy;
+const bcrypt = require('bcrypt');
+
+
 const path = require('path');
 
 const app = Express();
@@ -9,6 +16,33 @@ app.use(Express.json());
 app.use(cors());
 app.options('*', cors());
 const database = Database.create(null);
+app.use(bodyParser.urlencoded({
+	extended: true
+  }));
+app.use(bodyParser.json());
+
+
+
+passport.use(new LocalStrategy(
+    function(username, password, done) {
+      User.findOne({ username: username }, function (err, user) {
+        if (err) { return done(err); }
+        if (!user) {
+          return done(null, false, { message: 'Incorrect username.' });
+        }
+        if (!user.validPassword(password)) {
+          return done(null, false, { message: 'Incorrect password.' });
+        }
+        return done(null, user);
+      });
+    }
+  ));
+
+  //bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
+	// Store hash in your password DB.
+//});
+
+
 
 
 function authenticateInput(input) {
@@ -19,6 +53,7 @@ app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
 
 
 app.post('/add', async (req, res) => {
+	console.log(req.body)
 	if (!authenticateInput(req.body.item)) {
 		res.status(400).send(AppError.stringError(AppError.badAuth));
 		return;
@@ -31,6 +66,11 @@ app.post('/add', async (req, res) => {
 		return;
 	}
 })
+
+app.post('/login', async (req, res) => {
+	res.status(200).send(req.body.username + "   " + req.body.password);
+	
+}) 
 
 app.post('/altTable', async (req, res) =>{
 	try {
