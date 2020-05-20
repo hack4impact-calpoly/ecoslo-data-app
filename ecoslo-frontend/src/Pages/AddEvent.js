@@ -6,6 +6,7 @@ import {Col} from 'react-bootstrap';
 import withLocations from '../Components/withLocations';
 import withColumns from '../Components/withColumns';
 import Select from 'react-dropdown-select';
+import ReactTooltip from "react-tooltip";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -157,8 +158,8 @@ class AddEvent extends React.Component {
   constructor(props) {
     super(props);
     this.additionalColumns = [];
-    let defaultCols = new Set(["location", "date", "event_name"]);
-    this.defaultColTypes = { "location" : "string", "date" : "string", "event_name" : "string" };
+    let defaultCols = new Set(["location", "date", "event_name", "public"]);
+    this.defaultColTypes = { "location" : "string", "date" : "string", "event_name" : "string", "public" : "boolean" };
     for (const key in columnNames) {
       for (const column of columnNames[key].columns) {
         for (const field of column) {
@@ -179,6 +180,8 @@ class AddEvent extends React.Component {
     }
 
     this.state = {
+      publicState: 'Private',
+      publicStateVal: 'false',
       formData: this.getDefaultFormData(defaultCols),
       defaultCols: defaultCols,
       date: new Date()
@@ -261,6 +264,20 @@ class AddEvent extends React.Component {
     return formData;
   }
 
+  ///is working?? double check
+  handlePublicChange (event) {
+    this.setState({publicState: event.target.value})
+    if(this.state.publicState === 'Public'){
+      this.setState({publicStateVal: 'true'})
+    }
+    else if(this.state.publicState === 'Private'){
+      this.setState({publicStateVal: 'false'})
+    }
+    let full = this.state.formData;
+    full['public'] = this.formatDate(this.state.publicStateVal)
+    this.setState({formData: full})
+  }
+
   formatDate(d) {
     var month = '' + (d.getMonth() + 1)
     var day = '' + d.getDate()
@@ -322,6 +339,7 @@ class AddEvent extends React.Component {
   }
 
   async handleSubmit(event) {
+    console.log("formdata", this.state.formData)
     let toSendFormData = {};
     for (const pair of Object.entries(this.state.formData)) {
       const key = pair[0], value = pair[1] === null ? null : pair[1].trim();
@@ -490,6 +508,12 @@ class AddEvent extends React.Component {
     return (
       <div style={this.marginstyle}>
         <Container>
+            <a data-tip data-for='group'>?</a>
+            <ReactTooltip place="right" type="dark" effect="float" id='group' >
+                          <div>Use this page to add a new beach cleanup entry. If </div>
+                          <div>there were no items found for an entry, you can leave </div>
+                            <div>the value as zero.</div>
+            </ReactTooltip>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Date (Click to Change)</Form.Label>
@@ -503,6 +527,18 @@ class AddEvent extends React.Component {
               </Select>
               <Form.Label>Event Name</Form.Label>
               <Form.Control placeholder="Enter Event Name" onChange={this.handleOnChange("event_name")} />
+              <Form.Label>Public or Private Event</Form.Label>
+              <Form.Control multiple={false} as="select" onChange={(e) => this.handlePublicChange(e)} >
+                    <option>Private</option>
+                    <option>Public</option>
+              </Form.Control>
+              {/* <Form.Control as="select" onChange={this.handleOnChange("location")} >
+              <option>Select a Location</option>
+              {/* { this.renderLocations() } */}
+              {/* { this.props.locations.map((value) => {
+                return <option>{value}</option>
+              }) } */}
+              {/* </Form.Control>  */}
             </Form.Group>
             { this.renderFormAfterFirstPart() }
             <Button onClick={(e) => this.handleSubmit(e)}>
