@@ -190,7 +190,7 @@ class AddEvent extends React.Component {
 
   marginstyle={
     marginTop: '1.2em',
-    marginBottom: '2em'
+    marginBottom: '2em',
   }
 
   updateColumns(){
