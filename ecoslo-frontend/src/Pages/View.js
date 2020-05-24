@@ -550,7 +550,7 @@ handlePubPrivCheckbox = (e, col) =>{
           <br /> <br />
           <b>Aggregation Section</b>
           <br />
-          The Aggregation section allows you to compress rows by cetain criteria. This section is optional, and can be used to get totals. You can select more than one option in this section. If you select Event Name in the group by section, you will see ONE row for every unique Event Name in the database. 
+          The Aggregation section allows you to compress rows by certain criteria. This section is optional, and can be used to get totals. You can select more than one option in this section. As an example, if you select Event Name in the group by section, you will see ONE row for every unique Event Name in the database. 
           The columns in a row will then be the sum of the counts, for each item, of all cleanups that have that Event Name.
           When using this section, you can only view columns in the table for which a sum can be computed. For example, if you choose to group by location, you cannot display the date.
           This is because there may be multiple dates for the many cleanups that are getting compressed into one row.

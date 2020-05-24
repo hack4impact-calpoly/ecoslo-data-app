@@ -1,14 +1,12 @@
 import React from "react";
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import {Col} from 'react-bootstrap';
+import {Col, Row, Modal, Container, Button, Form} from 'react-bootstrap';
 import withLocations from '../Components/withLocations';
 import withColumns from '../Components/withColumns';
 import Select from 'react-dropdown-select';
 import ReactTooltip from "react-tooltip";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { FaQuestionCircle } from "react-icons/fa";
 
 
 const sectionStyle ={
@@ -184,7 +182,8 @@ class AddEvent extends React.Component {
       publicStateVal: 'false',
       formData: this.getDefaultFormData(defaultCols),
       defaultCols: defaultCols,
-      date: new Date()
+      date: new Date(),
+      help: false
     }
     
   }
@@ -500,6 +499,14 @@ class AddEvent extends React.Component {
   }
   
 
+  displayHelpModal(){
+    this.setState({help: true})
+  }
+
+  hideHelpModal(){
+    this.setState({help: false})
+  }
+
   render() {
      let locOptions = []
      for (var i = 0; i < this.props.locations.length; i++){
@@ -507,13 +514,25 @@ class AddEvent extends React.Component {
     };
     return (
       <div style={this.marginstyle}>
+        <Modal centered show={this.state.help} onHide={() => this.hideHelpModal()}>
+              <Modal.Header closeButton>
+                <Modal.Title>Alter Table Page Help</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <b>Purpose and Use</b>
+                <br />
+                The Add page allows you to enter a new cleanup into the database. The cleanup must have a unique date and location.
+                If you did not track a certain item, and the column is a numeric value, enter -1. If you did not find any of a certain item, but it was bring tracked, enter 0.
+                You must enter a value for all fields.
+                <br />
+              </Modal.Body>
+            </Modal>
         <Container>
-            <a data-tip data-for='group'>?</a>
-            <ReactTooltip place="right" type="dark" effect="float" id='group' >
-                          <div>Use this page to add a new beach cleanup entry. If </div>
-                          <div>there were no items found for an entry, you can leave </div>
-                            <div>the value as zero.</div>
-            </ReactTooltip>
+        <Row>
+            <Col style={{alignContent: 'right'}}>
+              <FaQuestionCircle className="float-right" onClick={(e) => this.displayHelpModal()}/>
+            </Col>
+          </Row>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Date (Click to Change)</Form.Label>
@@ -532,13 +551,6 @@ class AddEvent extends React.Component {
                     <option>Private</option>
                     <option>Public</option>
               </Form.Control>
-              {/* <Form.Control as="select" onChange={this.handleOnChange("location")} >
-              <option>Select a Location</option>
-              {/* { this.renderLocations() } */}
-              {/* { this.props.locations.map((value) => {
-                return <option>{value}</option>
-              }) } */}
-              {/* </Form.Control>  */}
             </Form.Group>
             { this.renderFormAfterFirstPart() }
             <Button onClick={(e) => this.handleSubmit(e)}>

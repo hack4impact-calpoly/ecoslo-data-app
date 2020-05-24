@@ -4,12 +4,13 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import {Col} from 'react-bootstrap';
+import {Col, Modal, Row} from 'react-bootstrap';
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
 import ReactTooltip from "react-tooltip";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { FaQuestionCircle } from "react-icons/fa";
 
 class Update extends React.Component {
   constructor(props) {
@@ -20,7 +21,8 @@ class Update extends React.Component {
      date: this.formatDate(new Date()),
      location: "",
      tableResult: [],
-     dateValue: new Date()
+     dateValue: new Date(),
+     help: false
     };
   }
 
@@ -152,18 +154,43 @@ class Update extends React.Component {
     }
   }
 
+
+
+  displayHelpModal(){
+    this.setState({help: true})
+  }
+
+  hideHelpModal(){
+    this.setState({help: false})
+  }
+
+
+
   render() {
     if(this.state.colNames !== undefined) {
     return (
       <div style={this.marginstyle}>
+        <Modal centered show={this.state.help} onHide={() => this.hideHelpModal()}>
+              <Modal.Header closeButton>
+                <Modal.Title>Update Page Help</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <b>Purpose and Use</b>
+                <br />
+                The update page allows you to correct mistakes in data entry. Each row in the database must have a unique date and location pair, so you can identify the row using that information.
+                To update a value, you must enter the date, location, column, and new value. You may update multiple values within the same row at once by clicking the 'Update Another Item' button.
+                Pay attention to the type of data the column stores when updating data. For example, the column called cigarette butts expects a number, so you may not add a text value.
+                <br />
+              </Modal.Body>
+        </Modal>
 
         <Container>
-              <a data-tip data-for='global'> ? </a>
-              <ReactTooltip place="right" type="dark" effect="float" id='global' >
-              <p>Use this page to update a preexisting data entry.</p>
-              <div> You can update one or multiple items in the table, and you </div>
-              <div>select which item to update based on the event’s date and location.</div>
-              </ReactTooltip>
+           <Row>
+            <Col style={{alignContent: 'right'}}>
+              <FaQuestionCircle className="float-right" onClick={(e) => this.displayHelpModal()}/>
+            </Col>
+          </Row>
+        
         <Form>
           
         <Form.Group controlId="formBasicEmail">
