@@ -148,6 +148,7 @@ module.exports = class Database {
 
     _createSelectSumQuery(colNames, dateStart, dateEnd, locations, groupBy, isPublicString) {
         console.log("groupBy: ", groupBy)
+        var sum_cols = [];
         var queryStr = 'SELECT ';
         var i;
         var continuing = false;
@@ -167,7 +168,8 @@ module.exports = class Database {
                 }
             }
             else {
-                queryStr = queryStr.concat(("SUM(" + colNames[i] + ") as " + colNames[i]));
+                queryStr = queryStr.concat(("SUM(" + colNames[i] + ") as total_" + colNames[i]));
+                sum_cols.push(colNames[i])
             }
             if (i != (colNames.length - 1)){
                 queryStr = queryStr.concat(', ');
@@ -216,6 +218,22 @@ module.exports = class Database {
                 queryStr+= 'public = false'
             }
             queryStr+= ')'
+        }
+
+        if(sum_cols.length > 0){
+            if(continuing) {
+                queryStr += ' AND ('
+            }
+            else {
+                queryStr+= ' WHERE ('
+            }
+            
+            for(var k = 0; k < sum_cols.length; k++){
+                queryStr += sum_cols[k] + ' > -1)'
+                if(k !== sum_cols.length-1){
+                    queryStr += ' AND ('
+                }
+            }
         }
 
         continuing = false;

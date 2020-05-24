@@ -2,7 +2,7 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { Col, Row, Alert } from "react-bootstrap"; 
+import { Col, Row, Alert, Modal } from "react-bootstrap"; 
 import Table from "react-bootstrap/Table";
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
@@ -20,6 +20,7 @@ class View extends React.Component {
     super(props);
     
     this.state = {
+      help: false,
       dateStartVal: new Date(),
       dateEndVal: new Date(),
       displayReady: false,
@@ -242,15 +243,12 @@ class View extends React.Component {
       }
       let p = ""
       if(this.state.pubPrivValues[0] === false && this.state.pubPrivValues[1] === false || this.state.pubPrivValues[0] === true && this.state.pubPrivValues[1] === true){
-        //this.setState({pubPrivSend: "all"})
         p = "all"
       }
       else if(this.state.pubPrivValues[0] === true && this.state.pubPrivValues[1] === false){
-        //this.setState({pubPrivSend: "true"})
         p = "true"
       }
       else{
-        //this.setState({pubPrivSend: "false"})
         p = "false"
       }
       if(this.state.groupByValues[0] === false && this.state.groupByValues[1] === false && this.state.groupByDate === "Select Date Option..."){
@@ -411,7 +409,7 @@ renderPublicPrivateCheckBoxes = () => {
  if(this.state.colNames !== undefined){
     return(
     <div>
-      <Form.Label className="big"><a data-tip data-for='public'>Public and Private Events</a></Form.Label>
+      <Form.Label className="big"><a data-tip data-for='public'>Event Type</a></Form.Label>
       <ReactTooltip place="right" type="dark" effect="float" id='public' >
                     <p> You can view only private or only public events here. 
                       <div>You do not have to select either box, and default shows all events, public or private. </div></p>
@@ -538,7 +536,13 @@ handlePubPrivCheckbox = (e, col) =>{
   } 
 
 
+  displayHelpModal(){
+    this.setState({help: true})
+  }
 
+  hideHelpModal(){
+    this.setState({help: false})
+  }
 
 
 
@@ -551,6 +555,45 @@ handlePubPrivCheckbox = (e, col) =>{
     return (
       <div>
       <div style={this.marginstyle}>
+      <Modal size="lg" centered show={this.state.help} onHide={() => this.hideHelpModal()}>
+        <Modal.Header closeButton>
+          <Modal.Title>View Page Help</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <b>Purpose and Use</b>
+          <br />
+          The view page allows you to grab data from the database and view it in a table. The Select Which Items to View category determines which columns will be represented,
+           while the Start Date, End Date, Location section, and Event Type options determine which rows will be shown. These filters can be used in any data request.
+          <br /> <br />
+          <b>Aggregation Section</b>
+          <br />
+          The Aggregation section allows you to compress rows by cetain criteria. This section is optional, and can be used to get totals. You can select more than one option in this section. If you select Event Name in the group by section, you will see ONE row for every unique Event Name in the database. 
+          The columns in a row will then be the sum of the counts, for each item, of all cleanups that have that Event Name.
+          When using this section, you can only view columns in the table for which a sum can be computed. For example, if you choose to group by location, you cannot display the date.
+          This is because there may be multiple dates for the many cleanups that are getting compressed into one row.
+          <br /> <br />
+          <b>Exporting Data</b>
+          <br />
+          The export button next to the table will download a copy of the table you are currently viewing into an excel spreadsheet.
+          <br /> <br />
+          <b>Example Without Aggregation</b>
+          <br />
+          Suppose you want to view data from cleanups in 2019 that were at Avila Beach and Morro Bay. To do this, you would select Date Start as '2019/01/01',
+          Date End as '2019/12/31', and 'Avila Beach' and 'Morro Bay' from the Location section. This will determine which rows appear. Now say you want to see the number of cigarette butts
+           found at these events. Then you would select 'date', 'location', and 'cigarette butts' from the Select Which Items to View section. This data request will produce a table with a row for every cleanup in 2019 at either of the locations specified,
+            with three columns: date, location, and cigarette butts.
+          <br /> <br />
+          <b>Example With Aggregation</b>
+          <br />
+          Suppose you want to see the total number of cigarette butts found during each year from 2016 to 2018. You would input Date Start as '2016/01/01' and Date End as '2018/12/31'.
+          You would choose 'Select All' in the Location section. In the Aggregation section, you would select 'Year' from the date options. Then you would select 'date' and 'cigarette butts' in the Select Which Items to View section.
+          This will produce a table with three rows, assuming you have data for all three years, showing the date and the total number of cigarette butts found as columns.
+        <br />
+        </Modal.Body>
+      
+      </Modal>
+
+
         <Container>
           {this.noDataAlert()}
         <Form>
@@ -559,12 +602,9 @@ handlePubPrivCheckbox = (e, col) =>{
           <Form.Group>
             <Form.Group>
               <Row>
-              <a data-tip data-for='top'> ? </a>
-              <ReactTooltip place="right" type="dark" effect="float" id='top' >
-              <div> This page generates a table that contains cleanup data from a   </div>
-              <div> combination of dates, locations, and events you select below.</div>
-              </ReactTooltip>
-              
+                <Col style={{alignContent: 'right'}}>
+                <FaQuestionCircle className="float-right" onClick={(e) => this.displayHelpModal()}/>
+                </Col>
               </Row>
               <Row>
                 <Col>
@@ -592,15 +632,13 @@ handlePubPrivCheckbox = (e, col) =>{
                   }) }
               </Form.Control>
             </Form.Group>
-
-            <Form.Group>
-              {this.renderGroupByCheckBoxes()}
-            </Form.Group>
             <Form.Group>
               {this.renderPublicPrivateCheckBoxes()}
             </Form.Group>
-
-
+            <Form.Group>
+              {this.renderGroupByCheckBoxes()}
+            </Form.Group>
+            
             <Form.Label className="big">Select Which Items to View</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="To include data collected about a particular item, check the box next to it and it will appear as a column in the table labeled with the item’s name. If there was data about that item collected at one of the cleanups in the range of dates and location you select, it will appear in this column. If there is no data collected on that item at a particular cleanup, it will be empty."/>
             {this.renderItemCheckboxes()}
             <Button variant="outline-primary" type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
