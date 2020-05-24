@@ -28,7 +28,8 @@ class Update extends React.Component {
 
   marginstyle={
     marginTop: '1.2em',
-    marginBottom: '2em'
+    marginBottom: '2em',
+    height: '100%'
   }
 
   async componentDidMount(){
@@ -239,8 +240,6 @@ class Update extends React.Component {
         })
       }
       <Button onClick={(e) => {this.handleAddItem(e)}}>Update Another Item</Button> 
-
-
 
         <Button onClick={(e) => {this.handleSubmit(e)}}>Submit</Button>
 

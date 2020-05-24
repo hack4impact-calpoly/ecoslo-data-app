@@ -364,7 +364,7 @@ renderGroupByCheckBoxes = () => {
   if(this.state.colNames !== undefined){
     return(
     <div>
-      <Form.Label className="big">Group By</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You can view all data from an event, location, or date range in a single column. You do not have to select an option from this section."/>
+      <Form.Label className="big">Aggregation</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You can view all data from an event, location, or date range in a single column. You do not have to select an option from this section."/>
       <div></div>
       <input type="checkbox"
         name="Location"
@@ -396,7 +396,7 @@ renderPublicPrivateCheckBoxes = () => {
  if(this.state.colNames !== undefined){
     return(
     <div>
-      <Form.Label className="big">Event Type</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You can view only private or only public events here. You do not have to select either box, and default shows all events, public or private. "/>
+      <Form.Label className="big">Event Type</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You can view only private or only public events here. You do not have to select either box, and default shows all events, public or private. "/>
       <div></div>
       <input type="checkbox"
         name="Public"
@@ -590,14 +590,14 @@ handlePubPrivCheckbox = (e, col) =>{
               </Row>
               <Row>
                 <Col>
-                  <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see data from cleanups that occurred on or after this date. "/>
+                  <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You will see data from cleanups that occurred on or after this date. "/>
                   <ReactTooltip place="right" type="dark" effect="solid"/>
                   <br></br>
                     <DatePicker selected={this.state.dateStartVal} onChange={(e) => this.handleStartDateChange(e)} dateFormat={'yyyy/MM/dd'} />
                   <br></br>
                 </Col>
                 <Col>
-                  <Form.Label className="big">End Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see data from cleanups that occured on or before this date, within a range if start date is included."/>
+                  <Form.Label className="big">End Date</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You will see data from cleanups that occured on or before this date."/>
                   <br></br>
                     <DatePicker selected={this.state.dateEndVal} onChange={(e) => this.handleEndDateChange(e)} dateFormat={'yyyy/MM/dd'} />
                   <br></br>
@@ -605,7 +605,7 @@ handlePubPrivCheckbox = (e, col) =>{
               </Row>
               </Form.Group>
               
-              <Form.Label className="big">Location</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see data from the locations that you select. "/>
+              <Form.Label className="big">Location</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You will see data from the locations that you select. "/>
               <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
                   <option>Select All</option>
                   { this.props.locations.map((value) => {
@@ -620,9 +620,9 @@ handlePubPrivCheckbox = (e, col) =>{
               {this.renderGroupByCheckBoxes()}
             </Form.Group>
             
-            <Form.Label className="big">Select Which Items to View</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see the items that you check in the generated table. If there is no information for a checked item, the column will be empty in the table."/>
+            <Form.Label className="big">Select Which Items to View</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You will see the items that you check in the generated table. If there is no information for a checked item, the column will be empty in the table."/>
             {this.renderItemCheckboxes()}
-            <Button variant="outline-primary" type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
+            <Button type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>
         </Form>
         </Container>
