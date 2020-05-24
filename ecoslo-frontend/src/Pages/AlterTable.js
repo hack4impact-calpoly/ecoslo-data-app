@@ -2,11 +2,12 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { Row, Col } from "react-bootstrap"; 
+import { Row, Col, Modal } from "react-bootstrap"; 
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import "../styles/page.css";
 import ReactTooltip from "react-tooltip";
+import { FaQuestionCircle } from "react-icons/fa";
 
 class AlterTable extends React.Component {
     constructor(props) {
@@ -16,7 +17,8 @@ class AlterTable extends React.Component {
                 action: "add",
                 name: null, 
                 dataType: "Numeric", 
-            }
+            },
+            help: false
         };
     }
 
@@ -165,26 +167,49 @@ class AlterTable extends React.Component {
         });
     }
 
+
+  displayHelpModal(){
+    this.setState({help: true})
+  }
+
+  hideHelpModal(){
+    this.setState({help: false})
+  }
+
+
     render() {
         return (
             <div style={this.marginstyle}>
+            <Modal centered show={this.state.help} onHide={() => this.hideHelpModal()}>
+              <Modal.Header closeButton>
+                <Modal.Title>Alter Table Page Help</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <b>Purpose and Use</b>
+                <br />
+                The Alter Table page allows you to change which items are being stored in the database. When you add or delete a column on this page, the change will be reflected in all other pages.
+                <br /><br />
+                <b>Adding a Column</b>
+                <br />
+                A column should be added only when it is no longer sufficient to add the item to the unusual items column. To add a column, you must use a name with no special characters or numbers,
+                 and indicate a type for the data being stored. The type cannot be changed after the column has been created. If you choose the text option, the character limit is 1000. The default value for numeric columns is 
+                 -1, the default value for True/False is simply nothing, or null, and the default value for text is empty. If you 
+                see one of these values in the table, that most likely means the column was added after the cleanup was added to the database, or the data was not tracked during that cleanup.
+                <br /><br />
+                <b>Deleting a Column</b>
+                <br />
+                If a column is deleted, there is no way to get any of the data back. If you do want to delete the column, consider exporting the data that exists for that column before deleting it using the View page.
+                <br />
+              </Modal.Body>
+            </Modal>
+
             <Container>
+            <Row>
+            <Col style={{alignContent: 'right'}}>
+              <FaQuestionCircle className="float-right" onClick={(e) => this.displayHelpModal()}/>
+            </Col>
+          </Row>
             <Form>
-                <Row>
-                <a data-tip data-for='global'> ? </a>
-                <ReactTooltip place="right" type="dark" effect="float" id='global' >
-                <p>Use this page to add a column to store data collected on a new item.</p>
-                <div>Make sure it is an item that has been encountered at </div>
-                <div>multiple cleanups or that you expect to see more frequently, </div>
-                <div>as opposed to an item that has only been encountered once </div>
-                <div>on a cleanup, which would fall under the “unusual item” column.</div>
-                <p></p>
-                <div> You can also use this page to delete a column to remove data collected </div>
-                <div>on a particular item across all cleanups, which you might do if you </div>
-                <div>find that you no longer need data about an item or if it is an item </div>
-                <div>that isn’t found frequently and would be better suited as an “unusual item.” </div>
-                </ReactTooltip>
-                </Row>
                 <div>
                 <div><h4>Add a Column</h4></div>
                 <div><strong>Note:</strong> Only add a column if it is absolutely necessary. The name of the new column must only include letters and spaces, no numbers or special characters are allowed.</div>
