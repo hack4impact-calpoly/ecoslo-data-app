@@ -364,20 +364,7 @@ renderGroupByCheckBoxes = () => {
   if(this.state.colNames !== undefined){
     return(
     <div>
-      <Form.Label className="big"><a data-tip data-for='group'>Group By</a></Form.Label>
-      <ReactTooltip place="right" type="dark" effect="float" id='group' >
-                    <p> You will see compiled information in the table based on what you select. 
-                      <div>If you select “location”, all of the data from that location that you have </div>
-                      <div>selected from “most likely to find items” will be summed and placed in a SINGLE </div>
-                      <div>column. Similarly, if you select “event name”, all information will be grouped </div>
-                      <div>into one column for particular event names. </div>   </p>
-                    <p>
-                      <div>It is important to note that you do not have to select any option under “Group By.” </div>
-                      <div>However, if you do, you can only select to display the same item under the “Key </div>
-                      <div>Information” when selecting which items to view. For example, if you select “Location” </div>
-                      <div>under Group By, you can only select “Location” under Key Information, as well.</div>
-                    </p>
-      </ReactTooltip>
+      <Form.Label className="big">Group By</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You can view all data from an event, location, or date range in a single column. You do not have to select an option from this section."/>
       <div></div>
       <input type="checkbox"
         name="Location"
@@ -409,11 +396,7 @@ renderPublicPrivateCheckBoxes = () => {
  if(this.state.colNames !== undefined){
     return(
     <div>
-      <Form.Label className="big"><a data-tip data-for='public'>Event Type</a></Form.Label>
-      <ReactTooltip place="right" type="dark" effect="float" id='public' >
-                    <p> You can view only private or only public events here. 
-                      <div>You do not have to select either box, and default shows all events, public or private. </div></p>
-      </ReactTooltip>
+      <Form.Label className="big">Event Type</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You can view only private or only public events here. You do not have to select either box, and default shows all events, public or private. "/>
       <div></div>
       <input type="checkbox"
         name="Public"
@@ -598,7 +581,6 @@ handlePubPrivCheckbox = (e, col) =>{
           {this.noDataAlert()}
         <Form>
           <div>
-            
           <Form.Group>
             <Form.Group>
               <Row>
@@ -608,8 +590,7 @@ handlePubPrivCheckbox = (e, col) =>{
               </Row>
               <Row>
                 <Col>
-                  <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see data from cleanups that occurred on or after this date. 
-"/>
+                  <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see data from cleanups that occurred on or after this date. "/>
                   <ReactTooltip place="right" type="dark" effect="solid"/>
                   <br></br>
                     <DatePicker selected={this.state.dateStartVal} onChange={(e) => this.handleStartDateChange(e)} dateFormat={'yyyy/MM/dd'} />
@@ -639,7 +620,7 @@ handlePubPrivCheckbox = (e, col) =>{
               {this.renderGroupByCheckBoxes()}
             </Form.Group>
             
-            <Form.Label className="big">Select Which Items to View</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="To include data collected about a particular item, check the box next to it and it will appear as a column in the table labeled with the item’s name. If there was data about that item collected at one of the cleanups in the range of dates and location you select, it will appear in this column. If there is no data collected on that item at a particular cleanup, it will be empty."/>
+            <Form.Label className="big">Select Which Items to View</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see the items that you check in the generated table. If there is no information for a checked item, the column will be empty in the table."/>
             {this.renderItemCheckboxes()}
             <Button variant="outline-primary" type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>
