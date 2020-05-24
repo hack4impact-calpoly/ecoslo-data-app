@@ -626,7 +626,7 @@ handlePubPrivCheckbox = (e, col) =>{
           </div>
         </Form>
         </Container>
-        <DataTable data={this.state.tableData}></DataTable>
+        <DataTable showMessage data={this.state.tableData}></DataTable>
         
       </div>
 </div>

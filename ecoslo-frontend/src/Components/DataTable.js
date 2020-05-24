@@ -88,7 +88,10 @@ class DataTable extends React.Component {
             
         );
     }
-    else {
+    else if(this.props.showMessage){
+        return <div className="big" style={{textAlign: 'center', margin: '20px'}}><b>Make a data request to view the table here!</b></div>
+    }
+    else{
         return <div></div>
     }
 }
