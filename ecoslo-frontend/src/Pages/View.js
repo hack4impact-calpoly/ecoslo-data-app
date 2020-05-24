@@ -622,7 +622,7 @@ handlePubPrivCheckbox = (e, col) =>{
             
             <Form.Label className="big">Select Which Items to View</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You will see the items that you check in the generated table. If there is no information for a checked item, the column will be empty in the table."/>
             {this.renderItemCheckboxes()}
-            <Button variant="outline-primary" type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
+            <Button type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>
         </Form>
         </Container>
