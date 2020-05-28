@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/index.css";
 import { ExportCSV } from '../Components/exportExcel.js'
-import { Table, Container, Row, Col } from "react-bootstrap";
+import { Table, Container, Row, Col, Card } from "react-bootstrap";
 
 class DataTable extends React.Component {
 
@@ -64,11 +64,13 @@ class DataTable extends React.Component {
                 <ExportCSV csvData={this.props.data} fileName={"Cleanup Data"}></ExportCSV>
             </div>
             <div>
+            
             <Container style={this.marginstyle}>
+            <Card>
                 <Row>
                     <Col xxs={2}></Col>
                     <Col md={{ span: 12}}>
-            <Table striped bordered hover size="sm" responsive>
+            <Table striped bordered  hover size="sm" responsive>
                 <thead>
                     {this.createTableHeader()}
                 </thead>
@@ -79,7 +81,9 @@ class DataTable extends React.Component {
             </Col>
             <Col xxs={2}></Col>
             </Row>
+            </Card>
             </Container>
+            
             </div>
 
 
