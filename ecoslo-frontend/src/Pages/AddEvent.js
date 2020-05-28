@@ -1,5 +1,5 @@
 import React from "react";
-import {Col, Row, Modal, Container, Button, Form} from 'react-bootstrap';
+import {Col, Row, Modal, Container, Button, Form, Card} from 'react-bootstrap';
 import withLocations from '../Components/withLocations';
 import withColumns from '../Components/withColumns';
 import Select from 'react-dropdown-select';
@@ -529,33 +529,56 @@ class AddEvent extends React.Component {
             </Modal>
         <Container>
         <Row>
-            <Col style={{alignContent: 'right'}}>
+            <Col style={{ alignContent: 'right'}}>
               <FaQuestionCircle className="float-right" onClick={(e) => this.displayHelpModal()}/>
             </Col>
           </Row>
           <Form onSubmit={this.handleSubmit}>
+            <h2>
+              Add a New Event to the Database
+            </h2>
+
+            <Card>
+              <Card.Body>
+
+
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Date (Click to Change)</Form.Label>
               <br></br>
                 <DatePicker selected={this.state.date} onChange={(e) => this.handleDateChange(e)} dateFormat={'yyyy/MM/dd'} />
               <br></br>
+            </Form.Group>
+            <Form.Group>
               <Form.Label>Location</Form.Label>
               <Select multiple={false} create={true} searchable={true} labelField="text" valueField="text" options={locOptions} values={[]}
               onChange={(value) => this.handleLocationChange(value)}
               >
               </Select>
+            </Form.Group>
+            <Form.Group>
               <Form.Label>Event Name</Form.Label>
               <Form.Control placeholder="Enter Event Name" onChange={this.handleOnChange("event_name")} />
-              <Form.Label>Public or Private Event</Form.Label>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Event Type</Form.Label>
               <Form.Control multiple={false} as="select" onChange={(e) => this.handlePublicChange(e)} >
                     <option>Private</option>
                     <option>Public</option>
               </Form.Control>
             </Form.Group>
             { this.renderFormAfterFirstPart() }
+
+            </Card.Body>
+            </Card>
+            
+            <div style={{margin: '20px'}}/>
+
             <Button onClick={(e) => this.handleSubmit(e)}>
               Submit
             </Button>
+
+
+            
           </Form>
         </Container>
       </div>
