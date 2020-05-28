@@ -27,7 +27,7 @@ import Header from "./Components/header.js";
 const apiWrapper = new APIWrapper(store);
 
 const routing = (
-    <div className = "Site">
+    <div className = "Site" style={{backgroundColor: '#f4f8fa'}}>
     <Provider store={store}>
         <Router>
             <Header />
