@@ -1,6 +1,6 @@
 import React from "react";
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+//import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import { Col, Row, Alert, Modal, Card } from "react-bootstrap"; 
 import Table from "react-bootstrap/Table";
@@ -12,6 +12,20 @@ import "../styles/page.css";
 import { FaInfoCircle } from "react-icons/fa";
 import { FaQuestionCircle } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
+import styled, { css } from 'styled-components'
+
+const Button = styled.button`
+background: transparent;
+border-radius: 5px;
+border: 3px solid gray;
+color: gray;
+margin: 0 1em;
+padding: 0.25em 1em;
+${props => props.primary  && css`
+background: gray;
+color: white;
+`}
+`
 
 
 
@@ -659,7 +673,7 @@ handlePubPrivCheckbox = (e, col) =>{
 
             <div style={{margin: '20px'}}/>
 
-            <Button type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
+            <Button type="submit" onClick={(e) => this.handleSubmit(e)} primary>Submit</Button>
           </div>
         </Form>
         </Container>

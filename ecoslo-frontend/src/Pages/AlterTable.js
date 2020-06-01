@@ -1,6 +1,6 @@
 import React from "react"; 
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+//import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import { Row, Col, Modal, Card } from "react-bootstrap"; 
 import { confirmAlert } from 'react-confirm-alert';
@@ -8,6 +8,20 @@ import 'react-confirm-alert/src/react-confirm-alert.css'
 import "../styles/page.css";
 import ReactTooltip from "react-tooltip";
 import { FaQuestionCircle } from "react-icons/fa";
+import styled, { css } from 'styled-components'
+
+const Button = styled.button`
+background: transparent;
+border-radius: 5px;
+border: 3px solid gray;
+color: gray;
+margin: 1em 1em 0 1em;
+padding: 0.25em 1em;
+${props => props.primary  && css`
+background: gray;
+color: white;
+`}
+`
 
 class AlterTable extends React.Component {
     constructor(props) {
@@ -237,7 +251,7 @@ class AlterTable extends React.Component {
                                 </Form.Control>
                                 </Col>
                             </Row>
-                            <Button type="submit" onClick={(e) => this.handleConfirmAdd(e)}>Submit</Button>
+                            <Button type="submit" onClick={(e) => this.handleConfirmAdd(e)} primary>Submit</Button>
                         </Form.Group>
                     </Card.Body>
                 </Card>
@@ -260,7 +274,7 @@ class AlterTable extends React.Component {
                         </Form.Control>
                         </Col>
                     </Row>
-                    <Button type="submit" onClick={(e) => this.handleConfirmDelete(e)}>Submit</Button>
+                    <Button type="submit" onClick={(e) => this.handleConfirmDelete(e)} primary>Submit</Button>
                 </Form.Group>
                 </Card.Body>
                 </Card>
