@@ -9,6 +9,7 @@ import Update from './Pages/Update';
 import View from './Pages/View';
 import Login from './Pages/Login';
 import AlterTable from './Pages/AlterTable'; 
+import Footer from './Components/footer';
 import { Provider } from "react-redux";
 import store from "./redux/reducers/store";
 import APIWrapper from "./APIs/APIWrapper";
@@ -19,17 +20,19 @@ import {
 } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
+import './styles/stickyFooter.css';
 import Header from "./Components/header.js";
-import "./styles/header.css";
+
 
 const apiWrapper = new APIWrapper(store);
 
 const routing = (
-    
+    <div className = "Site" style={{backgroundColor: '#f4f8fa'}}>
     <Provider store={store}>
         <Router>
             <Header />
-            <Switch>
+            <div className="Site-content">
+            <Switch >
                 <Route exact path="/">
                     <Home />
                 </Route>
@@ -55,8 +58,11 @@ const routing = (
                     <AlterTable apiWrapper={apiWrapper}/>
                 </Route>
             </Switch>
+            </ div>
+            <Footer />
         </Router>  
     </Provider>
+    </div>
 );
 
 ReactDOM.render(routing, document.getElementById('root'));

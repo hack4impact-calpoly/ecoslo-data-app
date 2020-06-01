@@ -2,7 +2,7 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { Col, Row, Alert, Modal } from "react-bootstrap"; 
+import { Col, Row, Alert, Modal, Card } from "react-bootstrap"; 
 import Table from "react-bootstrap/Table";
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
@@ -364,7 +364,10 @@ renderGroupByCheckBoxes = () => {
   if(this.state.colNames !== undefined){
     return(
     <div>
-      <Form.Label className="big">Group By</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You can view all data from an event, location, or date range in a single column. You do not have to select an option from this section."/>
+      <Form.Label className="big">Group By</Form.Label>
+      <FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}}
+        data-tip="Optional Section. You can compress all rows based on shared date, location, and event name values into a single row. Use to generate totals."
+      />
       <div></div>
       <input type="checkbox"
         name="Location"
@@ -396,7 +399,9 @@ renderPublicPrivateCheckBoxes = () => {
  if(this.state.colNames !== undefined){
     return(
     <div>
-      <Form.Label className="big">Event Type</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You can view only private or only public events here. You do not have to select either box, and default shows all events, public or private. "/>
+      <Form.Label className="big">Event Type</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}}
+          data-tip="Use to view either only private or only public events. Selecting no boxes is equivalent to selecting both boxes."
+        />
       <div></div>
       <input type="checkbox"
         name="Public"
@@ -536,7 +541,7 @@ handlePubPrivCheckbox = (e, col) =>{
       }
       
     return (
-      <div>
+      <div style={{backgroundColor: '#f4f8fa'}}>
       <div style={this.marginstyle}>
       <Modal size="lg" centered show={this.state.help} onHide={() => this.hideHelpModal()}>
         <Modal.Header closeButton>
@@ -580,54 +585,85 @@ handlePubPrivCheckbox = (e, col) =>{
         <Container>
           {this.noDataAlert()}
         <Form>
+          
           <div>
-          <div><h4>View</h4></div>
-          <Form.Group>
-            <Form.Group>
-              <Row>
+          <Row>
                 <Col style={{alignContent: 'right'}}>
-                <FaQuestionCircle className="float-right" onClick={(e) => this.displayHelpModal()}/>
+                  <FaQuestionCircle className="float-right" onClick={(e) => this.displayHelpModal()}/>
                 </Col>
               </Row>
-              <Row>
-                <Col>
-                  <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see data from cleanups that occurred on or after this date. "/>
-                  <ReactTooltip place="right" type="dark" effect="solid"/>
-                  <br></br>
-                    <DatePicker selected={this.state.dateStartVal} onChange={(e) => this.handleStartDateChange(e)} dateFormat={'yyyy/MM/dd'} />
-                  <br></br>
-                </Col>
-                <Col>
-                  <Form.Label className="big">End Date</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see data from cleanups that occured on or before this date, within a range if start date is included."/>
-                  <br></br>
-                    <DatePicker selected={this.state.dateEndVal} onChange={(e) => this.handleEndDateChange(e)} dateFormat={'yyyy/MM/dd'} />
-                  <br></br>
-                </Col>
-              </Row>
-              </Form.Group>
+              <h2>
+              View Your Cleanup Data
+            </h2>
               
-              <Form.Label className="big">Location</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see data from the locations that you select. "/>
-              <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
-                  <option>Select All</option>
-                  { this.props.locations.map((value) => {
-                    return <option>{value}</option>
-                  }) }
-              </Form.Control>
-            </Form.Group>
-            <Form.Group>
-              {this.renderPublicPrivateCheckBoxes()}
-            </Form.Group>
-            <Form.Group>
-              {this.renderGroupByCheckBoxes()}
-            </Form.Group>
-            
-            <Form.Label className="big">Select Which Items to View</Form.Label><FaInfoCircle style={{marginLeft: '5px'}} data-tip="You will see the items that you check in the generated table. If there is no information for a checked item, the column will be empty in the table."/>
-            {this.renderItemCheckboxes()}
-            <Button variant="outline-primary" type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
+            <Card>
+                
+                <Card.Body>
+                <Card.Title>Select Which Events to View</Card.Title>
+                  <Form.Group>
+                      <Row>
+                        <Col>
+                          <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You will see data from cleanups that occurred on or after this date. "/>
+                          <ReactTooltip place="right" type="dark" effect="solid"/>
+                          <br></br>
+                            <DatePicker selected={this.state.dateStartVal} onChange={(e) => this.handleStartDateChange(e)} dateFormat={'yyyy/MM/dd'} />
+                          <br></br>
+                        </Col>
+                        <Col>
+                          <Form.Label className="big">End Date</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You will see data from cleanups that occured on or before this date."/>
+                          <br></br>
+                            <DatePicker selected={this.state.dateEndVal} onChange={(e) => this.handleEndDateChange(e)} dateFormat={'yyyy/MM/dd'} />
+                          <br></br>
+                        </Col>
+                      </Row>
+                  </Form.Group>
+                      
+                  <Form.Group>
+                    <Form.Label className="big">Location</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You will see data only from cleanups at the locations you select. "/>
+                      <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
+                          <option>Select All</option>
+                          { this.props.locations.map((value) => {
+                            return <option>{value}</option>
+                          }) }
+                      </Form.Control>
+                  </Form.Group>
+                    
+                  <Form.Group>
+                      {this.renderPublicPrivateCheckBoxes()}
+                  </Form.Group>
+                </Card.Body>
+            </Card>
+
+            <div style={{margin: '20px'}}/>
+
+            <Card>
+              <Card.Body>
+              <Card.Title>Select Aggregation Options</Card.Title>
+                <Form.Group>
+                  {this.renderGroupByCheckBoxes()}
+                </Form.Group>
+              </Card.Body>
+            </Card>
+
+            <div style={{margin: '20px'}}/>
+
+            <Card>
+              <Card.Body>
+              <Card.Title>Select Which Columns to View
+              <FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue', width: '16', height: '16'}} data-tip="You will see the items that you check as columns in the generated table."/>
+
+              </Card.Title>
+                {this.renderItemCheckboxes()}
+              </Card.Body>
+            </Card>
+
+            <div style={{margin: '20px'}}/>
+
+            <Button type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>
         </Form>
         </Container>
-        <DataTable data={this.state.tableData}></DataTable>
+        <DataTable showMessage data={this.state.tableData}></DataTable>
         
       </div>
 </div>

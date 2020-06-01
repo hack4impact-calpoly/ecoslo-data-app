@@ -123,7 +123,7 @@ module.exports = class Database {
             queryStr+= ')'
         }
 
-        if(isPublicString !==null && isPublicString !== "all"){
+        if(isPublicString !== undefined && isPublicString !==null && isPublicString !== "all"){
             if(continuing) {
                 queryStr += ' AND ('
             }

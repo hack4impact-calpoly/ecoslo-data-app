@@ -2,7 +2,7 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { Row, Col, Modal } from "react-bootstrap"; 
+import { Row, Col, Modal, Card } from "react-bootstrap"; 
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import "../styles/page.css";
@@ -205,34 +205,51 @@ class AlterTable extends React.Component {
 
             <Container>
             <Row>
-            <Col style={{alignContent: 'right'}}>
+            <Col style={{ alignContent: 'right'}}>
               <FaQuestionCircle className="float-right" onClick={(e) => this.displayHelpModal()}/>
             </Col>
           </Row>
             <Form>
+            <h2>
+              Alter the Table Columns
+            </h2>
                 <div>
-                <div><h4>Add a Column</h4></div>
-                <div><strong>Note:</strong> Only add a column if it is absolutely necessary. The name of the new column must only include letters and spaces, no numbers or special characters are allowed.</div>
-                <Form.Group controlId="formBasicEmail">
-                    <Row></Row>
-                    <Row>
-                        <Col>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control placeholder="Enter Column Name" onChange={(e) => this.handleTextboxChange(e)} />
-                        </Col>
-                        <Col>
-                        <Form.Label>Type of Data</Form.Label>
-                        <Form.Control as="select" onChange={(e) => this.handleSelectChangeAdd(e)} >
-                            <option>Numeric</option>
-                            <option>Text</option>
-                            <option>True/False</option>
-                        </Form.Control>
-                        </Col>
-                    </Row>
-                    <Button type="submit" onClick={(e) => this.handleConfirmAdd(e)}>Submit</Button>
-                </Form.Group>
-                <div><h4>Delete a Column</h4></div>
-                <div><strong>Note:</strong> Only delete a column if you are certain it is no longer needed. This action cannot be undone.</div>
+                <Card>
+                    <Card.Body>
+                        <Card.Title>Add a Column</Card.Title>
+                        <Card.Text>
+                        <div><strong>Note:</strong> Only add a column if it is absolutely necessary. The name of the new column must only include letters and spaces, no numbers or special characters are allowed.</div>
+
+                        </Card.Text>
+                        <Form.Group controlId="formBasicEmail">
+                            <Row></Row>
+                            <Row>
+                                <Col>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control placeholder="Enter Column Name" onChange={(e) => this.handleTextboxChange(e)} />
+                                </Col>
+                                <Col>
+                                <Form.Label>Type of Data</Form.Label>
+                                <Form.Control as="select" onChange={(e) => this.handleSelectChangeAdd(e)} >
+                                    <option>Numeric</option>
+                                    <option>Text</option>
+                                    <option>True/False</option>
+                                </Form.Control>
+                                </Col>
+                            </Row>
+                            <Button type="submit" onClick={(e) => this.handleConfirmAdd(e)}>Submit</Button>
+                        </Form.Group>
+                    </Card.Body>
+                </Card>
+                {/* <div><h4>Delete a Column</h4></div> */}
+                {/* <div><strong>Note:</strong> Only delete a column if you are certain it is no longer needed. This action cannot be undone.</div> */}
+                <div style={{margin: '20px'}}/>
+                <Card>
+                    <Card.Body>
+                        <Card.Title>Delete a Column</Card.Title>
+                        <Card.Text>
+                            <strong>Note:</strong> Only delete a column if you are certain it is no longer needed. This action cannot be undone.
+                        </Card.Text>
                 <Form.Group controlId="formBasicEmail">
                     <Row>
                         <Col>
@@ -245,6 +262,8 @@ class AlterTable extends React.Component {
                     </Row>
                     <Button type="submit" onClick={(e) => this.handleConfirmDelete(e)}>Submit</Button>
                 </Form.Group>
+                </Card.Body>
+                </Card>
           </div>
         </Form>
         </Container>

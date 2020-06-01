@@ -4,7 +4,7 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import {Col, Modal, Row} from 'react-bootstrap';
+import {Col, Modal, Row, Card} from 'react-bootstrap';
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
 import ReactTooltip from "react-tooltip";
@@ -28,7 +28,8 @@ class Update extends React.Component {
 
   marginstyle={
     marginTop: '1.2em',
-    marginBottom: '2em'
+    marginBottom: '2em',
+    height: '100%'
   }
 
   async componentDidMount(){
@@ -186,15 +187,22 @@ class Update extends React.Component {
 
         <Container>
            <Row>
-            <Col style={{alignContent: 'right'}}>
+            <Col style={{ alignContent: 'right'}}>
               <FaQuestionCircle className="float-right" onClick={(e) => this.displayHelpModal()}/>
             </Col>
           </Row>
+
         
         <Form>
-          
+        <h2>
+              Update an Existing Event in the Database
+            </h2>
+
+
+          <Card>
+            <Card.Body>
         <Form.Group controlId="formBasicEmail">
-          <Form.Label>Date (Click to Change)</Form.Label>
+          <Form.Label>Date</Form.Label>
               <br></br>
                 <DatePicker selected={this.state.dateValue} onChange={(e) => this.handleDateChange(e)} dateFormat={'yyyy/MM/dd'} />
               <br></br>
@@ -207,44 +215,47 @@ class Update extends React.Component {
         </Form.Control>
         <Button onClick={(e) => {this.handleUpdateTable(e)}}>Refresh Table</Button>
         <DataTable data={this.state.tableResult}></DataTable>
+        <div style={{margin: '10px'}}/>
 
       {
         this.state.inputs.map((value, index) => {
           return (
             <div >
-        <Form.Label>Item</Form.Label>
-        <Form.Row>
-          <Col xs={11}>
-        <Form.Control name={index.toString()} as="select" onChange={(e) => this.handleChangeDropDown(e, index)}>
-            <option>Choose...</option>
-            {this.state.colNames}
-        </Form.Control>
-          </Col>
-          <Col>
-            <button type="button" className="close" aria-label="Close" onClick={(e) => {this.handleRemove(e, index)}}>
-            <span aria-hidden="true">&times;</span>
-            </button>
-          </Col>
-        </Form.Row>
+        <Form.Group>
+            <Form.Label>Item</Form.Label>
+            <Form.Row>
+              <Col xs={11}>
+            <Form.Control name={index.toString()} as="select" onChange={(e) => this.handleChangeDropDown(e, index)}>
+                <option>Choose...</option>
+                {this.state.colNames}
+            </Form.Control>
+              </Col>
+              <Col>
+                <button type="button" className="close" aria-label="Close" onClick={(e) => {this.handleRemove(e, index)}}>
+                <span aria-hidden="true">&times;</span>
+                </button>
+              </Col>
+            </Form.Row>
 
 
-        <Form.Row>
-          <Col xs={11}>
-            <Form.Label><div className="loc_spacing">Value</div></Form.Label>
-            <Form.Control placeholder="Enter value" name={index.toString()} value={this.state.input_vals[index][1]} onChange={(e) => this.handleChangeTextBox(e, index)}/>
-          </Col>
-        </Form.Row>
+            <Form.Row>
+              <Col xs={11}>
+                <Form.Label><div className="loc_spacing">New Value</div></Form.Label>
+                <Form.Control placeholder="Enter value" name={index.toString()} value={this.state.input_vals[index][1]} onChange={(e) => this.handleChangeTextBox(e, index)}/>
+              </Col>
+            </Form.Row>
+        </Form.Group>
             </div>
           )
         })
       }
       <Button onClick={(e) => {this.handleAddItem(e)}}>Update Another Item</Button> 
 
-
-
         <Button onClick={(e) => {this.handleSubmit(e)}}>Submit</Button>
 
         </Form.Group>
+        </Card.Body>
+        </Card>
         </Form>
         </Container>
       </div>
