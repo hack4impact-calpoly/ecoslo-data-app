@@ -581,6 +581,7 @@ handlePubPrivCheckbox = (e, col) =>{
           {this.noDataAlert()}
         <Form>
           <div>
+          <div><h4>View</h4></div>
           <Form.Group>
             <Form.Group>
               <Row>
