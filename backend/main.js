@@ -35,6 +35,9 @@ app.use(Express.json());
 // app.options('*', cors());
 const database = Database.create(null);
 
+
+app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
+
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
@@ -64,7 +67,7 @@ if (!usingProduction && process.env.USE_TEMP_DB) {
 }
 Auth.initializeLocalStrat(database);
 
-app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
+
 
 // app.get("/", async (req, res) => { res.status(200).send("Server running"); });
 
