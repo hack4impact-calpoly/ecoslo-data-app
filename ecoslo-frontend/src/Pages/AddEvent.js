@@ -154,6 +154,7 @@ class AddEvent extends React.Component {
 
   constructor(props) {
     super(props);
+    console.log(this.props.history)
     this.additionalColumns = [];
     this.defaultCols = ["location", "date", "event_name"];
     this.defaultColTypes = { "location" : "string", "date" : "string", "event_name" : "string" };
