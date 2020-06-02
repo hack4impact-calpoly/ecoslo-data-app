@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const saltRounds = process.env.SALT_ROUNDS || 12;
+const saltRounds = process.env.SALT_ROUNDS ? +process.env.SALT_ROUNDS : 12;
 process.stdout.write("Password to hash: ");
 process.stdin.on('readable', () => {
     const userInput = process.stdin.read();

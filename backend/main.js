@@ -9,6 +9,7 @@ const tempDB = require('./temp_db');
 const User = require('./User');
 const Auth = require('./authentication');
 
+
 const app = Express();
 
 const usingProduction = process.env.NODE_ENV === 'production';
@@ -18,7 +19,7 @@ const corsOptions = {
 		if (whiteListedOrigins.indexOf(origin) !== -1) {
 			callback(null, true);
 		} else {
-			callback(new Error(`${origin} is not whitelisted for CORS`));
+			console.log(new Error(`${origin} is not whitelisted for CORS`));
 		}
 	},
 	optionsSuccessStatus : 200,
@@ -46,10 +47,12 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
+
 	/* User.findUserById(id, tempDB, function(err, user) {
 		done(err, user);
 	}); */
-	done(null, id);
+	console.log("id: ", id);
+	done(null, new User.User(null, null, id));
 });
 
 let database = Database.create(null);

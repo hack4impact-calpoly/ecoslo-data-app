@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const saltRounds = process.env.SALT_ROUNDS || 12;
+const saltRounds = process.env.SALT_ROUNDS ? +process.env.SALT_ROUNDS : 12; 
 
 const findUserByName = async (username, database) => {
     const userReturned = await database.getUserByUsername(username);
