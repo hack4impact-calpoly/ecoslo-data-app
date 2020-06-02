@@ -15,24 +15,24 @@ const app = Express();
 
 const usingProduction = process.env.NODE_ENV === 'production';
 const whiteListedOrigins = ['http://localhost:3000', 'https://ecoslo-data-app.herokuapp.com'];
-// const corsOptions = {
-// 	origin : (origin, callback) => {
-// 		if (whiteListedOrigins.indexOf(origin) !== -1) {
-// 			callback(null, true);
-// 		} else {
-// 			console.log(new Error(`${origin} is not whitelisted for CORS`));
-// 		}
-// 	},
-// 	optionsSuccessStatus : 200,
-// 	credentials : true,
-// };
+const corsOptions = {
+	origin : (origin, callback) => {
+		if (whiteListedOrigins.indexOf(origin) !== -1) {
+			callback(null, true);
+		} else {
+			console.log(new Error(`${origin} is not whitelisted for CORS`));
+		}
+	},
+	optionsSuccessStatus : 200,
+	credentials : true,
+};
 
-// app.use(cors(corsOptions));
-// app.options(cors(corsOptions));
+app.use(cors(corsOptions));
+app.options(cors(corsOptions));
 
 app.use(Express.json());
-app.use(cors());
-app.options('*', cors());
+// app.use(cors());
+// app.options('*', cors());
 const database = Database.create(null);
 
 app.use(bodyParser.urlencoded({
