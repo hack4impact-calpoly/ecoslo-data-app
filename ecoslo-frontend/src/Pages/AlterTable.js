@@ -2,10 +2,12 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { Row, Col } from "react-bootstrap"; 
+import { Row, Col, Modal, Card } from "react-bootstrap"; 
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import "../styles/page.css";
+import ReactTooltip from "react-tooltip";
+import { FaQuestionCircle } from "react-icons/fa";
 
 class AlterTable extends React.Component {
     constructor(props) {
@@ -15,7 +17,8 @@ class AlterTable extends React.Component {
                 action: "add",
                 name: null, 
                 dataType: "Numeric", 
-            }
+            },
+            help: false
         };
     }
 
@@ -111,8 +114,8 @@ class AlterTable extends React.Component {
             action: this.state.formData["action"],
             name: this.state.formData["name"]
         }
-        if(data.name === 'date' || data.name === 'location' || data.name === 'event name'){
-            alert('Cannot delete date, location, or event name.')
+        if(data.name === 'date' || data.name === 'location' || data.name === 'event name' || data.name == 'public'){
+            alert('Cannot delete date, location, event name, or public.')
         }
         else{
 
@@ -164,34 +167,89 @@ class AlterTable extends React.Component {
         });
     }
 
+
+  displayHelpModal(){
+    this.setState({help: true})
+  }
+
+  hideHelpModal(){
+    this.setState({help: false})
+  }
+
+
     render() {
         return (
             <div style={this.marginstyle}>
+            <Modal centered show={this.state.help} onHide={() => this.hideHelpModal()}>
+              <Modal.Header closeButton>
+                <Modal.Title>Alter Table Page Help</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <b>Purpose and Use</b>
+                <br />
+                The Alter Table page allows you to change which items are being stored in the database. When you add or delete a column on this page, the change will be reflected in all other pages.
+                <br /><br />
+                <b>Adding a Column</b>
+                <br />
+                A column should be added only when it is no longer sufficient to add the item to the unusual items column. To add a column, you must use a name with no special characters or numbers,
+                 and indicate a type for the data being stored. The type cannot be changed after the column has been created. If you choose the text option, the character limit is 1000. The default value for numeric columns is 
+                 -1, the default value for True/False is simply nothing, or null, and the default value for text is empty. If you 
+                see one of these values in the table, that most likely means the column was added after the cleanup was added to the database, or the data was not tracked during that cleanup.
+                <br /><br />
+                <b>Deleting a Column</b>
+                <br />
+                If a column is deleted, there is no way to get any of the data back. If you do want to delete the column, consider exporting the data that exists for that column before deleting it using the View page.
+                <br />
+              </Modal.Body>
+            </Modal>
+
             <Container>
+            <Row>
+            <Col style={{ alignContent: 'right'}}>
+              <FaQuestionCircle className="float-right" onClick={(e) => this.displayHelpModal()}/>
+            </Col>
+          </Row>
             <Form>
+            <h2>
+              Alter the Table Columns
+            </h2>
                 <div>
-                <div><h4>Add a Column</h4></div>
-                <div><strong>Note:</strong> Only add a column if it is absolutely necessary. The name of the new column must only include letters and spaces, no numbers or special characters are allowed.</div>
-                <Form.Group controlId="formBasicEmail">
-                    <Row></Row>
-                    <Row>
-                        <Col>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control placeholder="Enter Column Name" onChange={(e) => this.handleTextboxChange(e)} />
-                        </Col>
-                        <Col>
-                        <Form.Label>Type of Data</Form.Label>
-                        <Form.Control as="select" onChange={(e) => this.handleSelectChangeAdd(e)} >
-                            <option>Numeric</option>
-                            <option>Text</option>
-                            <option>True/False</option>
-                        </Form.Control>
-                        </Col>
-                    </Row>
-                    <Button type="submit" onClick={(e) => this.handleConfirmAdd(e)}>Submit</Button>
-                </Form.Group>
-                <div><h4>Delete a Column</h4></div>
-                <div><strong>Note:</strong> Only delete a column if you are certain it is no longer needed. This action cannot be undone.</div>
+                <Card>
+                    <Card.Body>
+                        <Card.Title>Add a Column</Card.Title>
+                        <Card.Text>
+                        <div><strong>Note:</strong> Only add a column if it is absolutely necessary. The name of the new column must only include letters and spaces, no numbers or special characters are allowed.</div>
+
+                        </Card.Text>
+                        <Form.Group controlId="formBasicEmail">
+                            <Row></Row>
+                            <Row>
+                                <Col>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control placeholder="Enter Column Name" onChange={(e) => this.handleTextboxChange(e)} />
+                                </Col>
+                                <Col>
+                                <Form.Label>Type of Data</Form.Label>
+                                <Form.Control as="select" onChange={(e) => this.handleSelectChangeAdd(e)} >
+                                    <option>Numeric</option>
+                                    <option>Text</option>
+                                    <option>True/False</option>
+                                </Form.Control>
+                                </Col>
+                            </Row>
+                            <Button type="submit" onClick={(e) => this.handleConfirmAdd(e)}>Submit</Button>
+                        </Form.Group>
+                    </Card.Body>
+                </Card>
+                {/* <div><h4>Delete a Column</h4></div> */}
+                {/* <div><strong>Note:</strong> Only delete a column if you are certain it is no longer needed. This action cannot be undone.</div> */}
+                <div style={{margin: '20px'}}/>
+                <Card>
+                    <Card.Body>
+                        <Card.Title>Delete a Column</Card.Title>
+                        <Card.Text>
+                            <strong>Note:</strong> Only delete a column if you are certain it is no longer needed. This action cannot be undone.
+                        </Card.Text>
                 <Form.Group controlId="formBasicEmail">
                     <Row>
                         <Col>
@@ -204,6 +262,8 @@ class AlterTable extends React.Component {
                     </Row>
                     <Button type="submit" onClick={(e) => this.handleConfirmDelete(e)}>Submit</Button>
                 </Form.Group>
+                </Card.Body>
+                </Card>
           </div>
         </Form>
         </Container>

@@ -4,52 +4,52 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import {Col} from 'react-bootstrap';
+import {Col, Modal, Row, Card} from 'react-bootstrap';
 import DataTable from '../Components/DataTable.js';
 import withLocations from '../Components/withLocations';
+import ReactTooltip from "react-tooltip";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { FaQuestionCircle } from "react-icons/fa";
 
 class Update extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {inputs: ["1"],
-     cols: {Event_Name: '', Adult_Volunteers: '', Child_Volunteers: '', Distance_Covered: '', Trash_Bags_Filled: '', Weight_Trash: '', Weight_Recycle: '', Total_Items: '',
-     Cigarette_Butts: '', Food_Wrappers: '', Plastic_Take_Out_Containers: '', Foam_Take_Out_Containers: '', Plastic_Bottle_Caps: '', Metal_Bottle_Caps: '',Plastic_Lids: '', Straws_And_Stirrers: '', 
-     Forks_Knives_And_Spoons: '', Plastic_Beverage_Bottles: '', Glass_Beverage_Bottles: '', Beverage_Cans: '', Plastic_Grocery_Bags: '', Other_Plastic_Bags: '', Paper_Bags: '', 
-     Paper_Cups_And_Plates: '', Plastic_Cups_And_Plates: '', Foam_Cups_And_Plates: '', Fishing_Buoys_Pots_And_Traps: '', Fishing_Net_And_Pieces: '', Fishing_Line: '', Rope: '', 
-     Six_Pack_Holders: '', Other_Plastic_Or_Foam_Packaging: '', Other_Plastic_Bottles: '', Strapping_Bands: '', Tobacco_Packaging_Or_Wrap: '', Appliances: '', Balloons: '', Cigar_Tips: '', 
-     Cigarette_Lighters: '', Construction_Materials: '', Fireworks: '', Tires: '', Condoms: '', Diapers: '', Syringes: '', Tampons: '', Unusual_Items: '', Dead_Animals: '', Foam_Pieces: '', Glass_Pieces: '', Plastic_Pieces: ''},
      input_vals: [['', '']],
-     date: "",
+     date: this.formatDate(new Date()),
      location: "",
-     tableResult: []
-    
-  };
-    
-
+     tableResult: [],
+     dateValue: new Date(),
+     help: false
+    };
   }
 
   marginstyle={
     marginTop: '1.2em',
-    marginBottom: '2em'
+    marginBottom: '2em',
+    height: '100%'
   }
 
   async componentDidMount(){
     let res = await this.props.apiWrapper.getColumns();
+    console.log("res: ", res)
     let options = res.r.fields.map((content, index) =>{
       return <option>{content.name}</option>
     })
+    let optionTypes = res.r.fields.map((content, index) =>{
+      return <option>{content.format}</option>
+    })
+    this.setState({colTypes: optionTypes})
     this.setState({colNames: options})
   }
 
   handleRemove(event, index) {
     var list_remove = this.state.inputs;
     var list_remove_vals = this.state.input_vals;
-    console.log(list_remove);
-    console.log(index);
     list_remove.splice(index, 1)
     list_remove_vals.splice(index, 1)
-    console.log(list_remove);
     this.setState({inputs: list_remove});
     this.setState({input_vals: list_remove_vals});
 
@@ -67,6 +67,27 @@ class Update extends React.Component {
     new_list_input[index][0] = event.target.value
     this.setState({input_vals: new_list_input});
   }
+
+
+
+  formatDate(d) {
+    var month = '' + (d.getMonth() + 1)
+    var day = '' + d.getDate()
+    var year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+  };
+
+  handleDateChange(dateInput) {
+    this.setState({
+      dateValue: dateInput,
+      date: this.formatDate(dateInput)})
+  };
 
   async handleSubmit(event) {
     let cols=[]
@@ -91,7 +112,6 @@ class Update extends React.Component {
 
     try {
       const res = await this.props.apiWrapper.updateData(data);
-      console.log(res);
       alert("Value successfully updated in database.");
     }
     catch (error) {
@@ -108,10 +128,6 @@ class Update extends React.Component {
        curr_input_vals.push(['', ''])
        this.setState({input_vals: curr_input_vals})
       }
-
-  async handleDateChange(event) {
-    this.setState({date: event.target.value});
-  }
 
   async handleLocationChange(event) {
     this.setState({location: event.target.value});
@@ -139,18 +155,57 @@ class Update extends React.Component {
     }
   }
 
+
+
+  displayHelpModal(){
+    this.setState({help: true})
+  }
+
+  hideHelpModal(){
+    this.setState({help: false})
+  }
+
+
+
   render() {
     if(this.state.colNames !== undefined) {
     return (
       <div style={this.marginstyle}>
+        <Modal centered show={this.state.help} onHide={() => this.hideHelpModal()}>
+              <Modal.Header closeButton>
+                <Modal.Title>Update Page Help</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <b>Purpose and Use</b>
+                <br />
+                The update page allows you to correct mistakes in data entry. Each row in the database must have a unique date and location pair, so you can identify the row using that information.
+                To update a value, you must enter the date, location, column, and new value. You may update multiple values within the same row at once by clicking the 'Update Another Item' button.
+                Pay attention to the type of data the column stores when updating data. For example, the column called cigarette butts expects a number, so you may not add a text value.
+                <br />
+              </Modal.Body>
+        </Modal>
 
         <Container>
+           <Row>
+            <Col style={{ alignContent: 'right'}}>
+              <FaQuestionCircle className="float-right" onClick={(e) => this.displayHelpModal()}/>
+            </Col>
+          </Row>
+
+        
         <Form>
+        <h2>
+              Update an Existing Event in the Database
+            </h2>
+
+
+          <Card>
+            <Card.Body>
         <Form.Group controlId="formBasicEmail">
-
-        <Form.Label><div className="date_spacing">Date</div></Form.Label>
-        <Form.Control placeholder="Enter Date" value={this.state.date} onChange={(e) => this.handleDateChange(e)}/>
-
+          <Form.Label>Date</Form.Label>
+              <br></br>
+                <DatePicker selected={this.state.dateValue} onChange={(e) => this.handleDateChange(e)} dateFormat={'yyyy/MM/dd'} />
+              <br></br>
         <Form.Label><div className="loc_spacing">Location</div></Form.Label>
         <Form.Control as="select" value={this.state.location} onChange={(e) => this.handleLocationChange(e)}>
         <option>Choose...</option>
@@ -160,44 +215,47 @@ class Update extends React.Component {
         </Form.Control>
         <Button onClick={(e) => {this.handleUpdateTable(e)}}>Refresh Table</Button>
         <DataTable data={this.state.tableResult}></DataTable>
+        <div style={{margin: '10px'}}/>
 
       {
         this.state.inputs.map((value, index) => {
           return (
             <div >
-        <Form.Label>Item</Form.Label>
-        <Form.Row>
-          <Col xs={11}>
-        <Form.Control name={index.toString()} as="select" onChange={(e) => this.handleChangeDropDown(e, index)}>
-            <option>Choose...</option>
-            {this.state.colNames}
-        </Form.Control>
-          </Col>
-          <Col>
-            <button type="button" className="close" aria-label="Close" onClick={(e) => {this.handleRemove(e, index)}}>
-            <span aria-hidden="true">&times;</span>
-            </button>
-          </Col>
-        </Form.Row>
+        <Form.Group>
+            <Form.Label>Item</Form.Label>
+            <Form.Row>
+              <Col xs={11}>
+            <Form.Control name={index.toString()} as="select" onChange={(e) => this.handleChangeDropDown(e, index)}>
+                <option>Choose...</option>
+                {this.state.colNames}
+            </Form.Control>
+              </Col>
+              <Col>
+                <button type="button" className="close" aria-label="Close" onClick={(e) => {this.handleRemove(e, index)}}>
+                <span aria-hidden="true">&times;</span>
+                </button>
+              </Col>
+            </Form.Row>
 
 
-        <Form.Row>
-          <Col xs={11}>
-            <Form.Label><div className="loc_spacing">Value</div></Form.Label>
-            <Form.Control placeholder="Enter value" name={index.toString()} value={this.state.input_vals[index][1]} onChange={(e) => this.handleChangeTextBox(e, index)}/>
-          </Col>
-        </Form.Row>
+            <Form.Row>
+              <Col xs={11}>
+                <Form.Label><div className="loc_spacing">New Value</div></Form.Label>
+                <Form.Control placeholder="Enter value" name={index.toString()} value={this.state.input_vals[index][1]} onChange={(e) => this.handleChangeTextBox(e, index)}/>
+              </Col>
+            </Form.Row>
+        </Form.Group>
             </div>
           )
         })
       }
       <Button onClick={(e) => {this.handleAddItem(e)}}>Update Another Item</Button> 
 
-
-
         <Button onClick={(e) => {this.handleSubmit(e)}}>Submit</Button>
 
         </Form.Group>
+        </Card.Body>
+        </Card>
         </Form>
         </Container>
       </div>

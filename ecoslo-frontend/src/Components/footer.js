@@ -1,17 +1,16 @@
 import React from "react";
 import "../styles/header.css";
 import "../styles/index.css";
+import { FaHeart } from "react-icons/fa";
 
 const style = {
-    'flex-shrink': 0,
-    'text-align': 'center',
-    'background-color': 'tomato',
-    'color': 'white'
-  }
-
-const marginstyle={
-    'marginTop': '1.2em',
-    'marginBottom': '2em'
+    textAlign: 'center',
+    backgroundColor: '#4285f4',
+    color: 'white',
+    width: '100%',
+    position: 'relative',
+    'marginTop': '0em',
+    'marginBottom': '0em'
   }
 
 class Footer extends React.Component {
@@ -20,11 +19,9 @@ class Footer extends React.Component {
 
   render() {
     return (
-      <div style={style}>
           <footer>
-              <p style={marginstyle}>Made by Hack4Impact Cal Poly</p>
+              <p style={style}>Made with <FaHeart /> by Hack4Impact Cal Poly</p>
         </footer>
-      </div>
     );
   }
 }

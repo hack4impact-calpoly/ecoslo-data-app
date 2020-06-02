@@ -2,9 +2,11 @@
   "name": "ecoslodataapp",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "./backend/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./backend/main.js",
+    "build": "cd ecoslo-frontend/ && npm install && npm run build"
   },
   "repository": {
     "type": "git",
@@ -26,6 +28,10 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "pg": "^7.17.1"
+    "pg": "^7.18.2",
+    "serve": "^11.3.0"
+  },
+  "engines": {
+    "node": "12.14.1"
   }
 }

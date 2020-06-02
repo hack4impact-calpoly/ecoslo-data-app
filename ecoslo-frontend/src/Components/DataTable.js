@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/index.css";
 import { ExportCSV } from '../Components/exportExcel.js'
-import { Table, Container, Row, Col } from "react-bootstrap";
+import { Table, Container, Row, Col, Card } from "react-bootstrap";
 
 class DataTable extends React.Component {
 
@@ -31,7 +31,15 @@ class DataTable extends React.Component {
 
     createRow (index) {
         let res = Object.entries(index).map(([key, value]) => {
-            return <td>{value}</td>
+            if(value === false){
+                return <td>{'false'}</td>
+            }
+            else if(value === true){
+                return <td>{'true'}</td>
+            }
+            else{
+                return <td>{value}</td>
+            }
         });
         return res;
     }
@@ -48,7 +56,6 @@ class DataTable extends React.Component {
 
 
     render() {
-        console.log(this.props.data);
         if (this.props.data !== undefined && (this.props.data.rows !== undefined && this.props.data.rows !== [])){
 
         return (
@@ -57,11 +64,13 @@ class DataTable extends React.Component {
                 <ExportCSV csvData={this.props.data} fileName={"Cleanup Data"}></ExportCSV>
             </div>
             <div>
+            
             <Container style={this.marginstyle}>
+            <Card>
                 <Row>
                     <Col xxs={2}></Col>
                     <Col md={{ span: 12}}>
-            <Table striped bordered hover size="sm" responsive>
+            <Table striped bordered  hover size="sm" responsive>
                 <thead>
                     {this.createTableHeader()}
                 </thead>
@@ -72,7 +81,9 @@ class DataTable extends React.Component {
             </Col>
             <Col xxs={2}></Col>
             </Row>
+            </Card>
             </Container>
+            
             </div>
 
 
@@ -81,8 +92,10 @@ class DataTable extends React.Component {
             
         );
     }
-    else {
-        console.log("HERE3")
+    else if(this.props.showMessage){
+        return <div className="big" style={{textAlign: 'center', margin: '20px'}}><b>Make a data request to view the table here!</b></div>
+    }
+    else{
         return <div></div>
     }
 }

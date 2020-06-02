@@ -9,6 +9,7 @@ const tempDB = require('./temp_db');
 const User = require('./User');
 const Auth = require('./authentication');
 
+const path = require('path');
 
 const app = Express();
 
@@ -30,6 +31,10 @@ app.use(cors(corsOptions));
 app.options(cors(corsOptions));
 
 app.use(Express.json());
+app.use(cors());
+app.options('*', cors());
+const database = Database.create(null);
+
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
@@ -40,6 +45,7 @@ app.use(session({
 	saveUninitialized: false,
 	cookie: { secure: usingProduction, maxAge : 7200000, httpOnly : true }
 }));
+
 app.use(passport.initialize());
 
 passport.serializeUser(function(user, done) {
@@ -47,10 +53,6 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-
-	/* User.findUserById(id, tempDB, function(err, user) {
-		done(err, user);
-	}); */
 	console.log("id: ", id);
 	done(null, new User.User(null, null, id));
 });
@@ -62,6 +64,7 @@ if (!usingProduction && process.env.USE_TEMP_DB) {
 }
 Auth.initializeLocalStrat(database);
 
+app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
 
 app.get("/", async (req, res) => { res.status(200).send("Server running"); });
 
@@ -100,25 +103,32 @@ app.post('/testAuth', Auth.isAuthenticated, async (req, res) => {
 	res.status(200).json({ message : "Request session authenticated!" })
 });
 
+
+
 app.post('/add', Auth.isAuthenticated, async (req, res) => {
 	try {
-		await database.add(req.body.item);
-		return res.status(200).send();
+		let result = await database.add(req.body.item);
+		res.status(200).json({})
 	} catch (err) {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
 });
 
-app.post('/altTable', Auth.isAuthenticated, async (req, res) =>{
+app.post('/login', async (req, res) => {
+	res.status(200).send(req.body.username + "   " + req.body.password);
+	
+}) 
+
+app.post('/altTable', Auth.isAuthenticated, async (req, res) => {
 	try {
 		await database.alterTable(req);
 	} catch (err) {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-	res.status(200).send();
-})
+	res.status(200).json({});
+});
 
 app.get('/locations', Auth.isAuthenticated, async (req, res) => {
 	try{
@@ -209,6 +219,10 @@ app.put('/update', Auth.isAuthenticated, async (req, res) => {
 	}
 });
 
-app.listen(8000, () => {
-	console.log(`Listening on localhost:8000 ${process.env.NODE_ENV ? process.env.NODE_ENV : "local"}`)
-});
+app.get('*', function(request, response) {
+    response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
+  });
+
+
+
+app.listen(process.env.PORT || 8000);
