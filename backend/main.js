@@ -66,7 +66,7 @@ Auth.initializeLocalStrat(database);
 
 app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
 
-app.get("/", async (req, res) => { res.status(200).send("Server running"); });
+// app.get("/", async (req, res) => { res.status(200).send("Server running"); });
 
 app.post('/login', async (req, res) => {
 	passport.authenticate('local', (err, user, info) => {
