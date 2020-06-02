@@ -57,7 +57,7 @@ passport.deserializeUser(function(id, done) {
 	done(null, new User.User(null, null, id));
 });
 
-let database = Database.create(null);
+
 if (!usingProduction && process.env.USE_TEMP_DB) {
 	console.log("Using temp database (temp_db.js)");
 	database = tempDB;
