@@ -155,6 +155,7 @@ class AddEvent extends React.Component {
 
   constructor(props) {
     super(props);
+    console.log(this.props.history)
     this.additionalColumns = [];
     let defaultCols = new Set(["location", "date", "event_name", "public"]);
     this.defaultColTypes = { "location" : "string", "date" : "string", "event_name" : "string", "public" : "boolean" };

@@ -292,8 +292,6 @@ module.exports = class Database {
         return queryStr;
     }
 
-
-
     async add(row) {
 
         const queryStr = this._createRowQuery(row);
@@ -306,10 +304,27 @@ module.exports = class Database {
         }
     }
 
-    async getUser(username) {
+    async getUserByUsername(username) {
         const queryString = `SELECT * FROM Users WHERE Username = $1`;
         try {
             const result = await this._connection.query(queryString, [username]);
+            if (result.rows.length === 0) {
+                return null;
+            }
+            return result.rows[0];
+        } catch (err) {
+            console.log("ERROR");
+            throw new Error(Errors.error.queryError);
+        }
+    }
+
+    async getUserById(id) {
+        const queryString = `SELECT * FROM Users WHERE id = $1`;
+        try {
+            const result = await this._connection.query(queryString, [id]);
+            if (result.rows.length === 0) {
+                return null;
+            }
             return result.rows[0];
         } catch (err) {
             console.log("ERROR");

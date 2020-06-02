@@ -37,7 +37,7 @@ const routing = (
                     <Home />
                 </Route>
                 <Route path="/login">
-                    <Login />
+                    <Login apiWrapper={apiWrapper} />
                 </Route>
                 <Route path="/register">
                     <App />

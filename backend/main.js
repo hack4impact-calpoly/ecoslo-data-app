@@ -1,17 +1,35 @@
 const Express = require('express');
+const session = require("express-session");
 const AppError = require('./errors');
 const Database = require('./database');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const JWTStrategy = require('passport-jwt').Strategy;
-const bcrypt = require('bcrypt');
-
+const tempDB = require('./temp_db');
+const User = require('./User');
+const Auth = require('./authentication');
 
 const path = require('path');
 
 const app = Express();
+
+const usingProduction = process.env.NODE_ENV === 'production';
+const whiteListedOrigins = ['http://localhost:3000', 'https://ecoslo-data-app.herokuapp.com'];
+const corsOptions = {
+	origin : (origin, callback) => {
+		if (whiteListedOrigins.indexOf(origin) !== -1) {
+			callback(null, true);
+		} else {
+			console.log(new Error(`${origin} is not whitelisted for CORS`));
+		}
+	},
+	optionsSuccessStatus : 200,
+	credentials : true,
+};
+
+app.use(cors(corsOptions));
+app.options(cors(corsOptions));
+
 app.use(Express.json());
 app.use(cors());
 app.options('*', cors());
@@ -19,46 +37,75 @@ const database = Database.create(null);
 
 app.use(bodyParser.urlencoded({
 	extended: true
-  }));
+}));
 app.use(bodyParser.json());
+app.use(session({ 
+	secret: usingProduction ? process.env.SESSION_SECRET : 'keyboard cat',
+	resave : false,
+	saveUninitialized: false,
+	cookie: { secure: usingProduction, maxAge : 7200000, httpOnly : true }
+}));
 
+app.use(passport.initialize());
 
+passport.serializeUser(function(user, done) {
+	done(null, user.id);
+});
 
-passport.use(new LocalStrategy(
-    function(username, password, done) {
-      User.findOne({ username: username }, function (err, user) {
-        if (err) { return done(err); }
-        if (!user) {
-          return done(null, false, { message: 'Incorrect username.' });
-        }
-        if (!user.validPassword(password)) {
-          return done(null, false, { message: 'Incorrect password.' });
-        }
-        return done(null, user);
-      });
-    }
-  ));
+passport.deserializeUser(function(id, done) {
+	console.log("id: ", id);
+	done(null, new User.User(null, null, id));
+});
 
-  //bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
-	// Store hash in your password DB.
-//});
-
-
-
-
-function authenticateInput(input) {
-	return true;
+let database = Database.create(null);
+if (!usingProduction && process.env.USE_TEMP_DB) {
+	console.log("Using temp database (temp_db.js)");
+	database = tempDB;
 }
+Auth.initializeLocalStrat(database);
 
 app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
 
+app.get("/", async (req, res) => { res.status(200).send("Server running"); });
 
-app.post('/add', async (req, res) => {
-	console.log(req.body)
-	if (!authenticateInput(req.body.item)) {
-		res.status(400).send(AppError.stringError(AppError.badAuth));
-		return;
-	}
+app.post('/login', async (req, res) => {
+	passport.authenticate('local', (err, user, info) => {
+		if (err !== null || !user) {
+			if (err !== null) {
+				res.status(500).send(AppError.stringError(err.message));
+			} else {
+				res.status(401).json({
+					message : info.message
+				});
+			}
+		} else {
+			req.logIn(user, async (error) => {
+				if (error) {
+					console.log(error)
+					return res.status(500).send(error);
+				} else {
+					return res.status(200).json({ 
+						message : "Login successful!"
+					});
+				}
+			});
+		}
+	})(req, res);
+});
+
+/**
+ * Start of endpoints requiring valid session and thus authorization (authenticated)
+ */
+
+app.use(passport.session()); // PLACE BEFORE ALL ENDPTS THAT NEED AUTH
+
+app.post('/testAuth', Auth.isAuthenticated, async (req, res) => {
+	res.status(200).json({ message : "Request session authenticated!" })
+});
+
+
+
+app.post('/add', Auth.isAuthenticated, async (req, res) => {
 	try {
 		let result = await database.add(req.body.item);
 		res.status(200).json({})
@@ -66,14 +113,14 @@ app.post('/add', async (req, res) => {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-})
+});
 
 app.post('/login', async (req, res) => {
 	res.status(200).send(req.body.username + "   " + req.body.password);
 	
 }) 
 
-app.post('/altTable', async (req, res) =>{
+app.post('/altTable', Auth.isAuthenticated, async (req, res) => {
 	try {
 		await database.alterTable(req);
 	} catch (err) {
@@ -81,9 +128,9 @@ app.post('/altTable', async (req, res) =>{
 		return;
 	}
 	res.status(200).json({});
-})
+});
 
-app.get('/locations', async (req, res) => {
+app.get('/locations', Auth.isAuthenticated, async (req, res) => {
 	try{
 		let result = await database.getLocations();
 		res.status(200).json({
@@ -97,7 +144,7 @@ app.get('/locations', async (req, res) => {
 	}
 })
 
-app.get('/columns', async (req, res) => {
+app.get('/columns', Auth.isAuthenticated, async (req, res) => {
 	try{
 		let r = await database.getCols();
 		res.status(200).json({
@@ -110,8 +157,7 @@ app.get('/columns', async (req, res) => {
 	}
 })
 
-
-app.get('/byCols', async (req, res) => {
+app.get('/byCols', Auth.isAuthenticated, async (req, res) => {
 	try{
 		let queryParams = req.query;
 		if ("cols" in queryParams) {
@@ -131,7 +177,7 @@ app.get('/byCols', async (req, res) => {
 	}
 })
 
-app.get('/sumPerCol', async (req, res) => {
+app.get('/sumPerCol', Auth.isAuthenticated, async (req, res) => {
 	try{
 		let queryParams = req.query;
 		if ("cols" in queryParams) {
@@ -152,12 +198,9 @@ app.get('/sumPerCol', async (req, res) => {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-})
+});
 
-
-
-
-app.put('/update', async (req, res) => {
+app.put('/update', Auth.isAuthenticated, async (req, res) => {
 	try{
 		const result = await database.update(req);
 		if (result.rowCount > 0) {
@@ -174,7 +217,7 @@ app.put('/update', async (req, res) => {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-})
+});
 
 app.get('*', function(request, response) {
     response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
@@ -182,4 +225,4 @@ app.get('*', function(request, response) {
 
 
 
-app.listen(process.env.PORT || 8000)
+app.listen(process.env.PORT || 8000);
