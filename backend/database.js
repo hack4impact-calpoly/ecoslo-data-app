@@ -309,7 +309,7 @@ module.exports = class Database {
         console.log("queryStr, name: ", queryString, username);
 
         try {
-            const result = await this._connection.query(queryString, [username]);
+            const result = await this.client.query(queryString, [username]);
             if (result.rows.length === 0) {
                 return null;
             }
@@ -324,7 +324,7 @@ module.exports = class Database {
     async getUserById(id) {
         const queryString = `SELECT * FROM Users WHERE id = $1`;
         try {
-            const result = await this._connection.query(queryString, [id]);
+            const result = await this.client.query(queryString, [id]);
             if (result.rows.length === 0) {
                 return null;
             }
