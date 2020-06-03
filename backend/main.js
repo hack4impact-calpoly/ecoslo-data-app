@@ -48,11 +48,13 @@ app.use(bodyParser.urlencoded({
 	extended: true
 }));
 app.use(bodyParser.json());
+console.log("secrest session: ", process.env.SESSION_SECRET);
+console.log("use prod: ", usingProduction);
 app.use(session({ 
 	secret: usingProduction ? process.env.SESSION_SECRET : 'keyboard cat',
 	resave : false,
 	saveUninitialized: false,
-	cookie: { secure: usingProduction, maxAge : 7200000, httpOnly : true }
+	cookie: { secure: false, maxAge : 7200000, httpOnly : false }
 }));
 
 app.use(passport.initialize());
