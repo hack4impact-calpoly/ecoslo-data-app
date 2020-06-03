@@ -17,18 +17,24 @@ const usingProduction = process.env.NODE_ENV === 'production';
 const whiteListedOrigins = ['http://localhost:3000', 'https://ecoslo-data-app.herokuapp.com'];
 const corsOptions = {
 	origin : (origin, callback) => {
-		if (whiteListedOrigins.indexOf(origin) !== -1) {
-			callback(null, true);
-		} else {
-			console.log(new Error(`${origin} is not whitelisted for CORS`));
+		if(origin === undefined){
+			console.log("here");
+		}
+		else{
+			if (whiteListedOrigins.indexOf(origin) !== -1) {
+				callback(null, true);
+			} else {
+				console.log(new Error(`${origin} is not whitelisted for CORS`));
+			}
 		}
 	},
 	optionsSuccessStatus : 200,
 	credentials : true,
 };
 
-app.use(cors(corsOptions));
-app.options(cors(corsOptions));
+
+// app.use(cors(corsOptions));
+// app.options(cors(corsOptions));
 
 app.use(Express.json());
 // app.use(cors());
@@ -71,7 +77,7 @@ Auth.initializeLocalStrat(database);
 
 // app.get("/", async (req, res) => { res.status(200).send("Server running"); });
 
-app.post('/login', async (req, res) => {
+app.post('/login', cors(corsOptions), async (req, res) => {
 	passport.authenticate('local', (err, user, info) => {
 		if (err !== null || !user) {
 			if (err !== null) {
@@ -108,7 +114,7 @@ app.post('/testAuth', Auth.isAuthenticated, async (req, res) => {
 
 
 
-app.post('/add', Auth.isAuthenticated, async (req, res) => {
+app.post('/add', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
 	try {
 		let result = await database.add(req.body.item);
 		res.status(200).json({})
@@ -123,7 +129,7 @@ app.post('/login', async (req, res) => {
 	
 }) 
 
-app.post('/altTable', Auth.isAuthenticated, async (req, res) => {
+app.post('/altTable', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
 	try {
 		await database.alterTable(req);
 	} catch (err) {
@@ -133,7 +139,7 @@ app.post('/altTable', Auth.isAuthenticated, async (req, res) => {
 	res.status(200).json({});
 });
 
-app.get('/locations', Auth.isAuthenticated, async (req, res) => {
+app.get('/locations', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
 	try{
 		let result = await database.getLocations();
 		res.status(200).json({
@@ -147,7 +153,7 @@ app.get('/locations', Auth.isAuthenticated, async (req, res) => {
 	}
 })
 
-app.get('/columns', Auth.isAuthenticated, async (req, res) => {
+app.get('/columns', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
 	try{
 		let r = await database.getCols();
 		res.status(200).json({
@@ -224,7 +230,7 @@ app.put('/update', Auth.isAuthenticated, async (req, res) => {
 
 app.get('*', function(request, response) {
     response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
-  });
+});
 
 
 
