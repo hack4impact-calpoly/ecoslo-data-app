@@ -306,6 +306,8 @@ module.exports = class Database {
 
     async getUserByUsername(username) {
         const queryString = `SELECT * FROM Users WHERE Username = $1`;
+        console.log("queryStr, name: ", queryString, username);
+
         try {
             const result = await this._connection.query(queryString, [username]);
             if (result.rows.length === 0) {
@@ -314,6 +316,7 @@ module.exports = class Database {
             return result.rows[0];
         } catch (err) {
             console.log("ERROR");
+            console.log("err: ", err);
             throw new Error(Errors.error.queryError);
         }
     }
