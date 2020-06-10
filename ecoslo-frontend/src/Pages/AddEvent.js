@@ -1,5 +1,5 @@
 import React from "react";
-import {Col, Row, Modal, Container, Button, Form, Card} from 'react-bootstrap';
+import {Col, Row, Modal, Container, Form, Card} from 'react-bootstrap';
 import withLocations from '../Components/withLocations';
 import withColumns from '../Components/withColumns';
 import Select from 'react-dropdown-select';
@@ -7,7 +7,20 @@ import ReactTooltip from "react-tooltip";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaQuestionCircle } from "react-icons/fa";
+import styled, { css } from 'styled-components'
 
+const Button = styled.button`
+background: transparent;
+border-radius: 5px;
+border: 3px solid gray;
+color: gray;
+margin: 0 1em;
+padding: 0.25em 1em;
+${props => props.primary  && css`
+background: gray;
+color: white;
+`}
+`
 
 const sectionStyle ={
   fontWeight: 'bold',
@@ -573,7 +586,7 @@ class AddEvent extends React.Component {
             
             <div style={{margin: '20px'}}/>
 
-            <Button onClick={(e) => this.handleSubmit(e)}>
+            <Button onClick={(e) => this.handleSubmit(e)} primary>
               Submit
             </Button>
 

@@ -2,7 +2,7 @@
 import "../styles/update.css";
 import React from "react";
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+//import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import {Col, Modal, Row, Card} from 'react-bootstrap';
 import DataTable from '../Components/DataTable.js';
@@ -11,6 +11,21 @@ import ReactTooltip from "react-tooltip";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaQuestionCircle } from "react-icons/fa";
+import styled, { css } from 'styled-components'
+
+const Button = styled.button`
+background: transparent;
+border-radius: 5px;
+border: 3px solid gray;
+color: gray;
+margin: 1em 1em 0 1em;
+padding: 0.25em 1em;
+${props => props.primary  && css`
+background: gray;
+color: white;
+`}
+`
+
 
 class Update extends React.Component {
   constructor(props) {
@@ -213,7 +228,7 @@ class Update extends React.Component {
                 return <option>{value}</option>
               }) }
         </Form.Control>
-        <Button onClick={(e) => {this.handleUpdateTable(e)}}>Refresh Table</Button>
+        <Button onClick={(e) => {this.handleUpdateTable(e)}} primary>Refresh Table</Button>
         <DataTable data={this.state.tableResult}></DataTable>
         <div style={{margin: '10px'}}/>
 
@@ -249,9 +264,9 @@ class Update extends React.Component {
           )
         })
       }
-      <Button onClick={(e) => {this.handleAddItem(e)}}>Update Another Item</Button> 
+      <Button onClick={(e) => {this.handleAddItem(e)}} primary>Update Another Item</Button> 
 
-        <Button onClick={(e) => {this.handleSubmit(e)}}>Submit</Button>
+        <Button onClick={(e) => {this.handleSubmit(e)}} primary>Submit</Button>
 
         </Form.Group>
         </Card.Body>
