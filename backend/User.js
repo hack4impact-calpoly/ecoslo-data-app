@@ -1,41 +1,21 @@
-const bcrypt = require('bcrypt');
 
+<<<<<<< HEAD
 const saltRounds = process.env.SALT_ROUNDS ? +process.env.SALT_ROUNDS : 12; 
+=======
+>>>>>>> parent of ed99211... sessions for login
 
-const findUserByName = async (username, database) => {
-    const userReturned = await database.getUserByUsername(username);
-    if (userReturned === null) {
-        return false;
-    } else {
-        return new User(userReturned.username, userReturned.password_hash, userReturned.id);
-    }
-};
 
-const findUserById = async (id, database) => {
-    const userReturned = await database.getUserById(id);
-    if (userReturned === null) {
-        return false;
-    } else {
-        return new User(userReturned.username, userReturned.password_hash, userReturned.id);
-    }
-};
+export default class User{
 
-class User {
-
-    constructor(username, passwordHash, userId) {
-        this.username = username;
-        this.passwordHash = passwordHash;
-        this.id = userId;
+    static findUser(username, database, callback){
+        const saltRounds = 10;
+        try{
+            const userReturned = await database.getUser(username)
+        }
+        catch(err){
+            return
+        }
     }
 
-    async validPassword(passwordToCompare) {
-        /* const hash = bcrypt.hashSync(passwordToCompare, saltRounds);
-        console.log(hash);
-        console.log(this.passwordHash) */
-        return bcrypt.compare(passwordToCompare, this.passwordHash);
-    }
+
 }
-
-module.exports = {
-    findUserByName: findUserByName, User: User, findUserById : findUserById
-};

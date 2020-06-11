@@ -1,16 +1,11 @@
-const parseError = (statusCode, response) => {
-    switch(statusCode) {
-        case 401:
-            return JSON.parse(response);
-        default:
-            return response;
-    }
-}
-
 export default class APIWrapper {
     constructor(store) {
+<<<<<<< HEAD
         // this.baseURL = "https://ecoslo-data-app.herokuapp.com:" + (process.env.PORT || 8000).toString() + '/';
         this.baseURL = "https://ecoslo-data-app.herokuapp.com/"
+=======
+        this.baseURL = "http://localhost:8000/";
+>>>>>>> parent of ed99211... sessions for login
         this.store = store;
     }
     
@@ -26,7 +21,7 @@ export default class APIWrapper {
             var xhr = new XMLHttpRequest();
             xhr.open("GET", this.baseURL + urlExtension + queryString, true);
             xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.withCredentials = true;
+
             xhr.onreadystatechange = function() {
                 // Call a function when the state changes.
                 if (this.readyState === XMLHttpRequest.DONE) {
@@ -39,7 +34,8 @@ export default class APIWrapper {
                             //resolve(this.response);
                         }
                     } else {
-                        reject(parseError(this.status, this.response));
+                        reject(this.response);
+                        // reject(getDefaultStatusResponse(this.status, this.response));
                     }
                 }
             };
@@ -52,20 +48,26 @@ export default class APIWrapper {
             var xhr = new XMLHttpRequest();
             xhr.open(requestType.toUpperCase(), this.baseURL + urlExtension, true);
             xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.withCredentials = true;
+
             xhr.onreadystatechange = function() {
                 // Call a function when the state changes.
-                console.log(xhr.getAllResponseHeaders());
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
                         if (optionalResolve) {
                             //optionalResolve((this.response));
                             optionalResolve(JSON.parse(this.response));
                         } else {
+<<<<<<< HEAD
                             resolve(JSON.parse(this.response));
                         }
                     } else {
                         reject((this.response));
+=======
+                            resolve((this.response));
+                        }
+                    } else {
+                        reject(this.response);
+>>>>>>> parent of ed99211... sessions for login
                     }
                 }
             };
@@ -77,32 +79,54 @@ export default class APIWrapper {
         });
     }
 
-    login(username, password) {
+    getUserInformation() {
+        return this.store.getState().userLoginInfo || { "username" : "TEST" };
+    }
+
+    combineLoginInfoForRequest(json) {
+        let currLoginInfo = this.getUserInformation();
+        if (currLoginInfo === null || currLoginInfo === undefined) {
+            return false;
+        }
+        //return Object.assign(currLoginInfo, json);
+        return Object.assign({}, json);
+    }
+
+    login(email, password) {
+        console.log("email", email)
+        console.log("password", password)
         if (
-            username === null ||
-            username.length === 0 ||
+            email === null ||
+            email.length === 0 ||
             password === null ||
             password.length === 0
         ) {
             return false;
         }
 
-        return this.makeNonGetRequest(
-            "POST",
+        return this.makePostRequest(
             "login",
             {
-                username : username,
+                email : email,
                 password : password
             }
         );
     }
 
     addData(dataToBeSubmitted) {
-        return this.makeNonGetRequest("POST", "add", {'item': dataToBeSubmitted});
+        const postData = this.combineLoginInfoForRequest(dataToBeSubmitted);
+        if (!postData) {
+            return false;
+        }
+        return this.makeNonGetRequest("POST", "add", {'item': postData});
     }
 
     alterTable(dataToBeSubmitted) {
-        return this.makeNonGetRequest("POST", "altTable", dataToBeSubmitted);
+        const postData = this.combineLoginInfoForRequest(dataToBeSubmitted);
+        if (!postData) {
+            return false;
+        }
+        return this.makeNonGetRequest("POST", "altTable", postData);
     }
 
     getLocations() {
@@ -122,6 +146,11 @@ export default class APIWrapper {
     }
 
     updateData(dataToBeSubmitted) {
-        return this.makeNonGetRequest("PUT", "update", dataToBeSubmitted);
+        const postData = this.combineLoginInfoForRequest(dataToBeSubmitted);
+        if (!postData) {
+            return false;
+        }
+        console.log(postData);
+        return this.makeNonGetRequest("PUT", "update", postData);
     }
 }

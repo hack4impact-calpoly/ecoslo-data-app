@@ -1,14 +1,14 @@
 const Express = require('express');
-const session = require("express-session");
 const AppError = require('./errors');
 const Database = require('./database');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-const tempDB = require('./temp_db');
-const User = require('./User');
-const Auth = require('./authentication');
+const LocalStrategy = require('passport-local').Strategy;
+const JWTStrategy = require('passport-jwt').Strategy;
+const bcrypt = require('bcrypt');
 
+<<<<<<< HEAD
 const path = require('path');
 
 const app = Express();
@@ -29,8 +29,13 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options(cors(corsOptions));
+=======
 
+>>>>>>> parent of ed99211... sessions for login
+
+const app = Express();
 app.use(Express.json());
+<<<<<<< HEAD
 // app.use(cors());
 // app.options('*', cors());
 const database = Database.create(null);
@@ -38,10 +43,16 @@ const database = Database.create(null);
 
 app.use(Express.static(path.resolve(__dirname, '../ecoslo-frontend/build')));
 
+=======
+app.use(cors());
+app.options('*', cors());
+const database = Database.create(null);
+>>>>>>> parent of ed99211... sessions for login
 app.use(bodyParser.urlencoded({
 	extended: true
-}));
+  }));
 app.use(bodyParser.json());
+<<<<<<< HEAD
 app.use(session({ 
 	secret: usingProduction ? process.env.SESSION_SECRET : 'keyboard cat',
 	resave : false,
@@ -70,60 +81,75 @@ Auth.initializeLocalStrat(database);
 
 
 // app.get("/", async (req, res) => { res.status(200).send("Server running"); });
+=======
 
-app.post('/login', async (req, res) => {
-	passport.authenticate('local', (err, user, info) => {
-		if (err !== null || !user) {
-			if (err !== null) {
-				res.status(500).send(AppError.stringError(err.message));
-			} else {
-				res.status(401).json({
-					message : info.message
-				});
-			}
-		} else {
-			req.logIn(user, async (error) => {
-				if (error) {
-					console.log(error)
-					return res.status(500).send(error);
-				} else {
-					return res.status(200).json({ 
-						message : "Login successful!"
-					});
-				}
-			});
-		}
-	})(req, res);
+
+>>>>>>> parent of ed99211... sessions for login
+
+passport.use(new LocalStrategy(
+    function(username, password, done) {
+      User.findOne({ username: username }, function (err, user) {
+        if (err) { return done(err); }
+        if (!user) {
+          return done(null, false, { message: 'Incorrect username.' });
+        }
+        if (!user.validPassword(password)) {
+          return done(null, false, { message: 'Incorrect password.' });
+        }
+        return done(null, user);
+      });
+    }
+  ));
+
+  bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
+	// Store hash in your password DB.
 });
 
-/**
- * Start of endpoints requiring valid session and thus authorization (authenticated)
- */
 
-app.use(passport.session()); // PLACE BEFORE ALL ENDPTS THAT NEED AUTH
 
-app.post('/testAuth', Auth.isAuthenticated, async (req, res) => {
-	res.status(200).json({ message : "Request session authenticated!" })
-});
+function authenticateInput(input) {
+	return true;
+}
 
+<<<<<<< HEAD
 
 
 app.post('/add', Auth.isAuthenticated, async (req, res) => {
 	try {
 		let result = await database.add(req.body.item);
 		res.status(200).json({})
+=======
+app.post('/add', async (req, res) => {
+	console.log(req.body)
+	if (!authenticateInput(req.body.item)) {
+		res.status(400).send(AppError.stringError(AppError.badAuth));
+		return;
+	}
+	try {
+		await database.add(req.body.item);
+>>>>>>> parent of ed99211... sessions for login
 	} catch (err) {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-});
+	res.status(200).send();
+})
 
 app.post('/login', async (req, res) => {
 	res.status(200).send(req.body.username + "   " + req.body.password);
 	
 }) 
 
+<<<<<<< HEAD
+app.post('/login', async (req, res) => {
+	res.status(200).send(req.body.username + "   " + req.body.password);
+	
+}) 
+
 app.post('/altTable', Auth.isAuthenticated, async (req, res) => {
+=======
+app.post('/altTable', async (req, res) =>{
+>>>>>>> parent of ed99211... sessions for login
 	try {
 		await database.alterTable(req);
 	} catch (err) {
@@ -133,7 +159,7 @@ app.post('/altTable', Auth.isAuthenticated, async (req, res) => {
 	res.status(200).json({});
 });
 
-app.get('/locations', Auth.isAuthenticated, async (req, res) => {
+app.get('/locations', async (req, res) => {
 	try{
 		let result = await database.getLocations();
 		res.status(200).json({
@@ -147,7 +173,7 @@ app.get('/locations', Auth.isAuthenticated, async (req, res) => {
 	}
 })
 
-app.get('/columns', Auth.isAuthenticated, async (req, res) => {
+app.get('/columns', async (req, res) => {
 	try{
 		let r = await database.getCols();
 		res.status(200).json({
@@ -160,7 +186,8 @@ app.get('/columns', Auth.isAuthenticated, async (req, res) => {
 	}
 })
 
-app.get('/byCols', Auth.isAuthenticated, async (req, res) => {
+
+app.get('/byCols', async (req, res) => {
 	try{
 		let queryParams = req.query;
 		if ("cols" in queryParams) {
@@ -180,7 +207,7 @@ app.get('/byCols', Auth.isAuthenticated, async (req, res) => {
 	}
 })
 
-app.get('/sumPerCol', Auth.isAuthenticated, async (req, res) => {
+app.get('/sumPerCol', async (req, res) => {
 	try{
 		let queryParams = req.query;
 		if ("cols" in queryParams) {
@@ -201,9 +228,12 @@ app.get('/sumPerCol', Auth.isAuthenticated, async (req, res) => {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-});
+})
 
-app.put('/update', Auth.isAuthenticated, async (req, res) => {
+
+
+
+app.put('/update', async (req, res) => {
 	try{
 		const result = await database.update(req);
 		if (result.rowCount > 0) {
@@ -220,8 +250,9 @@ app.put('/update', Auth.isAuthenticated, async (req, res) => {
 		res.status(400).send(AppError.stringError(err.message));
 		return;
 	}
-});
+})
 
+<<<<<<< HEAD
 app.get('*', function(request, response) {
     response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
   });
@@ -229,3 +260,9 @@ app.get('*', function(request, response) {
 
 
 app.listen(process.env.PORT || 8000);
+=======
+
+
+
+app.listen(8000);
+>>>>>>> parent of ed99211... sessions for login
