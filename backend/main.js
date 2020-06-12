@@ -175,7 +175,7 @@ app.get('/locations', async (req, res) => {
 	}
 })
 
-app.get('/columns', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
+app.get('/columns', Auth.isAuthenticated, async (req, res) => {
 	console.log("GETTING COLUMNS")
 	try{
 		let r = await database.getCols();
@@ -252,9 +252,16 @@ app.put('/update', cors(corsOptions), Auth.isAuthenticated, async (req, res) => 
 	}
 });
 
-app.get('*', function(request, response) {
-    response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
-});
+if(Auth.isAuthenticated){
+	app.get('*', function(request, response) {
+		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
+	});
+}
+else{
+	app.get('*', function(request, response) {
+		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
+	});
+}
 
 
 
