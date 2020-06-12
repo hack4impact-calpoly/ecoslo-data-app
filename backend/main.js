@@ -159,7 +159,7 @@ app.post('/altTable', cors(corsOptions), Auth.isAuthenticated, async (req, res) 
 	res.status(200).json({});
 });
 
-app.get('/locations', cors(corsOptions), async (req, res) => {
+app.get('/locations', async (req, res) => {
 	console.log("GETTING LOCATIONS")
 	try {
 		let result = await database.getLocations();
