@@ -1,13 +1,13 @@
 const Express = require('express');
-//const session = require("express-session");
+const session = require("express-session");
 const AppError = require('./errors');
 const Database = require('./database');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const JWTStrategy = require('passport-jwt').Strategy;
+// const LocalStrategy = require('passport-local').Strategy;
+// const JWTStrategy = require('passport-jwt').Strategy;
 const bcrypt = require('bcrypt');
 
 const tempDB = require('./temp_db');
@@ -20,7 +20,7 @@ const app = Express();
 
 const usingProduction = process.env.NODE_ENV === 'production';
 
-AUTH
+
 const whiteListedOrigins = ['http://localhost:3000', 'https://ecoslo-data-app.herokuapp.com'];
 const corsOptions = {
 	origin : (origin, callback) => {
@@ -40,8 +40,8 @@ const corsOptions = {
 };
 
 
-app.use(cors(corsOptions));
-app.options(cors(corsOptions));
+// app.use(cors(corsOptions));
+// app.options(cors(corsOptions));
 
 app.use(Express.json());
 
