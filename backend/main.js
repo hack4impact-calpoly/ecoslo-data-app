@@ -4,49 +4,50 @@ const AppError = require('./errors');
 const Database = require('./database');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-//const passport = require('passport');
-//const LocalStrategy = require('passport-local').Strategy;
-//const JWTStrategy = require('passport-jwt').Strategy;
-//const bcrypt = require('bcrypt');
 
-//const tempDB = require('./temp_db');
-//const User = require('./User');
-//const Auth = require('./authentication');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const JWTStrategy = require('passport-jwt').Strategy;
+const bcrypt = require('bcrypt');
+
+const tempDB = require('./temp_db');
+const User = require('./User');
+const Auth = require('./authentication');
 
 const path = require('path');
 
 const app = Express();
 
-// const usingProduction = process.env.NODE_ENV === 'production';
+const usingProduction = process.env.NODE_ENV === 'production';
 
-//AUTH
-// const whiteListedOrigins = ['http://localhost:3000', 'https://ecoslo-data-app.herokuapp.com'];
-// const corsOptions = {
-// 	origin : (origin, callback) => {
-// 		if(origin === undefined){
-// 			console.log("here");
-// 		}
-// 		else{
-// 			if (whiteListedOrigins.indexOf(origin) !== -1) {
-// 				callback(null, true);
-// 			} else {
-// 				console.log(new Error(`${origin} is not whitelisted for CORS`));
-// 			}
-// 		}
-// 	},
-// 	optionsSuccessStatus : 200,
-// 	credentials : true,
-// };
+AUTH
+const whiteListedOrigins = ['http://localhost:3000', 'https://ecoslo-data-app.herokuapp.com'];
+const corsOptions = {
+	origin : (origin, callback) => {
+		if(origin === undefined){
+			console.log("here");
+		}
+		else{
+			if (whiteListedOrigins.indexOf(origin) !== -1) {
+				callback(null, true);
+			} else {
+				console.log(new Error(`${origin} is not whitelisted for CORS`));
+			}
+		}
+	},
+	optionsSuccessStatus : 200,
+	credentials : true,
+};
 
 
-// app.use(cors(corsOptions));
-// app.options(cors(corsOptions));
+app.use(cors(corsOptions));
+app.options(cors(corsOptions));
 
 app.use(Express.json());
 
 //no auth
-app.use(cors());
-app.options('*', cors());
+// app.use(cors());
+// app.options('*', cors());
 
 
 const database = Database.create(null);
@@ -61,62 +62,62 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 //AUTH
-// console.log("secrest session: ", process.env.SESSION_SECRET);
-// console.log("use prod: ", usingProduction);
-// app.use(session({ 
-// 	secret: usingProduction ? process.env.SESSION_SECRET : 'keyboard cat',
-// 	resave : false,
-// 	saveUninitialized: false,
-// 	cookie: { secure: false, maxAge : 7200000, httpOnly : false }
-// }));
+console.log("secrest session: ", process.env.SESSION_SECRET);
+console.log("use prod: ", usingProduction);
+app.use(session({ 
+	secret: usingProduction ? process.env.SESSION_SECRET : 'keyboard cat',
+	resave : false,
+	saveUninitialized: false,
+	cookie: { secure: false, maxAge : 7200000, httpOnly : false }
+}));
 
-// app.use(passport.initialize());
+app.use(passport.initialize());
 
-// passport.serializeUser(function(user, done) {
-// 	done(null, user.id);
-// });
+passport.serializeUser(function(user, done) {
+	done(null, user.id);
+});
 
-// passport.deserializeUser(function(id, done) {
-// 	console.log("id: ", id);
-// 	done(null, new User.User(null, null, id));
-// });
+passport.deserializeUser(function(id, done) {
+	console.log("id: ", id);
+	done(null, new User.User(null, null, id));
+});
 
 
-// if (!usingProduction && process.env.USE_TEMP_DB) {
-// 	console.log("Using temp database (temp_db.js)");
-// 	database = tempDB;
-// }
-// Auth.initializeLocalStrat(database);
+if (!usingProduction && process.env.USE_TEMP_DB) {
+	console.log("Using temp database (temp_db.js)");
+	database = tempDB;
+}
+Auth.initializeLocalStrat(database);
 
 
 //not needed?
 // app.get("/", async (req, res) => { res.status(200).send("Server running"); });
 
 //AUTH
-// app.post('/login', cors(corsOptions), async (req, res) => {
-// 	passport.authenticate('local', (err, user, info) => {
-// 		if (err !== null || !user) {
-// 			if (err !== null) {
-// 				res.status(500).send(AppError.stringError(err.message));
-// 			} else {
-// 				res.status(401).json({
-// 					message : info.message
-// 				});
-// 			}
-// 		} else {
-// 			req.logIn(user, async (error) => {
-// 				if (error) {
-// 					console.log(error)
-// 					return res.status(500).send(error);
-// 				} else {
-// 					return res.status(200).json({ 
-// 						message : "Login successful!"
-// 					});
-// 				}
-// 			});
-// 		}
-// 	})(req, res);
-// });
+app.post('/login', cors(corsOptions), async (req, res) => {
+	passport.authenticate('local', (err, user, info) => {
+		if (err !== null || !user) {
+			if (err !== null) {
+				res.status(500).send(AppError.stringError(err.message));
+			} else {
+				res.status(401).json({
+					message : info.message
+				});
+			}
+		} else {
+			req.logIn(user, async (error) => {
+				if (error) {
+					console.log(error)
+					return res.status(500).send(error);
+				} else {
+					return res.status(200).json({ 
+						message : "Login successful!"
+					});
+				}
+			});
+		}
+	})(req, res);
+});
 
 /**
  * Start of endpoints requiring valid session and thus authorization (authenticated)
@@ -124,7 +125,7 @@ app.use(bodyParser.json());
 
 
 
-//app.use(passport.session()); // PLACE BEFORE ALL ENDPTS THAT NEED AUTH
+app.use(passport.session()); // PLACE BEFORE ALL ENDPTS THAT NEED AUTH
 
 // app.post('/testAuth', Auth.isAuthenticated, async (req, res) => {
 // 	res.status(200).json({ message : "Request session authenticated!" })
@@ -132,8 +133,8 @@ app.use(bodyParser.json());
 
 
 
-// app.post('/add', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
-	app.post('/add', async (req, res) => {
+ app.post('/add', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
+	// app.post('/add', async (req, res) => {
 	try {
 		let result = await database.add(req.body.item);
 		res.status(200).json({})
@@ -148,7 +149,7 @@ app.use(bodyParser.json());
 	
 // })
 
-app.post('/altTable', async (req, res) => {
+app.post('/altTable', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
 	try {
 		await database.alterTable(req);
 	} catch (err) {
@@ -158,7 +159,7 @@ app.post('/altTable', async (req, res) => {
 	res.status(200).json({});
 });
 
-app.get('/locations', async (req, res) => {
+app.get('/locations', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
 	try {
 		let result = await database.getLocations();
 		res.status(200).json({
@@ -172,7 +173,7 @@ app.get('/locations', async (req, res) => {
 	}
 })
 
-app.get('/columns', async (req, res) => {
+app.get('/columns', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
 	try{
 		let r = await database.getCols();
 		res.status(200).json({
@@ -185,7 +186,7 @@ app.get('/columns', async (req, res) => {
 	}
 })
 
-app.get('/byCols', async (req, res) => {
+app.get('/byCols', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
 	try{
 		let queryParams = req.query;
 		if ("cols" in queryParams) {
@@ -205,7 +206,7 @@ app.get('/byCols', async (req, res) => {
 	}
 })
 
-app.get('/sumPerCol', async (req, res) => {
+app.get('/sumPerCol', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
 	try{
 		let queryParams = req.query;
 		if ("cols" in queryParams) {
@@ -228,7 +229,7 @@ app.get('/sumPerCol', async (req, res) => {
 	}
 });
 
-app.put('/update', async (req, res) => {
+app.put('/update', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
 	try{
 		const result = await database.update(req);
 		if (result.rowCount > 0) {
