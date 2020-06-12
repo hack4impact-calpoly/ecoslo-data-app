@@ -4,10 +4,11 @@ const AppError = require('./errors');
 const Database = require('./database');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const JWTStrategy = require('passport-jwt').Strategy;
-const bcrypt = require('bcrypt');
+//const passport = require('passport');
+//const LocalStrategy = require('passport-local').Strategy;
+//const JWTStrategy = require('passport-jwt').Strategy;
+//const bcrypt = require('bcrypt');
+
 //const tempDB = require('./temp_db');
 //const User = require('./User');
 //const Auth = require('./authentication');
