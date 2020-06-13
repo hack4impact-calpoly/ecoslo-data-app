@@ -133,7 +133,7 @@ app.use(passport.session()); // PLACE BEFORE ALL ENDPTS THAT NEED AUTH
 
 
 
- app.post('/add', async (req, res) => {
+ app.post('/add', Auth.isAuthenticated, async (req, res) => {
 	// app.post('/add', async (req, res) => {
 	try {
 		let result = await database.add(req.body.item);
@@ -149,7 +149,7 @@ app.use(passport.session()); // PLACE BEFORE ALL ENDPTS THAT NEED AUTH
 	
 // })
 
-app.post('/altTable', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
+app.post('/altTable', Auth.isAuthenticated, async (req, res) => {
 	try {
 		await database.alterTable(req);
 	} catch (err) {
@@ -159,7 +159,7 @@ app.post('/altTable', cors(corsOptions), Auth.isAuthenticated, async (req, res) 
 	res.status(200).json({});
 });
 
-app.get('/locations', async (req, res) => {
+app.get('/locations', Auth.isAuthenticated, async (req, res) => {
 	console.log("GETTING LOCATIONS")
 	try {
 		let result = await database.getLocations();
@@ -210,7 +210,7 @@ app.get('/byCols', Auth.isAuthenticated, async (req, res) => {
 	}
 })
 
-app.get('/sumPerCol', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
+app.get('/sumPerCol', Auth.isAuthenticated, async (req, res) => {
 	try{
 		let queryParams = req.query;
 		if ("cols" in queryParams) {
@@ -233,7 +233,7 @@ app.get('/sumPerCol', cors(corsOptions), Auth.isAuthenticated, async (req, res) 
 	}
 });
 
-app.put('/update', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
+app.put('/update', Auth.isAuthenticated, async (req, res) => {
 	try{
 		const result = await database.update(req);
 		if (result.rowCount > 0) {
@@ -254,34 +254,40 @@ app.put('/update', cors(corsOptions), Auth.isAuthenticated, async (req, res) => 
 
 
 
-// app.get('/view', function (req, res) {
-// 	if(req.user === null || req.user === undefined){
-// 		res.redirect('/login')
-// 	}
-// 	else{
-// 		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
-// 	}
-// });
+app.get('/view', function (req, res) {
+	if(req.user === null || req.user === undefined){
+		res.redirect('/login')
+	}
+	else{
+		res.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
+	}
+});
 
 app.get('/update', function (req, res) {
 	if(req.user === null || req.user === undefined){
 		res.redirect('/login')
 	}
 	else{
-		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
+		res.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
+	}
+});
+
+app.get('/alter', function (req, res) {
+	if(req.user === null || req.user === undefined){
+		res.redirect('/login')
+	}
+	else{
+		res.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
 	}
 });
 
 
 app.get('/add', function (req, res) {
-	console.log("req", req)
-	console.log("req.user", req.user)
-	console.log("hit add event in express")
 	if(req.user === null || req.user === undefined){
 		res.redirect('/login')
 	}
 	else{
-		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
+		res.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
 	}
 })
 
