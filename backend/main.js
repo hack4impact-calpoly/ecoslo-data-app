@@ -90,10 +90,7 @@ if (!usingProduction && process.env.USE_TEMP_DB) {
 Auth.initializeLocalStrat(database);
 
 
-//not needed?
-// app.get("/", async (req, res) => { res.status(200).send("Server running"); });
 
-//AUTH
 app.post('/login', cors(corsOptions), async (req, res) => {
 	passport.authenticate('local', (err, user, info) => {
 		if (err !== null || !user) {
@@ -127,10 +124,6 @@ app.post('/login', cors(corsOptions), async (req, res) => {
 
 app.use(passport.session()); // PLACE BEFORE ALL ENDPTS THAT NEED AUTH
 
-// app.post('/testAuth', Auth.isAuthenticated, async (req, res) => {
-// 	res.status(200).json({ message : "Request session authenticated!" })
-// });
-
 
 
  app.post('/add', Auth.isAuthenticated, async (req, res) => {
@@ -159,7 +152,7 @@ app.post('/altTable', Auth.isAuthenticated, async (req, res) => {
 	res.status(200).json({});
 });
 
-app.get('/locations', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
+app.get('/locations', Auth.isAuthenticated, async (req, res) => {
 	console.log("GETTING LOCATIONS")
 	try {
 		let result = await database.getLocations();
@@ -175,7 +168,7 @@ app.get('/locations', cors(corsOptions), Auth.isAuthenticated, async (req, res) 
 	}
 })
 
-app.get('/columns', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
+app.get('/columns', Auth.isAuthenticated, async (req, res) => {
 	console.log("GETTING COLUMNS")
 	try{
 		let r = await database.getCols();
