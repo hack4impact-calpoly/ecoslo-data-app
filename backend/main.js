@@ -133,7 +133,7 @@ app.use(passport.session()); // PLACE BEFORE ALL ENDPTS THAT NEED AUTH
 
 
 
- app.post('/add', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
+ app.post('/add', async (req, res) => {
 	// app.post('/add', async (req, res) => {
 	try {
 		let result = await database.add(req.body.item);
@@ -252,16 +252,14 @@ app.put('/update', cors(corsOptions), Auth.isAuthenticated, async (req, res) => 
 	}
 });
 
-if(Auth.isAuthenticated){
-	app.get('*', function(request, response) {
+app.get('*', function(request, response) {
+	if(Auth.isAuthenticated){
 		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'indexAuthReq.html'));
-	});
-}
-else{
-	app.get('*', function(request, response) {
+	}
+	else{
 		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
-	});
-}
+	}
+});
 
 
 

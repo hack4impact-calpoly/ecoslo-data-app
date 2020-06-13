@@ -26,7 +26,7 @@ import Header from "./Components/header.js";
 
 const apiWrapper = new APIWrapper(store);
 
-const routing = (
+const routingSet = (
     <div className = "Site" style={{backgroundColor: '#f4f8fa'}}>
     <Provider store={store}>
         <Router>
@@ -53,4 +53,4 @@ const routing = (
     </div>
 );
 
-ReactDOM.render(routing, document.getElementById('rootAuthReq'));
+ReactDOM.render(routingSet, document.getElementById('rootAuthReq'));
