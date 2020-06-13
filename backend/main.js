@@ -254,10 +254,11 @@ app.put('/update', cors(corsOptions), Auth.isAuthenticated, async (req, res) => 
 
 app.get('*', function(request, response) {
 	if(Auth.isAuthenticated){
-		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'indexAuthReq.html'));
+		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
 	}
 	else{
-		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
+		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'indexAuthReq.html'));
+		
 	}
 });
 
