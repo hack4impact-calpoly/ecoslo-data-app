@@ -256,9 +256,9 @@ app.get('/add', function (req, res) {
 	console.log("req", req)
 	console.log("req.user", req.user)
 	console.log("hit add event in express")
-	console.log("isAuth: ", Auth.isAuthenticated);
+	// console.log("isAuth: ", Auth.isAuthenticated);
 	try{
-		let authStatus = await Auth.isAuthenticated();
+		// let authStatus = await Auth.isAuthenticated();
 		res.redirect('/login');
 	}
 	catch(err){
