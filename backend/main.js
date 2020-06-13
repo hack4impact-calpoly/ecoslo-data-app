@@ -253,6 +253,8 @@ app.put('/update', cors(corsOptions), Auth.isAuthenticated, async (req, res) => 
 });
 
 app.get('/add', function (req, res) {
+	console.log("req", req)
+	console.log("req.user", req.user)
 	console.log("hit add event in express")
 	console.log("isAuth: ", Auth.isAuthenticated);
 	try{
