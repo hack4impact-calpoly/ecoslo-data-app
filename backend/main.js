@@ -159,7 +159,7 @@ app.post('/altTable', Auth.isAuthenticated, async (req, res) => {
 	res.status(200).json({});
 });
 
-app.get('/locations', Auth.isAuthenticated, async (req, res) => {
+app.get('/locations', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
 	console.log("GETTING LOCATIONS")
 	try {
 		let result = await database.getLocations();
@@ -175,7 +175,7 @@ app.get('/locations', Auth.isAuthenticated, async (req, res) => {
 	}
 })
 
-app.get('/columns', Auth.isAuthenticated, async (req, res) => {
+app.get('/columns', cors(corsOptions), Auth.isAuthenticated, async (req, res) => {
 	console.log("GETTING COLUMNS")
 	try{
 		let r = await database.getCols();
