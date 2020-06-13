@@ -252,14 +252,19 @@ app.put('/update', cors(corsOptions), Auth.isAuthenticated, async (req, res) => 
 	}
 });
 
-app.get('*', function(request, response) {
+app.get('/addEvent', function (req, res) {
+	console.log("hit add event in express")
+	console.log("isAuth: ", Auth.isAuthenticated);
 	if(Auth.isAuthenticated){
-		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
+		res.redirect('/login');
 	}
 	else{
-		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'indexAuthReq.html'));
-		
+		res.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
 	}
+})
+
+app.get('*', function(request, response) {
+		response.sendFile(path.resolve(__dirname, '../ecoslo-frontend/build', 'index.html'));
 });
 
 
