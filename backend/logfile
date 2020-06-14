@@ -1,0 +1,20 @@
+2020-02-02 12:28:25.636 PST [64088] LOG:  starting PostgreSQL 12.1 on x86_64-apple-darwin19.2.0, compiled by Apple clang version 11.0.0 (clang-1100.0.33.16), 64-bit
+2020-02-02 12:28:25.637 PST [64088] LOG:  could not bind IPv4 address "127.0.0.1": Address already in use
+2020-02-02 12:28:25.637 PST [64088] HINT:  Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
+2020-02-02 12:28:25.637 PST [64088] LOG:  could not bind IPv6 address "::1": Address already in use
+2020-02-02 12:28:25.637 PST [64088] HINT:  Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
+2020-02-02 12:28:25.637 PST [64088] WARNING:  could not create listen socket for "localhost"
+2020-02-02 12:28:25.637 PST [64088] FATAL:  could not create any TCP/IP sockets
+2020-02-02 12:28:25.637 PST [64088] LOG:  database system is shut down
+2020-02-02 12:29:00.052 PST [64107] FATAL:  lock file "postmaster.pid" already exists
+2020-02-02 12:29:00.052 PST [64107] HINT:  Is another postmaster (PID 64095) running in data directory "/usr/local/var/postgres"?
+2020-02-02 12:29:21.143 PST [64128] LOG:  starting PostgreSQL 12.1 on x86_64-apple-darwin19.2.0, compiled by Apple clang version 11.0.0 (clang-1100.0.33.16), 64-bit
+2020-02-02 12:29:21.144 PST [64128] LOG:  could not bind IPv4 address "127.0.0.1": Address already in use
+2020-02-02 12:29:21.144 PST [64128] HINT:  Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
+2020-02-02 12:29:21.145 PST [64128] LOG:  could not bind IPv6 address "::1": Address already in use
+2020-02-02 12:29:21.145 PST [64128] HINT:  Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
+2020-02-02 12:29:21.145 PST [64128] WARNING:  could not create listen socket for "localhost"
+2020-02-02 12:29:21.145 PST [64128] FATAL:  could not create any TCP/IP sockets
+2020-02-02 12:29:21.145 PST [64128] LOG:  database system is shut down
+2020-02-02 12:36:31.770 PST [64243] FATAL:  lock file "postmaster.pid" already exists
+2020-02-02 12:36:31.770 PST [64243] HINT:  Is another postmaster (PID 64215) running in data directory "/usr/local/var/postgres"?

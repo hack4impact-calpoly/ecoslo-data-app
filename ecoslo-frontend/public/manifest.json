@@ -1,0 +1,15 @@
+{
+  "short_name": "ECOSLO Data App",
+  "name": "ECOSLO Data App",
+  "icons": [
+    {
+      "src": "ecoslo-icon.png",
+      "sizes": "558x558",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
