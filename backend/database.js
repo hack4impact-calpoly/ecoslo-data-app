@@ -63,7 +63,7 @@ module.exports = class Database {
 
     _createRowQuery(row) {
         const keyvalues = this._createArgStr(row);
-        const agrStr = keyvalues[0];
+        const argStr = keyvalues[0];
         const valArray = keyvalues[1];
         const valStr = this._createValStr(row);
         console.log("row: ", row);
@@ -300,7 +300,9 @@ module.exports = class Database {
     async add(row) {
 
         const queryStr = this._createRowQuery(row);
-        console.log("query", queryStr)
+        
+        console.log("queryString: ", queryStr[0])
+        console.log("queryValues: ", queryStr[1])
         try {
             await this.client.query(queryStr[0], queryStr[1]);
         } catch (err) {
