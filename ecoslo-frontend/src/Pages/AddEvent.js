@@ -357,7 +357,8 @@ class AddEvent extends React.Component {
           alert("Value " + value + " for " + convertFieldToLabel(key) + " is not an acceptable value.");
           return false;
         }
-        toSendFormData[key] = (+value) || 0;
+        // toSendFormData[key] = (+value) || 0;
+        toSendFormData[key] = value;
       } else if (this.props.colTypes[key] === "boolean") {
         if (value.toLowerCase() !== "true" && value.toLowerCase() !== "false") {
           alert("Value for " + convertFieldToLabel(key) + " must be true or false.");
