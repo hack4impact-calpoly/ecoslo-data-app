@@ -62,6 +62,7 @@ module.exports = class Database {
     _createRowQuery(row) {
         const argStr = this._createArgStr(row);
         const valStr = this._createValStr(row);
+        console.log("row: ", row);
         const queryStr = 'INSERT INTO ' + this.dbName + ' (' + argStr + ') VALUES(' + valStr + ')';
         return queryStr;
     }

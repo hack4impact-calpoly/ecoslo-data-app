@@ -274,7 +274,7 @@ class AddEvent extends React.Component {
       this.setState({publicStateVal: 'false'})
     }
     let full = this.state.formData;
-    full['public'] = this.formatDate(this.state.publicStateVal)
+    full['public'] = this.state.publicStateVal
     this.setState({formData: full})
   }
 
