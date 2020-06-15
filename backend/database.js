@@ -38,14 +38,16 @@ module.exports = class Database {
 
 
     _createArgStr(row) {
+        let values = [];
         let str = '';
         Object.keys(row).forEach((key, index) => {
             if (index > 0) {
                 str += ', ';
             }
             str += key;
+            values.push(row[key])
         })
-        return str;
+        return [str, values];
     }
 
     _createValStr(row) {
@@ -60,11 +62,13 @@ module.exports = class Database {
     }
 
     _createRowQuery(row) {
-        const argStr = this._createArgStr(row);
+        const keyvalues = this._createArgStr(row);
+        const agrStr = keyvalues[0];
+        const valArray = keyvalues[1];
         const valStr = this._createValStr(row);
         console.log("row: ", row);
         const queryStr = 'INSERT INTO ' + this.dbName + ' (' + argStr + ') VALUES(' + valStr + ')';
-        return queryStr;
+        return [queryStr, valArray];
     }
 
     _validateDateRange(startDate, endDate) {
@@ -298,7 +302,7 @@ module.exports = class Database {
         const queryStr = this._createRowQuery(row);
         console.log("query", queryStr)
         try {
-            await this.client.query(queryStr);
+            await this.client.query(queryStr[0], queryStr[1]);
         } catch (err) {
             console.log("ERROR");
             throw new Error(Errors.error.queryError);
