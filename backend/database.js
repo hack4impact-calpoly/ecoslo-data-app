@@ -3,6 +3,7 @@ const Errors = require('./errors');
 const dataTypeConverter = {
     "16": "boolean",
     "23": "numeric",
+    "1700": "numeric",
     "1082": "string",
     "1043": "string"
 }
