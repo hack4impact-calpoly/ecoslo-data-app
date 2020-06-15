@@ -266,16 +266,19 @@ class AddEvent extends React.Component {
 
   ///is working?? double check
   handlePublicChange (event) {
-    this.setState({publicState: event.target.value})
+    let publicValue = false;
     if(event.target.value === 'Public'){
-      this.setState({publicStateVal: 'true'})
+      publicValue = 'true'
     }
     else if(event.target.value === 'Private'){
-      this.setState({publicStateVal: 'false'})
+      publicValue = 'false'
     }
     let full = this.state.formData;
-    full['public'] = this.state.publicStateVal
-    this.setState({formData: full})
+    full['public'] = publicValue
+    this.setState({
+      publicState: event.target.value,
+      publicStateVal: publicValue,
+      formData: full})
   }
 
   formatDate(d) {
