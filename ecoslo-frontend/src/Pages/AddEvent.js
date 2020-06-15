@@ -517,13 +517,13 @@ class AddEvent extends React.Component {
       <div style={this.marginstyle}>
         <Modal centered show={this.state.help} onHide={() => this.hideHelpModal()}>
               <Modal.Header closeButton>
-                <Modal.Title>Alter Table Page Help</Modal.Title>
+                <Modal.Title>Add Event Page Help</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <b>Purpose and Use</b>
                 <br />
                 The Add page allows you to enter a new cleanup into the database. The cleanup must have a unique date and location.
-                If you did not track a certain item, and the column is a numeric value, enter -1. If you did not find any of a certain item, but it was bring tracked, enter 0.
+                If you did not track a certain item, and the column is a numeric value, enter -1. If you did not find any of a certain item, but it was being tracked, enter 0.
                 You must enter a value for all fields.
                 <br />
               </Modal.Body>
