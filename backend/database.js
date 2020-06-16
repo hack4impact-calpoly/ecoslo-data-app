@@ -408,7 +408,7 @@ module.exports = class Database {
                 if(req.body.name === null || req.body.dataType === null){
                     throw new Error(Errors.error.badData);
                 }
-                if(req.body.dataType === 'INT'){
+                if(req.body.dataType === 'DECIMAL'){
                     var queryStr = "ALTER TABLE " + this.dbName + " ADD COLUMN " + req.body.name + " " + req.body.dataType + " DEFAULT -1;"
                 }
                 else if(req.body.dataType === 'STRING'){

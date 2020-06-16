@@ -82,7 +82,7 @@ class AlterTable extends React.Component {
         let value = this.state.formData["dataType"]; 
         let dType; 
         if (value === "Numeric") {
-            dType = "INT"; 
+            dType = "DECIMAL"; 
         }
         else if (value === "Text") {
             dType = "STRING";  
