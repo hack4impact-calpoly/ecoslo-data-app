@@ -333,9 +333,11 @@ class AddEvent extends React.Component {
 
     let regex;
     if (formEntry.indexOf(".") > -1) {
-      regex = /^[0-9]+\.[0-9]+$/g;
-    } else {
-      regex = /^[0-9]+$/g;
+      regex = /^-?[0-9]+\.[0-9]+$/g;
+    }
+    
+    else {
+      regex = /^-?[0-9]+$/g;
     }
 
     return regex.test(formEntry);
