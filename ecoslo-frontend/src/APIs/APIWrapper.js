@@ -124,4 +124,8 @@ export default class APIWrapper {
     updateData(dataToBeSubmitted) {
         return this.makeNonGetRequest("PUT", "update", dataToBeSubmitted);
     }
+
+    deleteRow(dataToBeSubmitted) {
+        return this.makeNonGetRequest("PUT", "deleteRow", dataToBeSubmitted);
+    }
 }

@@ -67,7 +67,6 @@ module.exports = class Database {
         const argStr = keyvalues[0];
         const valArray = keyvalues[1];
         const valStr = this._createValStr(row);
-        console.log("row: ", row);
         const queryStr = 'INSERT INTO ' + this.dbName + ' (' + argStr + ') VALUES(' + valStr + ')';
         return [queryStr, valArray];
     }
@@ -361,7 +360,6 @@ module.exports = class Database {
         const queryStr = 'SELECT * FROM ' + this.dbName + '';
         try {
             const result = await this.client.query(queryStr);
-            console.log("result in getCols: ", result)
             for(var i = 0; i < result.fields.length; i ++){
                 result.fields[i].format = dataTypeConverter[`${result.fields[i].dataTypeID}`]
             }
@@ -451,6 +449,17 @@ module.exports = class Database {
             const result = await this.client.query(queryStr);
             return result
         } catch (err) {
+            throw new Error(Errors.queryError);
+        }
+    }
+
+    async deleteRow(req) {
+        const queryStr = "DELETE FROM " + this.dbName + " WHERE date=$1 AND location=$2;" 
+        try{
+            const result = await this.client.query(queryStr, [req.body.date, req.body.location])
+            return result;
+        }
+        catch(err) {
             throw new Error(Errors.queryError);
         }
     }
