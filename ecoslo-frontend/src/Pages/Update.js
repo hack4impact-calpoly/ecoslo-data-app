@@ -11,6 +11,7 @@ import ReactTooltip from "react-tooltip";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaQuestionCircle } from "react-icons/fa";
+import { confirmAlert } from 'react-confirm-alert';
 
 class Update extends React.Component {
   constructor(props) {
@@ -155,6 +156,42 @@ class Update extends React.Component {
     }
   }
 
+  async submitDeleteRow() {
+    let data = {
+        date: this.state.date,
+        location: this.state.location
+    }
+
+        try {
+            const res = await this.props.apiWrapper.deleteRow(data);
+            this.setState({tableResult: []});
+            alert("Row successfully deleted from database.");
+        }
+        catch (error) {
+            alert(error);
+        }
+}
+
+  handleDeleteRow(e) {
+    confirmAlert({
+      title: "Confirm to delete cleanup row",
+      message: "Are you sure you want to delete the cleanup from "
+        + this.state.date + " at " + this.state.location +
+        "? This action cannot be undone.",
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+              this.submitDeleteRow(); 
+          }    
+        },
+        {
+          label: 'No'
+        }
+      ]
+  });
+  }
+
 
 
   displayHelpModal(){
@@ -214,6 +251,12 @@ class Update extends React.Component {
               }) }
         </Form.Control>
         <Button onClick={(e) => {this.handleUpdateTable(e)}}>Refresh Table</Button>
+        { 
+          this.state.tableResult !== undefined && (this.state.tableResult.rows !== undefined && this.state.tableResult.rows !== [])
+          ?  <Button onClick={(e) => {this.handleDeleteRow(e)}}>Delete Row</Button>
+          : null
+        }
+        
         <DataTable data={this.state.tableResult}></DataTable>
         <div style={{margin: '10px'}}/>
 
