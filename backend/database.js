@@ -464,6 +464,16 @@ module.exports = class Database {
         }
     }
 
+    async getAllData() {
+        const queryStr = 'SELECT * FROM ' + this.dbName + '';
+        try {
+            const result = await this.client.query(queryStr);
+            return result;
+        } catch (err) {
+            throw new Error(Errors.error.queryError);
+        }
+    }
+
 
     async database(req) {
 

@@ -199,6 +199,19 @@ app.get('/byCols', Auth.isAuthenticated, async (req, res) => {
 	}
 })
 
+app.get('/allData', Auth.isAuthenticated, async (req, res) => {
+	try{
+		let result = await database.getAllData();
+		res.status(200).json({
+			rows : result.rows
+		});
+	}
+	catch (err) {
+		res.status(400).send(AppError.stringError(err.message));
+		return;
+	}
+})
+
 app.get('/sumPerCol', Auth.isAuthenticated, async (req, res) => {
 	try{
 		let queryParams = req.query;
