@@ -322,6 +322,8 @@ class View extends React.Component {
     }
   }
 
+
+
    noDataAlert() {
     if(this.state.showAlert){
       return(
@@ -523,6 +525,21 @@ handlePubPrivCheckbox = (e, col) =>{
    }
   } 
 
+  async handleViewAllData(e) {
+    try{
+      let td = await this.props.apiWrapper.getAllData();
+      if(td.rows !== undefined && td.rows.length !== 0){
+        this.setState({tableData: td})
+      }
+      else{
+        alert("No data found.")
+      }
+    }
+    catch(e){
+      alert("There was an error in your request. Please contact web admins.")
+    }
+  }
+
 
   displayHelpModal(){
     this.setState({help: true})
@@ -592,9 +609,17 @@ handlePubPrivCheckbox = (e, col) =>{
                   <FaQuestionCircle className="float-right" onClick={(e) => this.displayHelpModal()}/>
                 </Col>
               </Row>
-              <h2>
-              View Your Cleanup Data
-            </h2>
+              <Row>
+                <Col>
+                  <h2>
+                    View Your Cleanup Data
+                  </h2>
+                </Col>
+                <Col style={{alignContent: 'right', alignItems: 'right'}}>
+                  <Button className="float-right" variant="outline-primary" size="sm" onClick={(e) => this.handleViewAllData(e)}>View All Data</Button>
+                </Col>
+              </Row>
+              
               
             <Card>
                 
