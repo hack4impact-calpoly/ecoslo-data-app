@@ -21,7 +21,7 @@ const app = Express();
 const usingProduction = process.env.NODE_ENV === 'production';
 
 
-const whiteListedOrigins = ['http://localhost:3000', 'https://ecoslo-data-app.herokuapp.com'];
+const whiteListedOrigins = ['http://localhost:3000', 'https://ecoslo-data-app.herokuapp.com', 'http://localhost:5000'];
 const corsOptions = {
 	origin : (origin, callback) => {
 		if(origin === undefined){

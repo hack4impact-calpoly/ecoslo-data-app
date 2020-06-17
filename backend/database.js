@@ -29,9 +29,10 @@ module.exports = class Database {
         if (env == null) {
             return new Database(new Client({
                 connectionString: process.env.DATABASE_URL,
-                ssl: {
-                    rejectUnauthorized: false
-                }
+                ssl: true
+                // ssl: {
+                //     rejectUnauthorized: false
+                // }
             }))
         }
         return null;

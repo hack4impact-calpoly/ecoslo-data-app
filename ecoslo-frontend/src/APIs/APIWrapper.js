@@ -10,7 +10,8 @@ const parseError = (statusCode, response) => {
 export default class APIWrapper {
     constructor(store) {
         // this.baseURL = "https://ecoslo-data-app.herokuapp.com:" + (process.env.PORT || 8000).toString() + '/';
-        this.baseURL = "https://ecoslo-data-app.herokuapp.com/"
+        //this.baseURL = "https://ecoslo-data-app.herokuapp.com/"
+        this.baseURL = "http://localhost:5000/"
         this.store = store;
     }
     
