@@ -124,7 +124,10 @@ app.post('/login', cors(corsOptions), async (req, res) => {
 
 app.use(passport.session()); // PLACE BEFORE ALL ENDPTS THAT NEED AUTH
 
-
+app.get('/logout', function(req, res){
+	req.logout();
+	res.redirect('/login');
+});
 
  app.post('/add', Auth.isAuthenticated, async (req, res) => {
 	// app.post('/add', async (req, res) => {
