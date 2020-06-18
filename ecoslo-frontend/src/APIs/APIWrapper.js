@@ -98,6 +98,10 @@ export default class APIWrapper {
         );
     }
 
+    logout() {
+        return this.makeGetRequest("logout");
+    }
+
     addData(dataToBeSubmitted) {
         return this.makeNonGetRequest("POST", "add", {'item': dataToBeSubmitted});
     }
