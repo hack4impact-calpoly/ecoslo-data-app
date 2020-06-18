@@ -468,7 +468,15 @@ handlePubPrivCheckbox = (e, col) =>{
 }
 
 
+selectAllGroupCheckboxes(e, group){
+  let selectedGroupColumns = this.state.columnNames[group];
+  let updatedSelectedValues = this.state.selectedValues;
+  for(var [key, value] of Object.entries(selectedGroupColumns)){
+    updatedSelectedValues[value] = true;
+  }
 
+  this.setState({selectedValues: updatedSelectedValues});
+}
   
 
   renderItemCheckboxes = ()  => {
@@ -509,7 +517,10 @@ handlePubPrivCheckbox = (e, col) =>{
         })
         return(
           <div>
-          <div className="thick">{group}</div>
+          <div className="thick">
+            {group}
+            <Button variant="outline-primary" size="sm" onClick={(e) => this.selectAllGroupCheckboxes(e, group)}>Select All</Button>
+          </div>
           <Table bordered hover size="sm">
           <tbody>
             {rows}
