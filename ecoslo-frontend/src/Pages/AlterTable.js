@@ -237,7 +237,7 @@ class AlterTable extends React.Component {
                                 </Form.Control>
                                 </Col>
                             </Row>
-                            <Button type="submit" onClick={(e) => this.handleConfirmAdd(e)}>Submit</Button>
+                            <Button variant="solid" onClick={(e) => this.handleConfirmAdd(e)}>SUBMIT</Button>
                         </Form.Group>
                     </Card.Body>
                 </Card>
@@ -260,7 +260,7 @@ class AlterTable extends React.Component {
                         </Form.Control>
                         </Col>
                     </Row>
-                    <Button type="submit" onClick={(e) => this.handleConfirmDelete(e)}>Submit</Button>
+                    <Button variant="solid" onClick={(e) => this.handleConfirmDelete(e)}>SUBMIT</Button>
                 </Form.Group>
                 </Card.Body>
                 </Card>

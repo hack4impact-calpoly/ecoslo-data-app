@@ -238,7 +238,7 @@ class Update extends React.Component {
 
           <Card>
             <Card.Body>
-        <Form.Group controlId="formBasicEmail">
+        <Form.Group>
           <Form.Label>Date</Form.Label>
               <br></br>
                 <DatePicker selected={this.state.dateValue} onChange={(e) => this.handleDateChange(e)} dateFormat={'yyyy/MM/dd'} />
@@ -250,10 +250,11 @@ class Update extends React.Component {
                 return <option>{value}</option>
               }) }
         </Form.Control>
-        <Button onClick={(e) => {this.handleUpdateTable(e)}}>Refresh Table</Button>
+        </Form.Group>
+        <Button variant="solid" onClick={(e) => {this.handleUpdateTable(e)}}>Refresh Table</Button>
         { 
           this.state.tableResult !== undefined && (this.state.tableResult.rows !== undefined && this.state.tableResult.rows !== [])
-          ?  <Button onClick={(e) => {this.handleDeleteRow(e)}}>Delete Row</Button>
+          ?  <Button variant="outline" onClick={(e) => {this.handleDeleteRow(e)}}>Delete Row</Button>
           : null
         }
         
@@ -292,11 +293,12 @@ class Update extends React.Component {
           )
         })
       }
-      <Button onClick={(e) => {this.handleAddItem(e)}}>Update Another Item</Button> 
+      <Button variant="solid" onClick={(e) => {this.handleSubmit(e)}}>Submit</Button>
+      <Button variant="outline" onClick={(e) => {this.handleAddItem(e)}}>Update Another Item</Button> 
 
-        <Button onClick={(e) => {this.handleSubmit(e)}}>Submit</Button>
+        
 
-        </Form.Group>
+        
         </Card.Body>
         </Card>
         </Form>

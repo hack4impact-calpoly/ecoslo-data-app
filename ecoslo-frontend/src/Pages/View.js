@@ -367,7 +367,7 @@ renderGroupByCheckBoxes = () => {
     return(
     <div>
       <Form.Label className="big">Group By</Form.Label>
-      <FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}}
+      <FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}}
         data-tip="Optional Section. You can compress all rows based on shared date, location, and event name values into a single row. Use to generate totals."
       />
       <div></div>
@@ -401,7 +401,7 @@ renderPublicPrivateCheckBoxes = () => {
  if(this.state.colNames !== undefined){
     return(
     <div>
-      <Form.Label className="big">Event Type</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}}
+      <Form.Label className="big">Event Type</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}}
           data-tip="Use to view either only private or only public events. Selecting no boxes is equivalent to selecting both boxes."
         />
       <div></div>
@@ -467,12 +467,11 @@ handlePubPrivCheckbox = (e, col) =>{
  }
 }
 
-
-selectAllGroupCheckboxes(e, group){
+changeAllGroupCheckboxes(e, group){
   let selectedGroupColumns = this.state.columnNames[group];
   let updatedSelectedValues = this.state.selectedValues;
   for(var [key, value] of Object.entries(selectedGroupColumns)){
-    updatedSelectedValues[value] = true;
+    updatedSelectedValues[value] = e.target.checked;
   }
 
   this.setState({selectedValues: updatedSelectedValues});
@@ -518,8 +517,11 @@ selectAllGroupCheckboxes(e, group){
         return(
           <div>
           <div className="thick">
+            
             {group}
-            <Button variant="outline-primary" size="sm" onClick={(e) => this.selectAllGroupCheckboxes(e, group)}>Select All</Button>
+            <input type="checkbox" style={{marginLeft: '5px'}} onChange={(e) => this.changeAllGroupCheckboxes(e, group)} />
+            {/* <FaCheckCircle style={{marginLeft: '5px', color: '#dd9933'}} onClick={(e) => this.selectAllGroupCheckboxes(e, group)}></FaCheckCircle> */}
+            {/* <Button variant="outline" size="xs" onClick={(e) => this.selectAllGroupCheckboxes(e, group)}>Select All</Button> */}
           </div>
           <Table bordered hover size="sm">
           <tbody>
@@ -627,7 +629,7 @@ selectAllGroupCheckboxes(e, group){
                   </h2>
                 </Col>
                 <Col style={{alignContent: 'right', alignItems: 'right'}}>
-                  <Button className="float-right" variant="outline-primary" size="sm" onClick={(e) => this.handleViewAllData(e)}>View All Data</Button>
+                  <Button className="float-right" variant="solid" size="sm" onClick={(e) => this.handleViewAllData(e)}>View All Data</Button>
                 </Col>
               </Row>
               
@@ -639,14 +641,14 @@ selectAllGroupCheckboxes(e, group){
                   <Form.Group>
                       <Row>
                         <Col>
-                          <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You will see data from cleanups that occurred on or after this date. "/>
+                          <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}} data-tip="You will see data from cleanups that occurred on or after this date. "/>
                           <ReactTooltip place="right" type="dark" effect="solid"/>
                           <br></br>
                             <DatePicker selected={this.state.dateStartVal} onChange={(e) => this.handleStartDateChange(e)} dateFormat={'yyyy/MM/dd'} />
                           <br></br>
                         </Col>
                         <Col>
-                          <Form.Label className="big">End Date</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You will see data from cleanups that occured on or before this date."/>
+                          <Form.Label className="big">End Date</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}} data-tip="You will see data from cleanups that occured on or before this date."/>
                           <br></br>
                             <DatePicker selected={this.state.dateEndVal} onChange={(e) => this.handleEndDateChange(e)} dateFormat={'yyyy/MM/dd'} />
                           <br></br>
@@ -655,7 +657,7 @@ selectAllGroupCheckboxes(e, group){
                   </Form.Group>
                       
                   <Form.Group>
-                    <Form.Label className="big">Location</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue'}} data-tip="You will see data only from cleanups at the locations you select. "/>
+                    <Form.Label className="big">Location</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}} data-tip="You will see data only from cleanups at the locations you select. "/>
                       <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
                           <option>Select All</option>
                           { this.props.locations.map((value) => {
@@ -686,7 +688,7 @@ selectAllGroupCheckboxes(e, group){
             <Card>
               <Card.Body>
               <Card.Title>Select Which Columns to View
-              <FaInfoCircle style={{marginLeft: '5px', color: 'lightBlue', width: '16', height: '16'}} data-tip="You will see the items that you check as columns in the generated table."/>
+              <FaInfoCircle style={{marginLeft: '5px', color: '#dd9933', width: '16', height: '16'}} data-tip="You will see the items that you check as columns in the generated table."/>
 
               </Card.Title>
                 {this.renderItemCheckboxes()}
@@ -695,7 +697,7 @@ selectAllGroupCheckboxes(e, group){
 
             <div style={{margin: '20px'}}/>
 
-            <Button type="submit" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
+            <Button variant="solid" onClick={(e) => this.handleSubmit(e)}>Submit</Button>
           </div>
         </Form>
         </Container>
