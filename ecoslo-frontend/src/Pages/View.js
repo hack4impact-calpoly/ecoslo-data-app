@@ -12,6 +12,7 @@ import "../styles/page.css";
 import { FaInfoCircle } from "react-icons/fa";
 import { FaQuestionCircle } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
+import { animateScroll, scroller, Element } from "react-scroll";
 
 
 
@@ -141,6 +142,16 @@ class View extends React.Component {
     
   }
 
+
+  scrollToDataTable() {
+    scroller.scrollTo("top-of-data-table", {
+      duration: 800,
+      delay: 0,
+      smooth: "easeInOutQuart",
+      offset: 5
+    });
+  }
+
   handleLocationChange (event) {
     let selected = []
     for(var i = 0; i < event.target.options.length; i++){
@@ -252,7 +263,6 @@ class View extends React.Component {
         p = "false"
       }
       if(this.state.groupByValues[0] === false && this.state.groupByValues[1] === false && this.state.groupByDate === "Select Date Option..."){
-        console.log("pub", this.state.pubPrivSend)
         var d = {
           dateStart: this.state.formData['dateStart'],
           dateEnd: this.state.formData['dateEnd'],
@@ -265,6 +275,7 @@ class View extends React.Component {
           let td = await this.props.apiWrapper.getByCols(d);
           if(td.rows !== undefined && td.rows.length !== 0){
             this.setState({tableData: td})
+            this.scrollToDataTable();
           }
           else{
             alert("No data found. Try entering a different date range and location.")
@@ -309,6 +320,7 @@ class View extends React.Component {
           let td = await this.props.apiWrapper.sumPerCol(q);
           if(td.rows !== undefined && td.rows.length !== 0){
             this.setState({tableData: td})
+            this.scrollToDataTable();
           }
           else{
             alert("No data found. Try entering a different date range and location.")
@@ -543,6 +555,7 @@ changeAllGroupCheckboxes(e, group){
       let td = await this.props.apiWrapper.getAllData();
       if(td.rows !== undefined && td.rows.length !== 0){
         this.setState({tableData: td})
+        this.scrollToDataTable();
       }
       else{
         alert("No data found.")
@@ -701,7 +714,9 @@ changeAllGroupCheckboxes(e, group){
           </div>
         </Form>
         </Container>
+        <Element name="top-of-data-table"></Element>
         <DataTable showMessage data={this.state.tableData}></DataTable>
+        
         
       </div>
 </div>
