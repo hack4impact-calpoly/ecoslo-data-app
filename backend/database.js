@@ -151,9 +151,10 @@ module.exports = class Database {
     }
 
 
-    _createSelectSumQuery(colNames, dateStart, dateEnd, locations, groupBy, isPublicString) {
+    _createSelectSumQuery(colNames, dateStart, dateEnd, locations, groupBy, aggregateFuncs, isPublicString) {
         console.log("groupBy: ", groupBy)
         var sum_cols = [];
+        var avg_cols = [];
         var queryStr = 'SELECT ';
         var i;
         var continuing = false;
@@ -173,8 +174,18 @@ module.exports = class Database {
                 }
             }
             else {
-                queryStr = queryStr.concat(("SUM(" + colNames[i] + ") as total_" + colNames[i]));
-                sum_cols.push(colNames[i])
+                var numAggregateFuncs = aggregateFuncs.length;
+                if(aggregateFuncs.includes('sum')){
+                    queryStr = queryStr.concat("SUM(case when " + colNames[i] + " >= 0 then " + colNames[i] + " else NULL end) as total_" + colNames[i]);
+                    sum_cols.push(colNames[i])
+                    if(numAggregateFuncs > 1){
+                        queryStr = queryStr.concat(', ');
+                    }
+                }
+                if(aggregateFuncs.includes('average')){
+                    queryStr = queryStr.concat("AVG(case when " + colNames[i] + " >= 0 then " + colNames[i] + " else NULL end) as average_" + colNames[i]);
+                    avg_cols.push(colNames[i])
+                }
             }
             if (i != (colNames.length - 1)){
                 queryStr = queryStr.concat(', ');
@@ -223,22 +234,6 @@ module.exports = class Database {
                 queryStr+= 'public = false'
             }
             queryStr+= ')'
-        }
-
-        if(sum_cols.length > 0){
-            if(continuing) {
-                queryStr += ' AND ('
-            }
-            else {
-                queryStr+= ' WHERE ('
-            }
-            
-            for(var k = 0; k < sum_cols.length; k++){
-                queryStr += sum_cols[k] + ' > -1)'
-                if(k !== sum_cols.length-1){
-                    queryStr += ' AND ('
-                }
-            }
         }
 
         continuing = false;
@@ -442,7 +437,7 @@ module.exports = class Database {
 
     async sumPerCol(req) {
         console.log("req", req.public)
-        const queryStr = this._createSelectSumQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.groupBy, req.public);
+        const queryStr = this._createSelectSumQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.groupBy, req.aggregateFuncs, req.public);
         console.log("query", queryStr)
         //console.log(queryStr)
         try {

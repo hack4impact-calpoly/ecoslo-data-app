@@ -227,6 +227,9 @@ app.get('/sumPerCol', Auth.isAuthenticated, async (req, res) => {
 		if ("groupBy" in queryParams) {
 			queryParams["groupBy"] = queryParams["groupBy"].split(",");
 		}
+		if("aggregateFuncs" in queryParams) {
+			queryParams["aggregateFuncs"] = queryParams["aggregateFuncs"].split(",");
+		}
 		let result = await database.sumPerCol(queryParams);
 		res.status(200).json({
 			rows : result.rows

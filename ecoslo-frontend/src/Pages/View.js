@@ -32,9 +32,9 @@ class View extends React.Component {
       },
       locations: [],
       showAlert: false,
-      groupByCols: [],
       groupByValues: [false, false],
       groupByDate: "Select Date Option...",
+      aggregateFunctionValues: [false, false],
       pubPrivCols: [],
       pubPrivValues: [false, false],
       pubPrivSend: "",
@@ -262,7 +262,8 @@ class View extends React.Component {
       else{
         p = "false"
       }
-      if(this.state.groupByValues[0] === false && this.state.groupByValues[1] === false && this.state.groupByDate === "Select Date Option..."){
+      //CHECK FOR SELECTED SUM OR AVERAGE TOO
+      if(this.state.groupByValues[0] === false && this.state.groupByValues[1] === false && this.state.groupByDate === "Select Date Option..." && this.state.aggregateFunctionValues[0] === false && this.state.aggregateFunctionValues[1] === false){
         var d = {
           dateStart: this.state.formData['dateStart'],
           dateEnd: this.state.formData['dateEnd'],
@@ -285,8 +286,19 @@ class View extends React.Component {
           alert("There was an error in your request. Please check your input and try again.")
         }
       }
+
+      //GROUP BY
       else{
         var groupCols = []
+        var aggregateFuncsSelected = []
+
+        if(this.state.aggregateFunctionValues[0] === true){
+          aggregateFuncsSelected.push("sum")
+        }
+        if(this.state.aggregateFunctionValues[1] === true){
+          aggregateFuncsSelected.push("average")
+        }
+
         
         if(this.state.groupByValues[0] === true){
           groupCols.push("location")
@@ -314,23 +326,30 @@ class View extends React.Component {
           cols: selected,
           locations: this.state.locations,
           groupBy: groupCols, 
+          aggregateFuncs: aggregateFuncsSelected,
           public: p
         }
-        try{
-          let td = await this.props.apiWrapper.sumPerCol(q);
-          if(td.rows !== undefined && td.rows.length !== 0){
-            this.setState({tableData: td})
-            this.scrollToDataTable();
-          }
-          else{
-            alert("No data found. Try entering a different date range and location.")
-          }
+        if(groupCols.length === 0 || aggregateFuncsSelected.length === 0){
+          alert("You must select both a function option and a group by option to use the aggregation section.")
         }
-        catch(e){
-          alert("There was an error in your request. Please check your input and try again. If you checked any boxes in the group by section, you can only view date, location, and event name if you also selected them under group by.")
+        else{
+          try{
+            let td = await this.props.apiWrapper.sumPerCol(q);
+            if(td.rows !== undefined && td.rows.length !== 0){
+              this.setState({tableData: td})
+              this.scrollToDataTable();
+            }
+            else{
+              alert("No data found. Try entering a different date range and location.")
+            }
+          }
+          catch(e){
+            alert("There was an error in your request. Please check your input and try again. If you checked any boxes in the group by section, you can only view date, location, and event name if you also selected them under group by.")
+          }
         }
 
       }
+
     }
   }
 
@@ -372,13 +391,50 @@ class View extends React.Component {
 
   }
 
+  handleAggregateFuncCheckbox = (e, functionType) => {
+    var duplicateVals = this.state.aggregateFunctionValues
+    if (functionType === "Sum"){
+      duplicateVals[0] = e.target.checked
+      this.setState({aggregateFunctionValues: duplicateVals})
+    }
+    if (functionType === "Average"){
+      console.log(e.target.checked)
+      duplicateVals[1] = e.target.checked
+      this.setState({aggregateFunctionValues: duplicateVals})
+      console.log(this.state.groupByValues)
+    }
+  }
 
+  renderAggregationFunctionCheckBoxes = () => {
+    if(this.state.colNames !== undefined){
+      return(
+        <div>
+          <Form.Label className="big">Aggregate Functions</Form.Label>
+          <FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}}
+            data-tip="Optional Section. Check if you want to see totals or average numbers of each item found. If you select anything in this section, you must select a group by option."
+          />
+          <div></div>
+          <input type="checkbox"
+            name="Sum"
+            checked={this.state.aggregateFunctionValues[0]}
+            onChange={(e) => this.handleAggregateFuncCheckbox(e, "Sum")}/> Sum
+          <div></div>
+
+          <input type="checkbox"
+            name="Average"
+            checked={this.state.aggregateFunctionValues[1]}
+            onChange={(e) => this.handleAggregateFuncCheckbox(e, "Average")}/> Average
+          <div></div>
+        </div>
+      )
+    }
+  }
 
 renderGroupByCheckBoxes = () => {
   if(this.state.colNames !== undefined){
     return(
     <div>
-      <Form.Label className="big">Group By</Form.Label>
+      <Form.Label className="big">Group Events By</Form.Label>
       <FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}}
         data-tip="Optional Section. You can compress all rows based on shared date, location, and event name values into a single row. Use to generate totals."
       />
@@ -690,6 +746,9 @@ changeAllGroupCheckboxes(e, group){
             <Card>
               <Card.Body>
               <Card.Title>Select Aggregation Options</Card.Title>
+                <Form.Group>
+                  {this.renderAggregationFunctionCheckBoxes()}
+                </Form.Group>
                 <Form.Group>
                   {this.renderGroupByCheckBoxes()}
                 </Form.Group>
