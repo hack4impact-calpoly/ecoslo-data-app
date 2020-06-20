@@ -1,5 +1,5 @@
 import React from "react";
-import {Col, Row, Modal, Container, Form, Card} from 'react-bootstrap';
+import {Col, Row, Modal, Container, Form, Card, Button} from 'react-bootstrap';
 import withLocations from '../Components/withLocations';
 import withColumns from '../Components/withColumns';
 import Select from 'react-dropdown-select';
@@ -7,21 +7,24 @@ import ReactTooltip from "react-tooltip";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaQuestionCircle } from "react-icons/fa";
+import "../styles/index.css";
 
-import styled, { css } from 'styled-components'
+// import styled, { css } from 'styled-components'
 
-const Button = styled.button`
-background: transparent;
-border-radius: 3px;
-border: 2px solid #dd9933;
-color: #dd9933;
-margin: 0.5em 1em;
-padding: 0.25em 1em;
-${props => props.primary  && css`
-background: #dd9933;
-color: white;
-`}
-`;
+// const Button = styled.button`
+// background: transparent;
+// border-radius: 3px;
+// border: 2px solid #dd9933;
+// color: #dd9933;
+// font-size: .9rem;
+// box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+// padding: .7rem 2rem;
+// margin: 6px;
+// ${props => props.primary  && css`
+// background: #dd9933;
+// color: white;
+// `}
+// `;
 
 const sectionStyle ={
   fontWeight: 'bold',
@@ -594,13 +597,9 @@ class AddEvent extends React.Component {
             
             <div style={{margin: '20px'}}/>
 
-            <Button primary onClick={(e) => this.handleSubmit(e)}>
-              Submit
+            <Button variant="solid" onClick={(e) => this.handleSubmit(e)}>
+              SUBMIT
             </Button>
-            <Button onClick={(e) => this.handleSubmit(e)}>
-              Submit
-            </Button>
-
 
             
           </Form>

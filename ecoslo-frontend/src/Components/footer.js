@@ -5,8 +5,8 @@ import { FaHeart } from "react-icons/fa";
 
 const style = {
     textAlign: 'center',
-    // backgroundColor: '#4285f4',
-    backgroundColor: '#286c31',
+    backgroundColor: '#565656',
+    // backgroundColor: '#dd9933',
     color: 'white',
     width: '100%',
     position: 'relative',

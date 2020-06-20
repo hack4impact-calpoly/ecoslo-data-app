@@ -33,7 +33,7 @@ class Home extends React.Component {
                     <div className="center-strip">
                         <span className="upper">Cleanup Database</span>
                     </div>
-                    <div style={{height: "25%", margin: "140px"}}>
+                    <div style={{margin: "140px"}}>
                         <Container>
                             <Row>
                                 <Col>
