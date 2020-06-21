@@ -330,7 +330,7 @@ class View extends React.Component {
           public: p
         }
         if(groupCols.length === 0 || aggregateFuncsSelected.length === 0){
-          alert("You must select both a function option and a group by option to use the aggregation section.")
+          alert("You must select both a function option and a group event by option to use the aggregation section.")
         }
         else{
           try{
@@ -344,7 +344,7 @@ class View extends React.Component {
             }
           }
           catch(e){
-            alert("There was an error in your request. Please check your input and try again. If you checked any boxes in the group by section, you can only view date, location, and event name if you also selected them under group by.")
+            alert("There was an error in your request. Please check your input and try again. If you used the aggregation section, you can only view columns that have a numeric value, and those that you selected in the group event by section.")
           }
         }
 
@@ -411,7 +411,7 @@ class View extends React.Component {
         <div>
           <Form.Label className="big">Aggregate Functions</Form.Label>
           <FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}}
-            data-tip="Optional Section. Check if you want to see totals or average numbers of each item found. If you select anything in this section, you must select a group by option."
+            data-tip="Optional. Check if you want to see totals or average numbers of each item found. If you select anything in this section, you must select a group event by option."
           />
           <div></div>
           <input type="checkbox"
@@ -436,7 +436,7 @@ renderGroupByCheckBoxes = () => {
     <div>
       <Form.Label className="big">Group Events By</Form.Label>
       <FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}}
-        data-tip="Optional Section. You can compress all rows based on shared date, location, and event name values into a single row. Use to generate totals."
+        data-tip="Optional. You can compress all rows based on shared date, location, and event name values into a single row. Use to generate totals."
       />
       <div></div>
       <input type="checkbox"
@@ -710,14 +710,14 @@ changeAllGroupCheckboxes(e, group){
                   <Form.Group>
                       <Row>
                         <Col>
-                          <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}} data-tip="You will see data from cleanups that occurred on or after this date. "/>
+                          <Form.Label className="big">Start Date</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}} data-tip="Required. You will see data from cleanups that occurred on or after this date. "/>
                           <ReactTooltip place="right" type="dark" effect="solid"/>
                           <br></br>
                             <DatePicker selected={this.state.dateStartVal} onChange={(e) => this.handleStartDateChange(e)} dateFormat={'yyyy/MM/dd'} />
                           <br></br>
                         </Col>
                         <Col>
-                          <Form.Label className="big">End Date</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}} data-tip="You will see data from cleanups that occured on or before this date."/>
+                          <Form.Label className="big">End Date</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}} data-tip="Required. You will see data from cleanups that occured on or before this date."/>
                           <br></br>
                             <DatePicker selected={this.state.dateEndVal} onChange={(e) => this.handleEndDateChange(e)} dateFormat={'yyyy/MM/dd'} />
                           <br></br>
@@ -726,7 +726,7 @@ changeAllGroupCheckboxes(e, group){
                   </Form.Group>
                       
                   <Form.Group>
-                    <Form.Label className="big">Location</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}} data-tip="You will see data only from cleanups at the locations you select. "/>
+                    <Form.Label className="big">Location</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}} data-tip="Required. You will see data only from cleanups at the locations you select. "/>
                       <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
                           <option>Select All</option>
                           { this.props.locations.map((value) => {
@@ -760,7 +760,7 @@ changeAllGroupCheckboxes(e, group){
             <Card>
               <Card.Body>
               <Card.Title>Select Which Columns to View
-              <FaInfoCircle style={{marginLeft: '5px', color: '#dd9933', width: '16', height: '16'}} data-tip="You will see the items that you check as columns in the generated table."/>
+              <FaInfoCircle style={{marginLeft: '5px', color: '#dd9933', width: '16', height: '16'}} data-tip="Required. You will see the items that you check as columns in the generated table."/>
 
               </Card.Title>
                 {this.renderItemCheckboxes()}
