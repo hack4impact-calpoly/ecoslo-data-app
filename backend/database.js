@@ -95,7 +95,7 @@ module.exports = class Database {
         return queryStr;
     }
 
-    _createSelectQuery(colNames, dateStart, dateEnd, locations, isPublicString) {
+    _createSelectQuery(colNames, dateStart, dateEnd, locations, isPublicString, eventNames) {
         var queryStr = 'SELECT ';
         var i;
         var continuing = false;
@@ -148,11 +148,32 @@ module.exports = class Database {
             }
             queryStr+= ')'
         }
+
+        if(eventNames !== null && eventNames.length > 0 && eventNames[0] !== '' && eventNames.includes('*') === false){
+            if(continuing) {
+                queryStr += ' AND ('
+            }
+            else {
+                queryStr+= ' WHERE ('
+            }
+
+            for(i=0; i < eventNames.length; i++){
+                if(i===(eventNames.length-1)){
+                    queryStr += 'event_name = \'' + eventNames[i] + '\''
+                }
+                else{
+                    queryStr += 'event_name = \'' + eventNames[i] + '\' OR '
+                }
+            }
+            queryStr+= ')'
+        }
+
+
         return queryStr;
     }
 
 
-    _createSelectSumQuery(colNames, dateStart, dateEnd, locations, groupBy, aggregateFuncs, isPublicString) {
+    _createSelectSumQuery(colNames, dateStart, dateEnd, locations, groupBy, aggregateFuncs, isPublicString, eventNames) {
         console.log("groupBy: ", groupBy)
         var sum_cols = [];
         var avg_cols = [];
@@ -233,6 +254,25 @@ module.exports = class Database {
             }
             if(isPublicString==='false'){
                 queryStr+= 'public = false'
+            }
+            queryStr+= ')'
+        }
+
+        if(eventNames !== null && eventNames.length > 0 && eventNames[0] !== '' && eventNames.includes('*') === false){
+            if(continuing) {
+                queryStr += ' AND ('
+            }
+            else {
+                queryStr+= ' WHERE ('
+            }
+
+            for(i=0; i < eventNames.length; i++){
+                if(i===(eventNames.length-1)){
+                    queryStr += 'event_name = \'' + eventNames[i] + '\''
+                }
+                else{
+                    queryStr += 'event_name = \'' + eventNames[i] + '\' OR '
+                }
             }
             queryStr+= ')'
         }
@@ -365,9 +405,24 @@ module.exports = class Database {
         }
     }
 
+    async getEventNames() {
+        const queryStr = 'SELECT DISTINCT event_name FROM ' + this.dbName + '';
+        try {
+            const result = await this.client.query(queryStr);
+            let eventNames = [];
+            for (const obj of result.rows) {
+                eventNames.push(obj['event_name']);
+            }
+            console.log("eventNames: ", eventNames)
+            return eventNames;
+        } catch (err) {
+            throw new Error(Errors.error.queryError);
+        }
+    }
+
     async getByCol(req) {
         console.log("req", req.public)
-        const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.public);
+        const queryStr = this._createSelectQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.public, req.eventNames);
         console.log("query", queryStr)
         try {
             const result = await this.client.query(queryStr);
@@ -438,7 +493,7 @@ module.exports = class Database {
 
     async sumPerCol(req) {
         console.log("req", req.public)
-        const queryStr = this._createSelectSumQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.groupBy, req.aggregateFuncs, req.public);
+        const queryStr = this._createSelectSumQuery(req.cols, req.dateStart, req.dateEnd, req.locations, req.groupBy, req.aggregateFuncs, req.public, req.eventNames);
         console.log("query", queryStr)
         //console.log(queryStr)
         try {

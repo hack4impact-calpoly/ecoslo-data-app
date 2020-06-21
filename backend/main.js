@@ -182,6 +182,19 @@ app.get('/columns', Auth.isAuthenticated, async (req, res) => {
 	}
 })
 
+app.get('/eventNames', Auth.isAuthenticated, async (req, res) => {
+	try{
+		let r = await database.getEventNames();
+		res.status(200).json({
+			r
+		});
+	}
+	catch (err) {	
+		res.status(400).send(AppError.stringError(err.message));
+		return;
+	}
+})
+
 app.get('/byCols', Auth.isAuthenticated, async (req, res) => {
 	try{
 		let queryParams = req.query;
@@ -190,6 +203,9 @@ app.get('/byCols', Auth.isAuthenticated, async (req, res) => {
 		}
 		if ("locations" in queryParams) {
 			queryParams["locations"] = queryParams["locations"].split(",");
+		}
+		if ("eventNames" in queryParams) {
+			queryParams["eventNames"] = queryParams["eventNames"].split(",");
 		}
 		let result = await database.getByCol(queryParams);
 		res.status(200).json({
@@ -223,6 +239,9 @@ app.get('/sumPerCol', Auth.isAuthenticated, async (req, res) => {
 		}
 		if ("locations" in queryParams) {
 			queryParams["locations"] = queryParams["locations"].split(",");
+		}
+		if ("eventNames" in queryParams) {
+			queryParams["eventNames"] = queryParams["eventNames"].split(",");
 		}
 		if ("groupBy" in queryParams) {
 			queryParams["groupBy"] = queryParams["groupBy"].split(",");
