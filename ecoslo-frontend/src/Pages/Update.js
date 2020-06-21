@@ -139,7 +139,8 @@ class Update extends React.Component {
       cols: ['*'],
       dateStart: this.state.date,
       dateEnd: this.state.date,
-      locations: [this.state.location]
+      locations: [this.state.location],
+      eventNames: []
     }
     try{
       let res = await this.props.apiWrapper.getByCols(data);
