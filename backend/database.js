@@ -184,7 +184,7 @@ module.exports = class Database {
                     }
                 }
                 if(aggregateFuncs.includes('average')){
-                    queryStr = queryStr.concat("AVG(case when " + colNames[i] + " >= 0 then " + colNames[i] + " else NULL end) as average_" + colNames[i]);
+                    queryStr = queryStr.concat("TRUNC( AVG(case when " + colNames[i] + " >= 0 then " + colNames[i] + " else NULL end), 2) as average_" + colNames[i]);
                     avg_cols.push(colNames[i])
                 }
             }
