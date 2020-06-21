@@ -12,7 +12,7 @@ import "../styles/page.css";
 import { FaInfoCircle } from "react-icons/fa";
 import { FaQuestionCircle } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
-import { animateScroll, scroller, Element } from "react-scroll";
+import { scroller, Element } from "react-scroll";
 
 
 
@@ -38,6 +38,7 @@ class View extends React.Component {
       pubPrivCols: [],
       pubPrivValues: [false, false],
       pubPrivSend: "",
+      eventNamesSelected: [],
 
       columnNames : {
         "Key Information" : {
@@ -124,21 +125,28 @@ class View extends React.Component {
 
   async componentDidMount(){
     try {
-      if(this.state.colNames === undefined) {
+
+      if(this.state.eventNames === undefined) {
+        let res = await this.props.apiWrapper.getEventNames();
+        this.setState({eventNames: res.r})
+      }
+
+      let names = this.state.colNames
+      if(names === undefined) {
         let res = await this.props.apiWrapper.getColumns();
-        var names = []
-        var vals = []
+        names = []
         for (var i = 0; i < res.r.fields.length; i++){
           names.push(res.r.fields[i].name)
-          vals.push(false)
         }
         this.setState({colNames: names})
         this.initSelectedValues()
       }
+
     }
     catch(err){
 
     }
+
     
   }
 
@@ -164,6 +172,20 @@ class View extends React.Component {
       }
     }
     this.setState({locations: selected})
+  }
+
+  handleEventNameSelectionChange (event) {
+    let selected = []
+    for(var i = 0; i < event.target.options.length; i++){
+      if(event.target.options[i].value === 'Select All' && event.target.options[i].selected){
+        selected=[]
+        break;
+      }
+      else if (event.target.options[i].selected){
+        selected.push(event.target.options[i].value)
+      }
+    }
+    this.setState({eventNamesSelected: selected})
   }
 
   formatDate(d) {
@@ -269,6 +291,7 @@ class View extends React.Component {
           dateEnd: this.state.formData['dateEnd'],
           cols: selected,
           locations: this.state.locations,
+          eventNames: this.state.eventNamesSelected,
           public: p
         }
     
@@ -325,6 +348,7 @@ class View extends React.Component {
           dateEnd: this.state.formData['dateEnd'],
           cols: selected,
           locations: this.state.locations,
+          eventNames: this.state.eventNamesSelected,
           groupBy: groupCols, 
           aggregateFuncs: aggregateFuncsSelected,
           public: p
@@ -730,6 +754,16 @@ changeAllGroupCheckboxes(e, group){
                       <Form.Control multiple={true} as="select" onChange={(e) => this.handleLocationChange(e)} >
                           <option>Select All</option>
                           { this.props.locations.map((value) => {
+                            return <option>{value}</option>
+                          }) }
+                      </Form.Control>
+                  </Form.Group>
+
+                  <Form.Group>
+                    <Form.Label className="big">Event Name</Form.Label><FaInfoCircle style={{marginLeft: '5px', color: '#dd9933'}} data-tip="Required. You will see data only from cleanups with the event names you select. "/>
+                      <Form.Control multiple={true} as="select" onChange={(e) => this.handleEventNameSelectionChange(e)} >
+                          <option>Select All</option>
+                          { this.state.eventNames.map((value) => {
                             return <option>{value}</option>
                           }) }
                       </Form.Control>

@@ -117,6 +117,10 @@ export default class APIWrapper {
         return this.makeGetRequest("columns");
     }
 
+    getEventNames() {
+        return this.makeGetRequest("eventNames");
+    }
+
     getByCols(dataToBeSubmitted) {
         return this.makeGetRequest("byCols", dataToBeSubmitted);
     }
