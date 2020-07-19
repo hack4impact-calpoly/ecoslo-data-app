@@ -203,9 +203,16 @@ app.get('/byCols', Auth.isAuthenticated, async (req, res) => {
 		}
 		if ("locations" in queryParams) {
 			queryParams["locations"] = queryParams["locations"].split(",");
+			var index = 0;
+			for(index=0; index<queryParams["locations"].length; index++){
+				queryParams["locations"][index] = queryParams["locations"][index].replace(/;;/g, ',');
+			}
 		}
 		if ("eventNames" in queryParams) {
 			queryParams["eventNames"] = queryParams["eventNames"].split(",");
+			for(index=0; index<queryParams["eventNames"].length; index++){
+				queryParams["eventNames"][index] = queryParams["eventNames"][index].replace(/;;/g, ',');
+			}
 		}
 		let result = await database.getByCol(queryParams);
 		res.status(200).json({
@@ -239,9 +246,15 @@ app.get('/sumPerCol', Auth.isAuthenticated, async (req, res) => {
 		}
 		if ("locations" in queryParams) {
 			queryParams["locations"] = queryParams["locations"].split(",");
+			for(index=0; index<queryParams["locations"].length; index++){
+				queryParams["locations"][index] = queryParams["locations"][index].replace(/;;/g, ',');
+			}
 		}
 		if ("eventNames" in queryParams) {
 			queryParams["eventNames"] = queryParams["eventNames"].split(",");
+			for(index=0; index<queryParams["eventNames"].length; index++){
+				queryParams["eventNames"][index] = queryParams["eventNames"][index].replace(/;;/g, ',');
+			}
 		}
 		if ("groupBy" in queryParams) {
 			queryParams["groupBy"] = queryParams["groupBy"].split(",");
