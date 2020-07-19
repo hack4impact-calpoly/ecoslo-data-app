@@ -139,7 +139,7 @@ class Update extends React.Component {
       cols: ['*'],
       dateStart: this.state.date,
       dateEnd: this.state.date,
-      locations: [this.state.location],
+      locations: [this.state.location.replace(/,/g, ';;')],
       eventNames: []
     }
     try{

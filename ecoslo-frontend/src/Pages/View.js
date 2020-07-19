@@ -169,6 +169,7 @@ class View extends React.Component {
       }
       else if (event.target.options[i].selected){
         selected.push(event.target.options[i].value)
+        console.log("selected!");
       }
     }
     this.setState({locations: selected})
@@ -261,7 +262,6 @@ class View extends React.Component {
 
   async handleSubmit(event) {
     event.preventDefault();
-
     if(this.state.colNames !== undefined) {
       var selected = []
       let data = this.state.columnNames
@@ -286,12 +286,25 @@ class View extends React.Component {
       }
       //CHECK FOR SELECTED SUM OR AVERAGE TOO
       if(this.state.groupByValues[0] === false && this.state.groupByValues[1] === false && this.state.groupByDate === "Select Date Option..." && this.state.aggregateFunctionValues[0] === false && this.state.aggregateFunctionValues[1] === false){
+        let escapedLocations = [];
+        let locCopy = this.state.locations;
+        var l;
+        for(l=0; l < locCopy.length; l++){
+          escapedLocations.push(locCopy[l].replace(/,/g, ';;'));
+        }
+
+        let escapedEventNames = [];
+        let eventsCopy = this.state.eventNamesSelected;
+        for(l=0; l < eventsCopy.length; l++){
+          escapedEventNames.push(eventsCopy[l].replace(/,/g, ';;'));
+        }
+
         var d = {
           dateStart: this.state.formData['dateStart'],
           dateEnd: this.state.formData['dateEnd'],
           cols: selected,
-          locations: this.state.locations,
-          eventNames: this.state.eventNamesSelected,
+          locations: escapedLocations,
+          eventNames: escapedEventNames,
           public: p
         }
     
@@ -341,14 +354,27 @@ class View extends React.Component {
             groupCols.push(this.state.groupByDate.toLowerCase())
           }
         
-          
         }
+
+        let escapedLocations = [];
+        let locCopy = this.state.locations;
+        var l;
+        for(l=0; l < locCopy.length; l++){
+          escapedLocations.push(locCopy[l].replace(/,/g, ';;'));
+        }
+
+        let escapedEventNames = [];
+        let eventsCopy = this.state.eventNamesSelected;
+        for(l=0; l < eventsCopy.length; l++){
+          escapedEventNames.push(eventsCopy[l].replace(/,/g, ';;'));
+        }
+
         var q = {
           dateStart: this.state.formData['dateStart'],
           dateEnd: this.state.formData['dateEnd'],
           cols: selected,
-          locations: this.state.locations,
-          eventNames: this.state.eventNamesSelected,
+          locations: escapedLocations,
+          eventNames: escapedEventNames,
           groupBy: groupCols, 
           aggregateFuncs: aggregateFuncsSelected,
           public: p
